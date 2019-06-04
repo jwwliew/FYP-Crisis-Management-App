@@ -1,0 +1,17 @@
+.imgCircle {
+    float: left;
+    border-radius: 50%;
+    width: 50%;
+    height: 100%;
+    padding:4%;
+    //background-color:#000000 !important;
+}
+.imgCircleText {
+    // height:100%;
+    //margin:16px;
+    white-space: normal;
+    text-align: left;
+    margin-top:12%; //FIXME: https://ionicframework.com/docs/v3/theming/css-utilities/
+}
+
+

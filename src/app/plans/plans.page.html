@@ -1,9 +1,26 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>plans</ion-title>
+  <ion-toolbar color="primary">
+    <ion-title style="color: white;font-weight: bold;font-size: 1.2em;padding: 0;margin: 0 16px; text-align: center;">
+      Plans
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <ion-list lines="none">
+    <button no-margin no-padding style="width: 100%;background-color: white" (click)="goToTestPage()">
+      <ion-card class="welcome-card">
+        <ion-card-header color="tertiary">
+          <ion-card-title style="color: white;font-weight: bold;font-size: 1.1em;padding: 0;margin: 0 16px;">
+            Plans One
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-img src="/assets/shapes.svg"></ion-img>
+          <p>Now that your app has been created, you'll want to start building out features and components. Check out
+            some of the resources below for next steps.</p>
+        </ion-card-content>
+      </ion-card>
+    </button>
+  </ion-list>
 </ion-content>
