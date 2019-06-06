@@ -3,6 +3,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   { path: '', loadChildren: './tabs/tabs.module#TabsPageModule' },
+  { path: 'symptom-action', loadChildren: './settings/symptom-action/symptom-action.module#SymptomActionPageModule' },
 ];
 
 @NgModule({
