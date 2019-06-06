@@ -38,7 +38,7 @@ const routes: Routes = [
                     },
                     {
                         path: 'symptomAction',
-                        loadChildren: './settings/symptom-action/symptom-action.module#SymptomActionPageModule'
+                        loadChildren: '../settings/symptom-action/symptom-action.module#SymptomActionPageModule'
                     }
                 ]
             }

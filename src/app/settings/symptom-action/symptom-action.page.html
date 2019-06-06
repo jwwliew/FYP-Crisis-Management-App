@@ -1,9 +1,41 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>symptomAction</ion-title>
+  <ion-toolbar color="primary">
+    <ion-title style="color: white;font-weight: bold;font-size: 1.2em;padding: 0;margin: 0 16px; text-align: center;">
+      Content
+    </ion-title>
+    <ion-button slot="start" href="/tabs/tab1" routerDirection="back">Back</ion-button>
+    <ion-buttons slot="end">
+      <ion-button (click)="newSymptomAction()">
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-grid style="border-bottom: 1px solid coral">
+    <ion-row>
+        <!-- 0000cd -->
+      <ion-col text-center (click)="goToSymptom()" style="font-weight:bold;" [ngStyle]="{'color': (selectedTab == 'Symptom') ? '#0000cd' : '#C0C0C0'}">
+        Symptom
+      </ion-col>
+
+      <ion-col text-center (click)="goToAction()" style="font-weight:bold;" [ngStyle]="{'color': (selectedTab == 'Action') ? '#0000cd' : '#C0C0C0'}">
+        Action
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+
+  <ion-list *ngIf="selectedTab == 'Symptom'">
+    <ion-item *ngFor="let item of symptomList; let i = index" (click)="selectedSymptom(i)">
+      {{item}}
+    </ion-item>
+  </ion-list>
+
+  <ion-list *ngIf="selectedTab == 'Action'">
+    <ion-item *ngFor="let item of actionList; let i = index" (click)="selectedSymptom(item)">
+      {{item}}
+    </ion-item>
+  </ion-list>
 
 </ion-content>
