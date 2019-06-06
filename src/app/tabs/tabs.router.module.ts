@@ -12,7 +12,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../plans/plans.module#PlansPageModule'
+            loadChildren: '../plans/view-plans/view-plans.module#ViewPlansPageModule'
           },
           // {
           //   path: ':id',
@@ -25,7 +25,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../templates/templates.module#TemplatesPageModule'
+            loadChildren: '../templates/view-templates/view-templates.module#ViewTemplatesPageModule'
           }
         ]
       },
@@ -34,7 +34,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../settings/settings.module#SettingsPageModule'
+            loadChildren: '../settings/view-settings/view-settings.module#ViewSettingsPageModule'
           }
         ]
       }
