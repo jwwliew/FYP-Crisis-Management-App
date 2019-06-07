@@ -5,6 +5,7 @@ const routes: Routes = [
   { path: '', loadChildren: './tabs/tabs.module#TabsPageModule' },
   { path: 'symptom-action', loadChildren: './settings/symptom-action/symptom-action.module#SymptomActionPageModule' },
   { path: 'new-plan', loadChildren: './plans/new-plan/new-plan.module#NewPlanPageModule' },
+  { path: 'plan-details', loadChildren: './plans/plan-details/plan-details.module#PlanDetailsPageModule' },
 ];
 
 @NgModule({

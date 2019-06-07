@@ -17,7 +17,12 @@ const routes: Routes = [
                     {
                         path: 'newPlan',
                         loadChildren: '../plans/new-plan/new-plan.module#NewPlanPageModule'
+                     },
+                     {  
+                         path:'details',
+                        loadChildren: '../plans/plan-details/plan-details.module#PlanDetailsPageModule'
                      }
+                     
                 ]
             },
             {
