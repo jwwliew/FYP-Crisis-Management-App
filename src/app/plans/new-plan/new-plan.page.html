@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title style="color: white;font-weight: bold;font-size: 1.2em;padding: 0;margin: 0 16px; text-align: center;" style="text-align: center">
+       New Crisis Plan
+    </ion-title><h6>Next</h6>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!--CARD-->
+    <ion-list lines="none">
+         <ion-card class="welcome-card" style="height: 1%">
+        <ion-card-header color="tertiary">
+          <ion-card-title>Select Language</ion-card-title>
+        </ion-card-header>
+        
+        <ion-card-content>
+            <ion-list>
+                <ion-radio-group>        
+                  <ion-item>
+                    <ion-label>English</ion-label>
+                    <ion-radio slot="end" value="el" checked></ion-radio>
+                  </ion-item>
+              <hr>
+                  <ion-item>
+                    <ion-label>Chinese</ion-label>
+                    <ion-radio slot="end" value="cn"></ion-radio>
+                  </ion-item>
+              <hr>
+                  <ion-item>
+                    <ion-label>Malay</ion-label>
+                    <ion-radio slot="end" value="ml"></ion-radio>
+                  </ion-item>
+                  <hr>
+                  <ion-item>
+                      <ion-label>Tmail</ion-label>
+                      <ion-radio slot="end" value="tl"></ion-radio>
+                    </ion-item>
+                </ion-radio-group>
+              </ion-list>
+        </ion-card-content>
+        <!---ABOVE ARE OPTIONS-->
+      </ion-card>
+      <!--PLAN NAME-->
+            <ion-card class="welcome-card" style="height: 1%">
+            <ion-card-header color="tertiary">
+           <ion-card-title>Crisis Plan Name</ion-card-title> </ion-card-header>
+            
+            <ion-card-content>
+                   <!---CONTENT-->
+                   <ion-input value=""></ion-input>
+            </ion-card-content>
+          </ion-card>
+        
+  </ion-list>
+  
+</ion-content>   

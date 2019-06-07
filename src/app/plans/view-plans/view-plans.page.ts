@@ -12,7 +12,12 @@ export class ViewPlansPage implements OnInit {
 
   ngOnInit() {
   }
+
+  onClick() {
+    this.router.navigateByUrl('tabs/plans/newPlan');
+  }
   
+
   goToTestPage() {
       this.router.navigateByUrl('/templatedetails');
   }

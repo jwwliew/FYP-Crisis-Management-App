@@ -14,10 +14,10 @@ const routes: Routes = [
                         path: '',
                         loadChildren: '../plans/view-plans/view-plans.module#ViewPlansPageModule'
                     },
-                    // {
-                    //   path: ':id',
-                    //   loadChildren: '../film-details/film-details.module#FilmDetailsPageModule'
-                    // }
+                    {
+                        path: 'newPlan',
+                        loadChildren: '../plans/new-plan/new-plan.module#NewPlanPageModule'
+                     }
                 ]
             },
             {

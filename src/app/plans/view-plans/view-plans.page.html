@@ -1,26 +1,93 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title style="color: white;font-weight: bold;font-size: 1.2em;padding: 0;margin: 0 16px; text-align: center;">
-      Plans
+       Plans <ion-icon name="funnel" ></ion-icon>
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <!-----------ADD BUTTON---------------------->
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" (click)="onClick()">
+        <ion-fab-button>
+          <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
+
+
+  <!----THIS IS SEARCH BAR---->
+  <ion-searchbar></ion-searchbar>
+   <!-----------cate---------------------->
+  <div class="row">
+      &nbsp;&nbsp; Name &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;Contact&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp; Date
+  </div>
+  <!-----------LIST---------------------->
   <ion-list lines="none">
-    <button no-margin no-padding style="width: 100%;background-color: white" (click)="goToTestPage()">
-      <ion-card class="welcome-card">
+    <button no-margin no-padding style="height: auto;width: 100%;;background-color: white" (click)="goToTestPage()">
+      <ion-card class="welcome-card" style="height: 1%">
         <ion-card-header color="tertiary">
-          <ion-card-title style="color: white;font-weight: bold;font-size: 1.1em;padding: 0;margin: 0 16px;">
-            Plans One
-          </ion-card-title>
         </ion-card-header>
+        
         <ion-card-content>
-          <ion-img src="/assets/shapes.svg"></ion-img>
-          <p>Now that your app has been created, you'll want to start building out features and components. Check out
-            some of the resources below for next steps.</p>
+                 <p>Jery           1</p>
         </ion-card-content>
       </ion-card>
     </button>
+    <button no-margin no-padding style="height: auto;width: 100%;;background-color: white" (click)="goToTestPage()">
+      <ion-card class="welcome-card">
+        <ion-card-header color="tertiary">
+        </ion-card-header>
+        <ion-card-content>
+                 <p>Jery           2</p>
+        </ion-card-content>
+      </ion-card>
+    </button>
+    <button no-margin no-padding style="height: auto;width: 100%;;background-color: white" (click)="goToTestPage()">
+      <ion-card class="welcome-card" style="height: 1%">
+        <ion-card-header color="tertiary">
+        </ion-card-header>
+        <ion-card-content>
+                 <p>Jery           3</p>
+        </ion-card-content>
+      </ion-card>
+    </button>
+    <button no-margin no-padding style="height: auto;width: 100%;;background-color: white" (click)="goToTestPage()">
+      <ion-card class="welcome-card" style="height: 1%">
+        <ion-card-header color="tertiary">
+        </ion-card-header>
+        <ion-card-content>
+                 <p>Jery           4</p>
+        </ion-card-content>
+      </ion-card>
+    </button>
+    <button no-margin no-padding style="height: auto;width: 100%;;background-color: white" (click)="goToTestPage()">
+        <ion-card class="welcome-card" style="height: 1%">
+          <ion-card-header color="tertiary">
+          </ion-card-header>
+          <ion-card-content>
+                   <p>Jery           5</p>
+          </ion-card-content>
+        </ion-card>
+      </button>
+      <button no-margin no-padding style="height: auto;width: 100%;;background-color: white" (click)="goToTestPage()">
+          <ion-card class="welcome-card" style="height: 1%">
+            <ion-card-header color="tertiary">
+            </ion-card-header>
+            <ion-card-content>
+                     <p>Jery           6</p>
+            </ion-card-content>
+          </ion-card>
+        </button>
+        <button no-margin no-padding style="height: auto;width: 100%;;background-color: white" (click)="goToTestPage()">
+            <ion-card class="welcome-card" style="height: 1%">
+              <ion-card-header color="tertiary">
+              </ion-card-header>
+              <ion-card-content>
+                       <p>Jery           7</p>
+              </ion-card-content>
+            </ion-card>
+          </button>
   </ion-list>
-</ion-content>
+  
+</ion-content>   
