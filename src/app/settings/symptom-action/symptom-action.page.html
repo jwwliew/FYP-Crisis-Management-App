@@ -28,14 +28,15 @@
   </ion-grid>
 
   <ion-list *ngIf="selectedTab == 'Symptom'">
-    <ion-item *ngFor="let item of symptomList | async; let i = index" (click)="selectedSymptom(item)">
-      {{item}}
+    <ion-item *ngFor="let item of symptomList | async; let i = index" (click)="selectedSymptom(item.id)">
+        <ion-checkbox></ion-checkbox>
+      {{item.enName}}
     </ion-item>
   </ion-list>
 
   <ion-list *ngIf="selectedTab == 'Action'">
-    <ion-item *ngFor="let item of actionList | async; let i = index" (click)="selectedSymptom(item)">
-      {{item}}
+    <ion-item *ngFor="let item of actionList | async; let i = index" (click)="selectedSymptom(item.id)">
+      {{item.enName}}
     </ion-item>
   </ion-list>
 
@@ -45,5 +46,5 @@
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-
+  
 </ion-content>

@@ -1,6 +1,7 @@
 import { SettingService } from './../../services/setting.service';
 import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { AlertController, Events } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-symptom-action',
@@ -11,11 +12,17 @@ export class SymptomActionPage implements OnInit {
 
   selectedTab = "Symptom";
   //symptomList = ["ok", "hi"];
-  symptomList: Promise<any>;
+  symptomList: any;
   //actionList = ["action", "action2"];
-  actionList: Promise<any>;
+  actionList: any;
 
-  constructor(private alertCtrl: AlertController, private settingService: SettingService, private ngzone: NgZone, public event: Events) {
+  selection:boolean = false;
+
+  pressed() {
+    console.log("pressed");
+  }
+
+  constructor(private alertCtrl: AlertController, private settingService: SettingService, private ngzone: NgZone, public event: Events, private router: Router) {
     this.event.subscribe('name', (data) => {
       console.log("received data == " + data);
       this.event.unsubscribe('name');
@@ -26,47 +33,33 @@ export class SymptomActionPage implements OnInit {
   }
 
   ngOnInit() {
-    // this.symptomList = this.settingService.getAllSetting();
-    // console.log("symptom list = " + this.symptomList);
-    // this.actionList = this.settingService.getAllAction();
-    this.symptomList = this.settingService.getType("Symptom");
-    this.actionList = this.settingService.getType("Action");
+    console.log("ngOnInIt() called");
     // this.settingService.getType("Symptom").then(items => {
     //   this.symptomList = items;
     // })
     // this.settingService.getType("Action").then(items => {
     //   this.actionList = items;
     // })
-    //this.settingService.clearStorage();
   }
 
-  newSymptomAction() {
-
+  ionViewWillEnter() {
+    console.log("ion view");
+    this.loadItems();
   }
 
-  goToSymptom() {
-    this.selectedTab = "Symptom";
-    console.log("selected symptom tab");
-  }
-  goToAction() {
-    this.selectedTab = "Action";
-    console.log("selected action tab");
+  loadItems() {
+    this.symptomList = this.settingService.getType("Symptom");
+    this.actionList = this.settingService.getType("Action");
   }
 
   goToType(type) {
     this.selectedTab = type;
-  }
-  selectedSymptom(id) {
-    //console.log("this selected symptom id = " + id);
-    console.log(`this selected ${this.selectedTab} id = ${id}`);
+    console.log(`selected ${this.selectedTab} tab`);
   }
 
-  checkSelected() {
-    var returnValue = true;
-    if (this.selectedTab == "Action") {
-      returnValue = false;
-    }
-    return returnValue;
+  selectedSymptom(id) {
+    console.log(`this selected ${this.selectedTab} id = ${id}`);
+    this.router.navigateByUrl('/tabs/settings/symptomAction/edit/' + this.selectedTab + "/" + id); //routing start from root level
   }
 
   async addNew() {
@@ -75,7 +68,7 @@ export class SymptomActionPage implements OnInit {
       header: "Add a " + this.selectedTab,
       inputs: [
         {
-          name: 'name1',
+          name: 'nameInput',
           type: 'text'
         }
       ],
@@ -99,8 +92,8 @@ export class SymptomActionPage implements OnInit {
             // //   await this.settingService.addAction(alertData.name1);
             // // }
             this.ngzone.run(() => { //method 1 ngZone() https://stackoverflow.com/questions/43871690/ionic-2-popup-handler-function-not-updating-variable
-              this.settingService.addReusable(alertData.name1, this.selectedTab).then(() => {
-                this.ngOnInit();
+              this.settingService.addReusable(alertData, this.selectedTab).then(() => {
+                this.loadItems();
               })
             })
           })
@@ -117,4 +110,6 @@ export class SymptomActionPage implements OnInit {
     // })
     await alert.present();
   }
+
+
 }

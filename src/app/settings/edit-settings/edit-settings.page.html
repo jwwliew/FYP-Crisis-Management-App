@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{contentDetails.enName}}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-label padding="true" (click)="save(thisForm.value)"> Save </ion-label>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <h1>selected tab: {{selectedTab}} </h1>
+  editSettings of {{editID}}
+  <p> {{contentDetails.enName}} </p>
+
+  <!-- <ion-input type="text" [(ngModel)]="contentDetails.enName"></ion-input> -->
+  <form [formGroup]="thisForm" (ngSubmit)="save(thisForm.value)">
+    <ion-item>
+      <ion-label color="secondary" position="floating"> Title </ion-label>
+      <ion-input type="text" formControlName="title" required></ion-input> 
+    </ion-item>
+    <!-- <ion-button class="submit-btn" expand="block" type="submit" [disabled]="!thisForm.valid">Update</ion-button> --> 
+    <!-- https://stackoverflow.com/questions/49336255/how-can-i-submit-my-form-when-clicking-on-go-button-in-ionic-3-framework -->
+  </form>
+</ion-content>

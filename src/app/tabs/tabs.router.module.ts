@@ -43,7 +43,17 @@ const routes: Routes = [
                     },
                     {
                         path: 'symptomAction',
-                        loadChildren: '../settings/symptom-action/symptom-action.module#SymptomActionPageModule'
+                        children: [
+                            {
+                                path: '',
+                                loadChildren: '../settings/symptom-action/symptom-action.module#SymptomActionPageModule'        
+                            },
+                            {
+                                path: 'edit/:selectedTab/:id',
+                                loadChildren: '../settings/edit-settings/edit-settings.module#EditSettingsPageModule'
+                            }
+                        ]
+                        
                     }
                 ]
             }
