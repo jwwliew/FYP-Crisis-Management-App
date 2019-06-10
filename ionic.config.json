@@ -1,5 +1,7 @@
 {
   "name": "startApp",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

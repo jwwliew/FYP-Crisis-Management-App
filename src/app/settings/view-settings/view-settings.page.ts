@@ -14,7 +14,7 @@ export class ViewSettingsPage implements OnInit {
   }
 
   onClick() {
-    this.router.navigateByUrl('/tabs/templates'); //routingstart from root level
+    this.router.navigateByUrl('/tabs/settings/symptomAction'); //routing start from root level
     console.log("clicked on symp")
   }
 }

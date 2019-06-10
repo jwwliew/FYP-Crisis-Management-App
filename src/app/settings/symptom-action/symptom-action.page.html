@@ -3,23 +3,24 @@
     <ion-title style="color: white;font-weight: bold;font-size: 1.2em;padding: 0;margin: 0 16px; text-align: center;">
       Content
     </ion-title>
-    <ion-button slot="start" href="/tabs/tab1" routerDirection="back">Back</ion-button>
-    <ion-buttons slot="end">
-      <ion-button (click)="newSymptomAction()">
-      </ion-button>
-    </ion-buttons>
+    <!-- <ion-button slot="start" href="/tabs/tab1" routerDirection="back">Back</ion-button> -->
+    <ion-button slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-grid style="border-bottom: 1px solid coral">
-    <ion-row>
-        <!-- 0000cd -->
-      <ion-col text-center (click)="goToSymptom()" style="font-weight:bold;" [ngStyle]="{'color': (selectedTab == 'Symptom') ? '#0000cd' : '#C0C0C0'}">
+    <ion-row> 
+      <!-- 0000cd -->
+      <ion-col text-center (click)="goToType('Symptom')" style="font-weight:bold;"
+        [ngStyle]="{'color': (selectedTab == 'Symptom') ? '#0000cd' : '#C0C0C0'}">
         Symptom
       </ion-col>
 
-      <ion-col text-center (click)="goToAction()" style="font-weight:bold;" [ngStyle]="{'color': (selectedTab == 'Action') ? '#0000cd' : '#C0C0C0'}">
+      <ion-col text-center (click)="goToType('Action')" style="font-weight:bold;"
+        [ngStyle]="{'color': (selectedTab == 'Action') ? '#0000cd' : '#C0C0C0'}">
         Action
       </ion-col>
 
@@ -27,15 +28,22 @@
   </ion-grid>
 
   <ion-list *ngIf="selectedTab == 'Symptom'">
-    <ion-item *ngFor="let item of symptomList; let i = index" (click)="selectedSymptom(i)">
+    <ion-item *ngFor="let item of symptomList | async; let i = index" (click)="selectedSymptom(item)">
       {{item}}
     </ion-item>
   </ion-list>
 
   <ion-list *ngIf="selectedTab == 'Action'">
-    <ion-item *ngFor="let item of actionList; let i = index" (click)="selectedSymptom(item)">
+    <ion-item *ngFor="let item of actionList | async; let i = index" (click)="selectedSymptom(item)">
       {{item}}
     </ion-item>
   </ion-list>
+
+  <!-- fab placed to the top end -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="addNew()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
 </ion-content>
