@@ -15,7 +15,11 @@ export class SymptomActionPage implements OnInit {
   //actionList = ["action", "action2"];
   actionList: Promise<any>;
 
-  constructor(private alertCtrl: AlertController, private settingService: SettingService, private ngzone: NgZone) {
+  constructor(private alertCtrl: AlertController, private settingService: SettingService, private ngzone: NgZone, public event: Events) {
+    this.event.subscribe('name', (data) => {
+      console.log("received data == " + data);
+      this.event.unsubscribe('name');
+    })
     // event.subscribe('update', loading => {
     //   this.symptomList = loading;
     // })
