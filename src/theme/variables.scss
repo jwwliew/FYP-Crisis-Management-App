@@ -74,4 +74,32 @@
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
+
+  --ion-color-redCard: #ff0000; //generate the color from https://ionicframework.com/docs/theming/color-generator
+  --ion-color-redCard-rgb: 255,0,0;
+  --ion-color-redCard-contrast: #ffffff;
+  --ion-color-redCard-contrast-rgb: 255,255,255;
+  --ion-color-redCard-shade: #e00000;
+  --ion-color-redCard-tint: #ff1a1a;
+}
+
+// .ion-color-redCard {
+//   --ion-color-base: var(--ion-color-redCard) !important;
+//   --ion-color-base-rgb: var(--ion-color-redCard-rgb) !important;
+//   --ion-color-contrast: var(--ion-color-redCard-contrast) !important;
+//   --ion-color-contrast-rgb: var(--ion-color-redCard-contrast-rgb) !important;
+//   --ion-color-shade: var(--ion-color-redCard-shade) !important;
+//   --ion-color-tint: var(--ion-color-redCard-tint) !important;
+// }
+
+$customColors: ('redCard'); //https://medium.com/@paulstelzer/ionic-4-how-to-add-more-colors-and-use-them-as-color-in-buttons-and-more-7175ab4ae4e7
+@each $color in $customColors {
+  .ion-color-#{$color} {
+    --ion-color-base: var(--ion-color-#{$color}) !important;
+    --ion-color-base-rgb: var(--ion-color-#{$color}-rgb) !important;
+    --ion-color-contrast: var(--ion-color-#{$color}-contrast) !important;
+    --ion-color-contrast-rgb: var(--ion-color-#{$color}-contrast-rgb) !important;
+    --ion-color-shade: var(--ion-color-#{$color}-shade) !important;
+    --ion-color-tint: var(--ion-color-#{$color}-tint) !important;
+  }
 }

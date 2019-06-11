@@ -5,7 +5,10 @@
     </ion-title>
     <!-- <ion-button slot="start" href="/tabs/tab1" routerDirection="back">Back</ion-button> -->
     <ion-button slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-back-button defaultHref="/tabs/settings"></ion-back-button>
+    </ion-button>
+    <ion-button slot="end" *ngIf="checked.length > 0" (click)="deleteSelected()">
+      <ion-icon name="trash" md="md-trash"></ion-icon>
     </ion-button>
   </ion-toolbar>
 </ion-header>
@@ -28,14 +31,15 @@
   </ion-grid>
 
   <ion-list *ngIf="selectedTab == 'Symptom'">
-    <ion-item *ngFor="let item of symptomList | async; let i = index" (click)="selectedSymptom(item.id)">
-        <ion-checkbox></ion-checkbox>
+    <ion-item *ngFor="let item of symptomList | async; let i = index" (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)">
+        <ion-checkbox *ngIf="checked.length > 0" [(ngModel)]="item.checked" (ionChange)="check($event, item)"></ion-checkbox>
       {{item.enName}}
     </ion-item>
   </ion-list>
 
   <ion-list *ngIf="selectedTab == 'Action'">
-    <ion-item *ngFor="let item of actionList | async; let i = index" (click)="selectedSymptom(item.id)">
+    <ion-item *ngFor="let item of actionList | async; let i = index" (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)">
+        <ion-checkbox *ngIf="checked.length > 0" [(ngModel)]="item.checked" (ionChange)="check($event, item)"></ion-checkbox>
       {{item.enName}}
     </ion-item>
   </ion-list>

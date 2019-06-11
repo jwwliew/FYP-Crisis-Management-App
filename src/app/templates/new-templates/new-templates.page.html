@@ -1,0 +1,80 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>newTemplates</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<style>
+  .imgCircle {
+    float: left;
+    border-radius: 50%;
+    width: 50%;
+    height: 100%;
+    padding: 4%;
+    /* background-color:#000000 !important; */
+  }
+
+  ;
+
+  .imgCircleText {
+    /* height:100%; */
+    /* margin:16px; */
+    white-space: normal;
+    text-align: left;
+    margin-top: 12%;
+    /*FIXME: https://ionicframework.com/docs/v3/theming/css-utilities/ */
+  }
+</style>
+<ion-content>
+
+  <ion-card class="welcome-card">
+
+    <ion-card-header color="redCard">
+      <ion-card-title style="color: white;font-weight: bold;font-size: 1.1em;padding: 0;margin:0 16px;">
+        Get Help Now
+      </ion-card-title>
+    </ion-card-header>
+
+    <ion-grid style="padding:3%">
+
+      <ion-row>
+
+        <ion-col size="6">
+          <!--https://ionicframework.com/docs/api/grid-->
+          <img class="imgCircle" src="assets/cough.svg" />
+          <p class="imgCircleText"> Fever </p>
+        </ion-col>
+
+        <ion-col size="6">
+          <img class="imgCircle" src="assets/cough.svg" />
+          <p class="imgCircleText"> Cough </p>
+        </ion-col>
+
+        <ion-col size="6">
+          <img class="imgCircle" src="assets/cough.svg" />
+          <p class="imgCircleText"> High blood pressure </p>
+        </ion-col>
+
+        <ion-col size="6">
+          <img class="imgCircle" src="assets/cough.svg" />
+          <p class="imgCircleText"> High blood pressure </p>
+        </ion-col>
+
+
+        <ion-item lines="full"> <!--https://ionicframework.com/docs/api/select-->
+          <ion-label>Hair Color</ion-label>
+          <ion-select value="brown" okText="Okay" cancelText="Dismiss">
+            <ion-select-option value="brown">Brown</ion-select-option>
+            <ion-select-option value="blonde">Blonde</ion-select-option>
+            <ion-select-option value="black">Black</ion-select-option>
+            <ion-select-option value="red">Red</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+      </ion-row>
+
+    </ion-grid>
+
+  </ion-card>
+
+</ion-content>

@@ -31,6 +31,10 @@ const routes: Routes = [
                     {
                         path: '',
                         loadChildren: '../templates/view-templates/view-templates.module#ViewTemplatesPageModule'
+                    },
+                    {
+                        path: 'new',
+                        loadChildren: '../templates/new-templates/new-templates.module#NewTemplatesPageModule'
                     }
                 ]
             },

@@ -61,4 +61,13 @@ export class SettingService {
     })
   }
   
+  deleteSetting(type, checkedArray) {
+    return this.getType(type).then((items: Setting[]) => {
+      checkedArray.forEach(element => {
+        console.log('eleemtn = ' + element);
+        items.splice(items.findIndex(item => item.id === element), 1);
+      });
+      return this.storage.set(this.thisKey, items);
+    })
+  }
 }

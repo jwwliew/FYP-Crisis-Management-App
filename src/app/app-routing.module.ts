@@ -6,6 +6,7 @@ const routes: Routes = [
   { path: 'symptom-action', loadChildren: './settings/symptom-action/symptom-action.module#SymptomActionPageModule' },
   { path: 'new-plan', loadChildren: './plans/new-plan/new-plan.module#NewPlanPageModule' },
   { path: 'plan-details', loadChildren: './plans/plan-details/plan-details.module#PlanDetailsPageModule' },  { path: 'edit-settings', loadChildren: './settings/edit-settings/edit-settings.module#EditSettingsPageModule' },
+  { path: 'new-templates', loadChildren: './templates/new-templates/new-templates.module#NewTemplatesPageModule' },
 
 ];
 
