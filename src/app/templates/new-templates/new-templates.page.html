@@ -24,6 +24,7 @@
     margin-top: 12%;
     /*FIXME: https://ionicframework.com/docs/v3/theming/css-utilities/ */
   }
+
 </style>
 <ion-content>
 
@@ -60,16 +61,21 @@
           <p class="imgCircleText"> High blood pressure </p>
         </ion-col>
 
-
-        <ion-item lines="full"> <!--https://ionicframework.com/docs/api/select-->
-          <ion-label>Hair Color</ion-label>
-          <ion-select value="brown" okText="Okay" cancelText="Dismiss">
-            <ion-select-option value="brown">Brown</ion-select-option>
-            <ion-select-option value="blonde">Blonde</ion-select-option>
-            <ion-select-option value="black">Black</ion-select-option>
-            <ion-select-option value="red">Red</ion-select-option>
-          </ion-select>
-        </ion-item>
+        <ion-col size="6">
+          <ion-list lines="full">
+            <!--https://ionicframework.com/docs/api/select-->
+            <!-- <ion-label> Symptom </ion-label> -->
+            <ion-select cancelText="Cancel" okText="ok" [interfaceOptions]="customSelectSheetOptions" interface="popover" placeholder="Select Symptom"
+              [(ngModel)]="selectedItem" (ionChange)="popUpDone()">
+              <ion-select-option value="brown">Brown</ion-select-option>
+              <ion-select-option value="blonde">Blonde</ion-select-option>
+              <ion-select-option value="black">Black</ion-select-option>
+              <ion-select-option value="brown">Brown</ion-select-option>
+              <ion-select-option value="blonde">Blonde</ion-select-option>
+              <ion-select-option value="black">Black</ion-select-option>
+            </ion-select>
+          </ion-list>
+        </ion-col>
 
       </ion-row>
 

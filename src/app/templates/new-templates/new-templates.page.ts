@@ -7,9 +7,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NewTemplatesPage implements OnInit {
 
+  selectedItem: any;
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  customSelectSheetOptions:any = {
+    header: "Select symptom to take",
+    // subHeader: "Select symptom to take",
+    // message: "Select symptom to take",
+    // translucent: true
+  }
+  
+  popUpDone() {
+    console.log("selected item = " + this.selectedItem)
   }
 
 }

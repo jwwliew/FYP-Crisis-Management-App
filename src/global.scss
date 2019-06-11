@@ -9,3 +9,9 @@
 @import '~@ionic/angular/css/text-alignment.css';
 @import '~@ionic/angular/css/text-transformation.css';
 @import '~@ionic/angular/css/flex-utils.css';
+
+.popover-content.sc-ion-popover-md { //https://forum.ionicframework.com/t/ionic-4-how-to-change-css-of-ion-select-popover/157219/2
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
