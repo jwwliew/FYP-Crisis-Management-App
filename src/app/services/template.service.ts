@@ -1,12 +1,22 @@
 import { Injectable } from '@angular/core';
+import { Storage } from '@ionic/storage';
+
+const TEMPLATE_KEY = "templateKey";
 
 @Injectable({
   providedIn: 'root'
 })
 export class TemplateService {
 
-  constructor() { }
+  constructor(private storage: Storage) { }
 
+  createTemplate(finalArray) {
+    return this.storage.set(TEMPLATE_KEY, finalArray)
+  }
+
+  getAllTemplate() {
+    return this.storage.get(TEMPLATE_KEY);
+  }
   /*
   constructor(private storage: Storage) { }
 

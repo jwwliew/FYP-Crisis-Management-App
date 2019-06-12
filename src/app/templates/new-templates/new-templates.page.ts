@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActionSheetController } from '@ionic/angular';
 import {v4 as uuid} from 'uuid';
+import { Router } from '@angular/router';
+import { TemplateService } from 'src/app/services/template.service';
 
 @Component({
   selector: 'app-new-templates',
@@ -9,14 +11,11 @@ import {v4 as uuid} from 'uuid';
 })
 export class NewTemplatesPage implements OnInit {
 
-  selectedItem: any;
-
-  constructor(private actionSheetCtrl: ActionSheetController) { }
+  constructor(private actionSheetCtrl: ActionSheetController, private router: Router, private templateStorage: TemplateService) { }
 
   ngOnInit() {
   }
   criticalArray = [];
-  type: any;
 
   itemData = [
     {
@@ -32,27 +31,27 @@ export class NewTemplatesPage implements OnInit {
       "icon": "assets/cough.svg"
     },
     {
-      "name": "NAME4",
+      "name": "Cough",
       "icon": "assets/cough.svg"
     },
     {
-      "name": "NAME4",
+      "name": "Cancer",
       "icon": "assets/cough.svg"
     },
     {
-      "name": "NAME4",
+      "name": "Dead",
       "icon": "assets/cough.svg"
     },
     {
-      "name": "NAME4",
+      "name": "Gtg",
       "icon": "assets/cough.svg"
     },
     {
-      "name": "NAME4",
+      "name": "High Blood Pressure",
       "icon": "assets/cough.svg"
     },
     {
-      "name": "NAME4",
+      "name": "Watar",
       "icon": "assets/cough.svg"
     },
     
@@ -65,64 +64,27 @@ export class NewTemplatesPage implements OnInit {
     // translucent: true
   }
 
-  popUpDone() {
-    console.log("selected item = " + this.selectedItem)
-  }
-  
-
 //https://stackoverflow.com/questions/48133216/custom-icons-on-ionic-select-with-actionsheet-interface-ionic2
-  async presentActionSheet(type) { //https://ionicframework.com/docs/api/action-sheet
+  async presentActionSheet(oddOrEven, item) { //https://ionicframework.com/docs/api/action-sheet
     const actionSheet = await this.actionSheetCtrl.create({
-      header: 'Select a symptom from below',
+      header: 'Select a symptom from below ' + oddOrEven,
       cssClass: "wholeActionSheet",
-      buttons: this.createButtons(type)
-      // [{
-      //   text: 'Delete',
-      //   role: 'destructive',
-      //   icon: 'trash',
-      //   handler: () => {
-      //     console.log('Delete clicked');
-      //   }
-      // }, {
-      //   text: 'Share',
-      //   icon: 'share',
-      //   handler: () => {
-      //     console.log('Share clicked');
-      //   }
-      // }, {
-      //   text: 'Play (open modal)',
-      //   icon: 'arrow-dropright-circle',
-      //   handler: () => {
-      //     console.log('Play clicked');
-      //   }
-      // }, {
-      //   text: 'Favorite',
-      //   icon: 'heart',
-      //   handler: () => {
-      //     console.log('Favorite clicked');
-      //   }
-      // }, {
-      //   text: 'Cancel',
-      //   icon: 'close',
-      //   role: 'cancel',
-      //   handler: () => {
-      //     console.log('Cancel clicked');
-      //   }
-      // }]
+      buttons: this.createButtons(item)
     });
     await actionSheet.present();
   }
 
-  createButtons(changeType) {
+  createButtons(itemToUpdate) {
     let buttons = [];
     this.itemData.forEach(element => {
       let button = {
         text: element.name,
         icon: element.icon,
         handler: () => {
-          this.type = changeType;
-          console.log(`${element.name} clicked ${this.type}`);
-          
+          console.log(`${element.name} clicked`);
+          itemToUpdate.text = element.name
+          console.log("item to update " + JSON.stringify(itemToUpdate));
+          console.log("whole array = " + JSON.stringify(this.criticalArray));
         }
       }
       buttons.push(button);
@@ -135,14 +97,64 @@ export class NewTemplatesPage implements OnInit {
     return buttons;
   }
 
-  addNewCriticalArray() {
-    console.log("clicked");
-    let arr = {
+  addNewCriticalArray(type) {
+    console.log("clicked " + type); //critical or caution or good
+    let arr1 = {
       id: uuid(),
       img: "assets/temperature.svg",
-      text: "Select action to take"
+      text: "Select Symptom",
+      type: "Symptom"
     }
-    this.criticalArray.push(arr);
+    let arr2 = {
+      id: uuid(),
+      img: "assets/empty.svg",
+      text: "Select Action",
+      type: "Action"
+    }
+    this.criticalArray.push(arr1);
+    this.criticalArray.push(arr2);
     console.log(this.criticalArray);
   }
+
+  addTemplate() {
+    console.log("critical array = " + JSON.stringify(this.criticalArray));
+    let filteredArray = [];
+    filteredArray = this.criticalArray.filter(x => x.text != "Select Action" && x.text != "Select Symptom");
+    console.log("after filter array = " + JSON.stringify(filteredArray));
+    console.warn("length array = " + filteredArray.length);
+
+    let symptomArray = [];
+    let actionArray = [];
+    symptomArray = filteredArray.filter(x => x.type == "Symptom");
+    actionArray = filteredArray.filter(x => x.type == "Action");
+    console.error("final symptom array = " + JSON.stringify(symptomArray));
+    console.error(`final action array = ${JSON.stringify(actionArray)}`);
+
+    let finalArray = [];
+
+    actionArray.forEach((x, index) => { //https://stackoverflow.com/questions/10457264/how-to-find-first-element-of-array-matching-a-boolean-condition-in-javascript
+      let y = symptomArray[index];
+      if (y) {
+        let obj = [{
+          "oneSymptom": y,
+          "oneAction": x
+        }]
+        finalArray.push(obj); //1 key value consist of one symptom, one action
+      }
+      else { //got action, no symptom, reference previous symptom
+        //finalArray[finalArray.length - 1].push(x);
+        let obj = {"oneAction": x}
+        console.log("y does not exist, x = " + JSON.stringify(x));
+        finalArray[finalArray.length-1].push(obj) //error
+        console.log("final array after = " + JSON.stringify(finalArray));
+      }
+    })
+
+    console.warn("final array how it looks like \n " + JSON.stringify(finalArray));
+    console.log("final array length = " + finalArray.length);
+    this.templateStorage.createTemplate(finalArray).then(() => {
+      this.router.navigateByUrl('/tabs/templates'); //routing start from root level
+    })
+  }
+
 }

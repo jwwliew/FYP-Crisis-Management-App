@@ -1,6 +1,9 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>newTemplates</ion-title>
+    <ion-button slot="end" (click)="addTemplate()">
+      <ion-icon ios="ios-add-circle" md="md-add"></ion-icon>
+    </ion-button>
   </ion-toolbar>
 </ion-header>
 
@@ -81,7 +84,8 @@
         Get Help Now
       </ion-card-title>
       <ion-fab>
-        <ion-fab-button (click)="addNewCriticalArray()">
+
+        <ion-fab-button (click)="addNewCriticalArray('Critical')">
           <ion-icon name="add"></ion-icon>
         </ion-fab-button>
       </ion-fab>
@@ -112,27 +116,13 @@
           <p class="imgCircleText"> High blood pressure </p>
         </ion-col>
 
-        <ion-col size="6">
-          <ion-list lines="full">
-            <!--https://ionicframework.com/docs/api/select-->
-            <!-- <ion-label> Symptom </ion-label> -->
-            <ion-select cancelText="Cancel" okText="ok" [interfaceOptions]="customSelectSheetOptions" interface="popover" placeholder="Select Symptom"
-              [(ngModel)]="selectedItem" (ionChange)="popUpDone()" mode="md">
-              <ion-select-option *ngFor="let item of itemData;" [value]="item.name">
-                <ion-icon [src]="item.icon" class="alertIcon" style="background-image:url(http://localhost:8100/assets/icon/cough.png)"></ion-icon>
-                {{item.name}} 
-              </ion-select-option>
-            </ion-select>
-          </ion-list>
-        </ion-col>
         
-        <ion-col size="6">
-          <button no-margin no-padding style="width: 100%; background-color:white" (click)="presentActionSheet('critical')" *ngFor="let item of criticalArray; let i = index;">
+        <ion-col size="6"*ngFor="let item of criticalArray; let i = index; let odd = odd; let even = even;">
+          <button no-margin no-padding style="width: 100%; background-color:white" (click)="even? presentActionSheet('Symptom', item) : presentActionSheet('Action', item)">
             <img class="imgCircle" [src]="item.img" /> <!--https://stackoverflow.com/questions/45263542/ngmodel-value-in-img-src-ionic-3-->
-            <p class="imgCircleText"> {{item.text}} on {{item.id}} </p> 
-            <ion-icon ios="ios-create" md="md-create"> </ion-icon>
+            <p class="imgCircleText"> {{item.text}} </p>
+            <!-- <ion-icon ios="ios-create" md="md-create"> </ion-icon> -->
             <ion-button shape="round" fill="outline"> Edit </ion-button>
-            
           </button>
         </ion-col>
         
