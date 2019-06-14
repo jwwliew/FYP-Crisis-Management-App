@@ -81,6 +81,7 @@
   --ion-color-redCard-contrast-rgb: 255,255,255;
   --ion-color-redCard-shade: #e00000;
   --ion-color-redCard-tint: #ff1a1a;
+
 }
 
 // .ion-color-redCard {
@@ -102,4 +103,8 @@ $customColors: ('redCard'); //https://medium.com/@paulstelzer/ionic-4-how-to-add
     --ion-color-shade: var(--ion-color-#{$color}-shade) !important;
     --ion-color-tint: var(--ion-color-#{$color}-tint) !important;
   }
+}
+
+@function color($color-name) {
+  @return var(--ion-color-#{$color-name});
 }

@@ -14,7 +14,9 @@ export class NewTemplatesPage implements OnInit {
   constructor(private actionSheetCtrl: ActionSheetController, private router: Router, private templateStorage: TemplateService) { }
 
   ngOnInit() {
+
   }
+
   criticalArray = [];
 
   itemData = [
@@ -155,6 +157,69 @@ export class NewTemplatesPage implements OnInit {
     this.templateStorage.createTemplate(finalArray).then(() => {
       this.router.navigateByUrl('/tabs/templates'); //routing start from root level
     })
+  }
+
+  jsonData = [
+    { 
+      'id': 1,
+      'symptom': { 
+        "text": "Cough",
+        "type": "Symptom",
+        "img": "assets/temperature.svg"
+      },
+      'combined': [
+        { 
+          "text": "CancerAct",
+          "type": "Action",
+          "img": "assets/temperature.svg"
+        },
+        {
+          "text": "DieAct",
+          "type": "Action",
+          "img": "assets/temperature.svg"
+        },
+        {
+          "text": "kys kys kys",
+          "type": "Action",
+          "img": "assets/temperature.svg"
+        }
+      ]
+    },
+    {
+      'id': 2,
+      'symptom': { 
+        "text": "mid",
+        "type": "Symptom",
+        "img": "assets/temperature.svg"
+      }
+    },
+    {
+      'id': 3,
+      'symptom': { 
+        "text": "2222",
+        "type": "Symptom",
+        "img": "assets/temperature.svg"
+      },
+      'combined': [
+        { 
+          "text": "secondAct",
+          "type": "Action",
+          "img": "assets/temperature.svg"
+        },
+        {
+          "text": "secondAct2",
+          "type": "Action",
+          "img": "assets/temperature.svg"
+        },
+      ]
+    }
+  ]
+
+  ionViewWillEnter() {
+    console.error(this.jsonData);
+    this.jsonData.forEach((element,index) => {
+      console.error(this.jsonData[index]);
+    });
   }
 
 }

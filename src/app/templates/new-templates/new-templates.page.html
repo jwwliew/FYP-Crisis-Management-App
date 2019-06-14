@@ -72,38 +72,98 @@
   overflow:scroll !important;
   max-height: 100px !important;
 }
+/* 
+ion-content{
+  --ion-background-color:grey;
+} */
 
+ion-card { 
+  border-radius: 16px;
+  background-color: white;
+  color:black; /* text */
+}
+
+ion-grid {
+  background-color: #d3d3d3;
+}
+
+.btnAdd {
+  margin-top: 18px !important;
+}
+
+.blur {
+    filter: blur(15px);
+    -webkit-filter: blur(15px); 
+    opacity: 1;
+    background-color: #FFF;
+    transition: -webkit-filter 200ms linear;
+}
 
 </style>
+
 <ion-content padding>
 
   <ion-card class="welcome-card">
 
-    <ion-card-header color="redCard">
-      <ion-card-title style="color: white;font-weight: bold;font-size: 1.1em;padding: 0;margin:0 16px;">
+    <ion-card-header color="danger">
+      <ion-card-title style="color: white;font-weight: bold;font-size: 1.1em;padding: 0;margin:0 16px;" [ngClass]="{'blur': toggle}">
         Get Help Now
       </ion-card-title>
-      <ion-fab>
 
-        <ion-fab-button (click)="addNewCriticalArray('Critical')">
-          <ion-icon name="add"></ion-icon>
-        </ion-fab-button>
-      </ion-fab>
+      <ion-content>
+        <ion-fab vertical="top" horizontal="end" edge slot="fixed">
+          <!-- <ion-fab-button size="small" (click)="addNewCriticalArray('Critical')" class="btnAdd" color="redCard"> -->
+          <ion-fab-button size="small" class="btnAdd" (click)="toggle=!toggle">
+            <ion-icon name="add"></ion-icon>
+          </ion-fab-button>
+
+          <ion-fab-list side="start">
+            <ion-fab-button color="redCard" (click)="toggle=!toggle">
+              <ion-icon name="add"></ion-icon>
+            </ion-fab-button>
+            <ion-label class="addLabel"> Add symptom</ion-label>
+
+            <ion-fab-button color="redCard" (click)="toggle=!toggle" style="margin-top:6px">
+              <ion-icon name="add"></ion-icon>
+            </ion-fab-button>
+            <ion-label class="addLabel">Add action</ion-label>  
+
+          </ion-fab-list>
+
+        </ion-fab>    
+      </ion-content>
+
     </ion-card-header>
 
-    <ion-grid style="padding:3%">
+    <ion-grid style="padding:3%" [ngClass]="{'blur': toggle}"> <!--https://forum.ionicframework.com/t/fab-button-backdrop/80019-->
 
+      <!--  
       <ion-row>
+          <ion-col size="6">
+            <ion-card>
+          https://ionicframework.com/docs/api/grid https://ionicframework.com/docs/api/textarea
+              <img class="imgCircle" src="assets/cough.svg" />
+              <p class="imgCircleText"> Fever </p>
+            </ion-card>
+            <ion-card>
+                <ion-item>
+                  <ion-label position="floating">Description</ion-label>
+                  <ion-textarea rows="4" placeholder="fill up description here..."></ion-textarea>
+                </ion-item>
+            </ion-card>
+          </ion-col>
 
         <ion-col size="6">
-          <!--https://ionicframework.com/docs/api/grid-->
-          <img class="imgCircle" src="assets/cough.svg" />
-          <p class="imgCircleText"> Fever </p>
-        </ion-col>
-
-        <ion-col size="6">
-          <img class="imgCircle" src="assets/cough.svg" />
-          <p class="imgCircleText"> Cough </p>
+            <ion-card>
+              <img class="imgCircle" src="assets/cough.svg" />
+              <p class="imgCircleText"> Cough </p>
+            </ion-card>
+            <ion-card>
+              <ion-item>
+                <ion-label position="floating">Description</ion-label>
+                <ion-textarea rows="4" placeholder="fill up description here..."></ion-textarea>
+              </ion-item>
+            </ion-card>
         </ion-col>
 
         <ion-col size="6">
@@ -115,24 +175,57 @@
           <img class="imgCircle" src="assets/temperature.svg" />
           <p class="imgCircleText"> High blood pressure </p>
         </ion-col>
-
+      
         
         <ion-col size="6"*ngFor="let item of criticalArray; let i = index; let odd = odd; let even = even;">
           <button no-margin no-padding style="width: 100%; background-color:white" (click)="even? presentActionSheet('Symptom', item) : presentActionSheet('Action', item)">
-            <img class="imgCircle" [src]="item.img" /> <!--https://stackoverflow.com/questions/45263542/ngmodel-value-in-img-src-ionic-3-->
+            <img class="imgCircle" [src]="item.img" /> https://stackoverflow.com/questions/45263542/ngmodel-value-in-img-src-ionic-3
             <p class="imgCircleText"> {{item.text}} </p>
-            <!-- <ion-icon ios="ios-create" md="md-create"> </ion-icon> -->
+             <ion-icon ios="ios-create" md="md-create"> </ion-icon> 
             <ion-button shape="round" fill="outline"> Edit </ion-button>
           </button>
         </ion-col>
         
       </ion-row>
 
+    -->
+
+      <ion-row *ngFor="let item of jsonData; let i = index;">
+          <ion-col size="6">
+              <ion-card>
+                <img class="imgCircle" [src]="item.symptom.img" /> <!-- https://stackoverflow.com/questions/45263542/ngmodel-value-in-img-src-ionic-3 -->
+                <p class="imgCircleText"> {{item.symptom.text}} </p>
+              </ion-card>
+              <ion-card>
+                <ion-item>
+                  <ion-label position="floating">Description</ion-label>
+                  <ion-textarea rows="4" placeholder="fill up description here..."></ion-textarea>
+                </ion-item>
+              </ion-card>
+          </ion-col>
+              <ng-container *ngFor="let x of item.combined; let i = index;">  
+                <ion-col size="6" *ngIf="i != 0"></ion-col>
+                <ion-col size="6">
+                  <ion-card>
+                    <img class="imgCircle" [src]="x.img" /> 
+                    <p class="imgCircleText"> {{x.text}}</p>
+                  </ion-card>
+                  <ion-card>
+                    <ion-item>
+                      <ion-label position="floating">Description</ion-label>
+                      <ion-textarea rows="4" placeholder="fill up description here..."></ion-textarea>
+                    </ion-item>
+                  </ion-card>
+                </ion-col>
+              </ng-container>
+      </ion-row>
+
     </ion-grid>
-    <ion-item *ngFor="let item of itemData;">
+
+    <!-- <ion-item *ngFor="let item of itemData;">
       <ion-icon src="{{item.icon}}"> </ion-icon> hey
-    </ion-item>
-    
+    </ion-item> -->
+  
   </ion-card>
 
 </ion-content>
