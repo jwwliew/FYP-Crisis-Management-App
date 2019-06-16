@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, AlertController, ToastController, Events } from '@ionic/angular';
 import {v4 as uuid} from 'uuid';
 import { Router } from '@angular/router';
 import { TemplateService } from 'src/app/services/template.service';
@@ -11,13 +11,14 @@ import { TemplateService } from 'src/app/services/template.service';
 })
 export class NewTemplatesPage implements OnInit {
 
-  constructor(private actionSheetCtrl: ActionSheetController, private router: Router, private templateStorage: TemplateService) { }
+  constructor(private actionSheetCtrl: ActionSheetController, private router: Router, private templateStorage: TemplateService, private alertCtrl: AlertController, private toastCtrl: ToastController, private event: Events) { }
 
   ngOnInit() {
 
   }
 
   criticalArray = [];
+  warningArray = [];
 
   itemData = [
     {
@@ -67,16 +68,16 @@ export class NewTemplatesPage implements OnInit {
   }
 
 //https://stackoverflow.com/questions/48133216/custom-icons-on-ionic-select-with-actionsheet-interface-ionic2
-  async presentActionSheet(oddOrEven, item) { //https://ionicframework.com/docs/api/action-sheet
+  async presentActionSheet(symptomOrAction, item) { //https://ionicframework.com/docs/api/action-sheet
     const actionSheet = await this.actionSheetCtrl.create({
-      header: 'Select a symptom from below ' + oddOrEven,
+      header: 'Select a symptom from below ' + symptomOrAction,
       cssClass: "wholeActionSheet",
-      buttons: this.createButtons(item)
+      buttons: this.createButtons(item, symptomOrAction)
     });
     await actionSheet.present();
   }
 
-  createButtons(itemToUpdate) {
+  createButtons(itemToUpdate, type) {
     let buttons = [];
     this.itemData.forEach(element => {
       let button = {
@@ -84,9 +85,14 @@ export class NewTemplatesPage implements OnInit {
         icon: element.icon,
         handler: () => {
           console.log(`${element.name} clicked`);
-          itemToUpdate.text = element.name
+          if (type == "Symptom") {
+            itemToUpdate.symptom.text = element.name
+          }
+          else {
+            itemToUpdate.text = element.name
+          }
           console.log("item to update " + JSON.stringify(itemToUpdate));
-          console.log("whole array = " + JSON.stringify(this.criticalArray));
+          // console.log("whole array = " + JSON.stringify(this.criticalArray));
         }
       }
       buttons.push(button);
@@ -99,8 +105,9 @@ export class NewTemplatesPage implements OnInit {
     return buttons;
   }
 
-  addNewCriticalArray(type) {
+  addNewCriticalArray(type, id) {
     console.log("clicked " + type); //critical or caution or good
+    let thisArr = this.getArray(id);
     let arr1 = {
       id: uuid(),
       img: "assets/temperature.svg",
@@ -113,48 +120,46 @@ export class NewTemplatesPage implements OnInit {
       text: "Select Action",
       type: "Action"
     }
-    this.criticalArray.push(arr1);
-    this.criticalArray.push(arr2);
-    console.log(this.criticalArray);
+    let newPair = {
+      // 'id': 1,
+      symptom: {
+        text: "Symptom",
+        type: "Symptom",
+        img: "assets/temperature.svg"
+      },
+      combined: [
+        // {
+        //   "text": "Action",
+        //   "type": "Action",
+        //   "img": "assets/empty.svg"
+        // }
+      ]
+    }
+    // this.criticalArray.push(arr1);
+    // this.criticalArray.push(arr2);
+    // this.criticalArray.push(newPair);
+    thisArr.push(newPair);
+    console.log(thisArr);
   }
 
   addTemplate() {
+    let completedArray = [this.criticalArray, this.warningArray];
     console.log("critical array = " + JSON.stringify(this.criticalArray));
-    let filteredArray = [];
-    filteredArray = this.criticalArray.filter(x => x.text != "Select Action" && x.text != "Select Symptom");
-    console.log("after filter array = " + JSON.stringify(filteredArray));
-    console.warn("length array = " + filteredArray.length);
-
-    let symptomArray = [];
-    let actionArray = [];
-    symptomArray = filteredArray.filter(x => x.type == "Symptom");
-    actionArray = filteredArray.filter(x => x.type == "Action");
-    console.error("final symptom array = " + JSON.stringify(symptomArray));
-    console.error(`final action array = ${JSON.stringify(actionArray)}`);
-
-    let finalArray = [];
-
-    actionArray.forEach((x, index) => { //https://stackoverflow.com/questions/10457264/how-to-find-first-element-of-array-matching-a-boolean-condition-in-javascript
-      let y = symptomArray[index];
-      if (y) {
-        let obj = [{
-          "oneSymptom": y,
-          "oneAction": x
-        }]
-        finalArray.push(obj); //1 key value consist of one symptom, one action
-      }
-      else { //got action, no symptom, reference previous symptom
-        //finalArray[finalArray.length - 1].push(x);
-        let obj = {"oneAction": x}
-        console.log("y does not exist, x = " + JSON.stringify(x));
-        finalArray[finalArray.length-1].push(obj) //error
-        console.log("final array after = " + JSON.stringify(finalArray));
-      }
+    console.log("warning array = " + JSON.stringify(this.warningArray));
+    let maparr = completedArray.map(eachArr => { //https://stackoverflow.com/questions/53817342/map-and-filter-mapped-array-in-javascript
+      console.log("before filter + " + JSON.stringify(eachArr));
+      eachArr = eachArr.filter(data => data.symptom.text !== "Symptom");
+      // eachArr.forEach(x => x.id = uuid());
+      eachArr.id = uuid();
+      console.error("after filter " + JSON.stringify(eachArr));
+      return eachArr;
     })
-
-    console.warn("final array how it looks like \n " + JSON.stringify(finalArray));
-    console.log("final array length = " + finalArray.length);
-    this.templateStorage.createTemplate(finalArray).then(() => {
+    console.warn("in middle watar" + JSON.stringify(completedArray[0]))
+    console.log(JSON.stringify(maparr));
+    // this.criticalArray = this.criticalArray.filter(data => data.symptom.text !== "Symptom");
+    // this.criticalArray.forEach(x => x.id = uuid());
+    this.templateStorage.createTemplate(maparr).then(() => {
+      // this.event.publish("created", this.criticalArray);
       this.router.navigateByUrl('/tabs/templates'); //routing start from root level
     })
   }
@@ -216,10 +221,139 @@ export class NewTemplatesPage implements OnInit {
   ]
 
   ionViewWillEnter() {
-    console.error(this.jsonData);
+    console.log("ng init + " + JSON.stringify(this.criticalArray));
+    console.group("json data label");
+    console.log(this.jsonData);
     this.jsonData.forEach((element,index) => {
-      console.error(this.jsonData[index]);
+      console.log(this.jsonData[index]);
     });
+    console.groupEnd();
   }
 
+  // verify() {
+  //   if (this.criticalArray.map(a => a.symptom.text).includes("Symptom")) {
+  //     this.presentToastWithOptions();
+  //   }
+  //   else {
+  //     this.popUp();
+  //   }
+  // }
+
+  popUp(id) {
+    console.log("clicked added new");
+    let thisArr = this.getArray(id);
+    // if (this.criticalArray.every(a => a.symptom.text == "Symptom")) {
+    if (thisArr.every(a => a.symptom.text == "Symptom")) {
+      this.presentToastWithOptions();
+    }
+    else {
+      this.alertCtrl.create({
+        header: "Select a symptom",
+        inputs: this.createRadios(id),
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: () => {
+              console.log("confirm cancel");
+            }
+          },
+          {
+            text: 'Ok',
+            handler: (alertData => {
+              console.log("ok name1 = " + alertData);
+              // let x = this.criticalArray.find(x => x.symptom.text == alertData);
+              let x = thisArr.find(x => x.symptom.text == alertData)
+              let newAction = {
+                text: "Action",
+                type: "Action",
+                img: "assets/empty.svg"
+              }
+              x.combined.push(newAction);
+              // console.error("pushed after " + JSON.stringify(this.criticalArray));
+              console.error("pushed after " + JSON.stringify(thisArr));
+            })
+          }
+        ]
+      }).then(alert => {
+        alert.present()
+      });
+    }
+  
+  }
+
+  createRadios(id) {
+    let thisArr = this.getArray(id);
+    let radioBtns = [];
+    // this.criticalArray.filter(word => word.symptom.text !== "Symptom").forEach(element => {
+    thisArr.filter(word => word.symptom.text !== "Symptom").forEach(element => {
+      let radioBtn = {
+        type: "radio",
+        label: element.symptom.text,
+        value: element.symptom.text
+      }
+      radioBtns.push(radioBtn);
+    })
+    return radioBtns;
+  }
+
+  async presentToastWithOptions() {
+    const toast = await this.toastCtrl.create({
+      header: 'Toast header',
+      message: 'Click to Close',
+      duration: 2000,
+      position: 'bottom',
+      buttons: [
+        {
+          side: 'start',
+          icon: 'star',
+          text: 'Favorite',
+          handler: () => {
+            console.log('Favorite clicked');
+          }
+        }, {
+          text: 'Done',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    toast.present();
+  }
+
+  frontViewData = [
+    { 
+      id: 0,
+      type: "Critical",
+      colorCard: "danger",
+      colorBtn: "redCard",
+      toggle: false,
+    },
+    {
+      id: 1,
+      type: "Warning",
+      colorCard: "warning",
+      colorBtn: "warning",
+      toggle: false
+    }
+  ]
+
+
+
+  checkType(id) {
+    let status = false;
+    if (this.getArray(id).length > 0) {
+      status = true;
+    }
+    return status;
+  }
+
+  getArray(id) {
+    let allArray = [this.criticalArray, this.warningArray]
+    return allArray[id];
+  }
+ 
 }

@@ -98,35 +98,40 @@ ion-grid {
     background-color: #FFF;
     transition: -webkit-filter 200ms linear;
 }
+.blurTitle{
+  filter: blur(15px);
+  -webkit-filter: blur(15px);
+  /* transition: -webkit-filter 200ms linear; */
+}
 
 </style>
 
 <ion-content padding>
 
-  <ion-card class="welcome-card">
+  <ion-card class="welcome-card" *ngFor="let globalItem of frontViewData">
 
-    <ion-card-header color="danger">
-      <ion-card-title style="color: white;font-weight: bold;font-size: 1.1em;padding: 0;margin:0 16px;" [ngClass]="{'blur': toggle}">
+    <ion-card-header [color]="globalItem.colorCard">
+      <ion-card-title style="color: white;font-weight: bold;font-size: 1.1em;padding: 0;margin:0 16px;" [ngClass]="{'blurTitle': globalItem.toggle}">
         Get Help Now
       </ion-card-title>
 
       <ion-content>
         <ion-fab vertical="top" horizontal="end" edge slot="fixed">
           <!-- <ion-fab-button size="small" (click)="addNewCriticalArray('Critical')" class="btnAdd" color="redCard"> -->
-          <ion-fab-button size="small" class="btnAdd" (click)="toggle=!toggle">
+          <ion-fab-button size="small" class="btnAdd" (click)="globalItem.toggle=!globalItem.toggle">
             <ion-icon name="add"></ion-icon>
           </ion-fab-button>
 
           <ion-fab-list side="start">
-            <ion-fab-button color="redCard" (click)="toggle=!toggle">
+            <ion-fab-button [color]="globalItem.colorBtn" (click)="globalItem.toggle=!globalItem.toggle; addNewCriticalArray(globalItem.type, globalItem.id)">
               <ion-icon name="add"></ion-icon>
             </ion-fab-button>
-            <ion-label class="addLabel"> Add symptom</ion-label>
+            <ion-label class="addLabel" (click)="globalItem.toggle=!globalItem.toggle"> Add symptom</ion-label>
 
-            <ion-fab-button color="redCard" (click)="toggle=!toggle" style="margin-top:6px">
+            <ion-fab-button [color]="globalItem.colorBtn" (click)="globalItem.toggle=!globalItem.toggle; popUp(globalItem.id);" style="margin-top:6px" *ngIf="checkType(globalItem.id)">
               <ion-icon name="add"></ion-icon>
             </ion-fab-button>
-            <ion-label class="addLabel">Add action</ion-label>  
+            <ion-label class="addLabel" (click)="globalItem.toggle=!globalItem.toggle; popUp(globalItem.id);" *ngIf="checkType(globalItem.id) ">Add action</ion-label>  
 
           </ion-fab-list>
 
@@ -135,7 +140,7 @@ ion-grid {
 
     </ion-card-header>
 
-    <ion-grid style="padding:3%" [ngClass]="{'blur': toggle}"> <!--https://forum.ionicframework.com/t/fab-button-backdrop/80019-->
+    <ion-grid style="padding:3%" [ngClass]="{'blur': globalItem.toggle}"> <!--https://forum.ionicframework.com/t/fab-button-backdrop/80019-->
 
       <!--  
       <ion-row>
@@ -190,9 +195,9 @@ ion-grid {
 
     -->
 
-      <ion-row *ngFor="let item of jsonData; let i = index;">
+      <ion-row *ngFor="let item of getArray(globalItem.id); let i = index;">
           <ion-col size="6">
-              <ion-card>
+              <ion-card (click)="presentActionSheet('Symptom', item)">
                 <img class="imgCircle" [src]="item.symptom.img" /> <!-- https://stackoverflow.com/questions/45263542/ngmodel-value-in-img-src-ionic-3 -->
                 <p class="imgCircleText"> {{item.symptom.text}} </p>
               </ion-card>
@@ -203,10 +208,10 @@ ion-grid {
                 </ion-item>
               </ion-card>
           </ion-col>
-              <ng-container *ngFor="let x of item.combined; let i = index;">  
-                <ion-col size="6" *ngIf="i != 0"></ion-col>
+              <ng-container *ngFor="let x of item.combined; let actIndex = index;">  
+                <ion-col size="6" *ngIf="actIndex != 0"></ion-col>
                 <ion-col size="6">
-                  <ion-card>
+                  <ion-card (click)="presentActionSheet('Action', x)">
                     <img class="imgCircle" [src]="x.img" /> 
                     <p class="imgCircleText"> {{x.text}}</p>
                   </ion-card>
@@ -220,6 +225,9 @@ ion-grid {
               </ng-container>
       </ion-row>
 
+      <ion-row style="height:150px;" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!checkType(globalItem.id)">
+      </ion-row>
+      
     </ion-grid>
 
     <!-- <ion-item *ngFor="let item of itemData;">
