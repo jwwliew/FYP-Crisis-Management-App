@@ -3,16 +3,20 @@
 
     <ion-title> {{templateName}} </ion-title>
 
-    <ion-button slot="end" (click)="askForName()" *ngIf="!editPage">
+    <ion-button slot="end" (click)="askForName()" *ngIf="!viewPage && !editPage">
       <ion-icon ios="ios-add-circle" md="md-add"></ion-icon>
     </ion-button>
 
-    <ion-buttons slot="end" *ngIf="editPage">
+    <ion-buttons slot="end" *ngIf="viewPage && !editPage">
       <ion-button (click)="popOverController($event, templateName)">
         <ion-icon ios="ios-more" md="md-more"></ion-icon>
       </ion-button>
     </ion-buttons>
-  
+    
+    <ion-button slot="end" (click)="addTemplate('Update')" *ngIf="editPage">
+      Save
+    </ion-button>
+
   </ion-toolbar>
 </ion-header>
 
@@ -25,8 +29,6 @@
     padding: 4%;
     /* background-color:#000000 !important; */
   }
-
-  ;
 
   .imgCircleText {
     /* height:100%; */
@@ -77,10 +79,10 @@ ion-grid {
 
     <ion-card-header [color]="globalItem.colorCard">
       <ion-card-title style="color: white;font-weight: bold;font-size: 1.1em;padding: 0;margin:0 16px;" [ngClass]="{'blurTitle': globalItem.toggle}">
-        Get Help Now
+        {{globalItem.textCard}}
       </ion-card-title>
 
-      <ion-content>
+      <ion-content *ngIf="!viewPage || editPage">
         <ion-fab vertical="top" horizontal="end" edge slot="fixed">
           <!-- <ion-fab-button size="small" (click)="addNewCriticalArray('Critical')" class="btnAdd" color="redCard"> -->
           <ion-fab-button size="small" class="btnAdd" (click)="globalItem.toggle=!globalItem.toggle">
@@ -105,7 +107,7 @@ ion-grid {
 
     </ion-card-header>
 
-    <ion-grid style="padding:3%" [ngClass]="{'blur': globalItem.toggle}"> <!--https://forum.ionicframework.com/t/fab-button-backdrop/80019-->
+    <ion-grid style="padding:3%" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!viewPage || editPage"> <!--https://forum.ionicframework.com/t/fab-button-backdrop/80019-->
 
 
       <ion-row *ngFor="let item of getArray(globalItem.id); let i = index;">
@@ -138,14 +140,33 @@ ion-grid {
               </ng-container>
       </ion-row>
 
-      <ion-row style="height:150px;" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!checkType(globalItem.id)">
-      </ion-row>
+      <ion-row style="height:150px;" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!checkType(globalItem.id)"></ion-row>
       
     </ion-grid>
 
-    <!-- <ion-item *ngFor="let item of itemData;">
-      <ion-icon src="{{item.icon}}"> </ion-icon> hey
-    </ion-item> -->
+    <!-- view page when click on one template... show icon and text only -->
+    <ion-grid style="padding:3%; background-color: #FFF" *ngIf="viewPage && !editPage">
+      
+      <ion-row *ngFor="let item of getArray(globalItem.id)">
+
+        <ion-col size="6">
+          <img class="imgCircle" [src]="item.symptom.img" />
+          <p class="imgCircleText"> {{item.symptom.text}} </p>
+        </ion-col>
+        
+        <ng-container *ngFor="let x of item.combined; let actIndex = index;">
+          <ion-col size="6" *ngIf="actIndex != 0"></ion-col>
+          <ion-col size="6">
+            <img class="imgCircle" [src]="x.img"/>
+            <p class="imgCircleText"> {{x.text}} </p>
+          </ion-col>
+        </ng-container>
+
+      </ion-row>
+      
+      <ion-row style="height:60px;" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!checkType(globalItem.id)"></ion-row>
+
+    </ion-grid>
   
   </ion-card>
 

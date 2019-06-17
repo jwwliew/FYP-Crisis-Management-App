@@ -12,7 +12,7 @@ export class TemplateService {
 
   constructor(private storage: Storage) { }
 
-  createTemplate(finalArray, templateName) {
+  createTemplate(finalArray, templateNameFromInput, addOrUpdate, templateID, templateNameUpdate) {
     let arrKey = [TEMPLATE_KEY, WARNING_KEY];
 
     let promises = [this.getAllTemplate(TEMPLATE_KEY), this.getAllTemplate(WARNING_KEY)];
@@ -52,8 +52,18 @@ export class TemplateService {
         element = element || [];
         arr.push(element);
       });
-      var result = {templates: [...arr], id: uuid(), name: templateName}; //https://stackoverflow.com/questions/42120358/change-property-in-array-with-spread-operator-returns-object-instead-of-array
-      data.push(result)
+      var result = {templates: [...arr], id: templateID || uuid(), name: templateNameFromInput}; //https://stackoverflow.com/questions/42120358/change-property-in-array-with-spread-operator-returns-object-instead-of-array
+      if (addOrUpdate == "add") {
+        data.push(result);
+      }
+      else {
+        result.name = templateNameUpdate;
+        console.warn("ELSE DATA FULL ID? === " + JSON.stringify(data, null, 2));
+        console.warn("tempalte ID = " + templateID);
+        let itemIndex = data.findIndex(item => item.id === templateID);
+        console.error("item index = " + itemIndex);
+        data[itemIndex] = result;
+      }
       console.log("RESULT WATAR " + JSON.stringify(result, null, 2));
       console.warn("final data === " + JSON.stringify(data, null, 2))
       return this.storage.set(ALL_KEY, data)
@@ -77,7 +87,26 @@ export class TemplateService {
     })
   }
   
-} //end of this fucking class
+  duplicateTemplate(name, templateID) {
+    return this.getAllTemplate(ALL_KEY).then(data => {
+      let itemFound = data.find(item => item.id === templateID);
+      // itemFound.id = uuid();
+      // itemFound.name = name;
+      let duplicatedItem = {...itemFound, id: uuid(), name: name}
+      console.error(duplicatedItem);
+      data.push(duplicatedItem);
+      return this.storage.set(ALL_KEY, data);
+    })
+  }
+
+  deleteTemplate(templateID) {
+    return this.getAllTemplate(ALL_KEY).then(data => {
+      data.splice(data.findIndex(item => item.id === templateID), 1);
+      return this.storage.set(ALL_KEY, data);
+    })
+  }
+} //end of class
+
 
 
 
@@ -150,5 +179,6 @@ export class TemplateService {
       return this.storage.set(TEMPLATETABLE_KEY, toKeepItems);
     });
   }
-  */
-// }
+
+}
+*/

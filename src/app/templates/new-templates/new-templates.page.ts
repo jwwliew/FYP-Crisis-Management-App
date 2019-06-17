@@ -12,13 +12,14 @@ import { TemplatePopComponent } from '../template-pop/template-pop.component';
 })
 export class NewTemplatesPage implements OnInit {
 
-  editPage = false;
+  viewPage = false;
   templateName = "Create new template";
   templateID: any;
+  editPage = false;
 
   constructor(private actionSheetCtrl: ActionSheetController, private router: Router, private templateStorage: TemplateService, private alertCtrl: AlertController, private toastCtrl: ToastController, private event: Events, private popoverCtrl: PopoverController) {
-    this.event.subscribe("edit", item => {
-      this.editPage = true;
+    this.event.subscribe("view", item => { //or services https://stackoverflow.com/questions/54304481/ionic-4-angular-7-passing-object-data-to-another-page
+      this.viewPage = true;
       this.templateName = item.name;
       this.templateID = item.id;
       console.warn("item received --- " + JSON.stringify(item, null, 2));
@@ -138,7 +139,7 @@ export class NewTemplatesPage implements OnInit {
     console.log(thisArr);
   }
 
-  addTemplate(templateNameFromInput) {
+  addTemplate(templateNameFromInput, addOrUpdate) {
     let completedArray = [this.criticalArray, this.warningArray];
     let name = ["criticalArray", "warningArray"];
     console.log("critical array = " + JSON.stringify(this.criticalArray));
@@ -155,14 +156,33 @@ export class NewTemplatesPage implements OnInit {
     console.log(JSON.stringify(maparr));
     // this.criticalArray = this.criticalArray.filter(data => data.symptom.text !== "Symptom");
     // this.criticalArray.forEach(x => x.id = uuid());
-    this.templateStorage.createTemplate(maparr, templateNameFromInput).then(() => {
+    this.templateStorage.createTemplate(maparr, templateNameFromInput, addOrUpdate, this.templateID, this.templateName).then((val) => {
       // this.event.publish("created", this.criticalArray);
-      this.router.navigateByUrl('/tabs/templates'); //routing start from root level
+      if (addOrUpdate == "add") {
+        this.router.navigateByUrl('/tabs/templates'); //routing start from root level
+      }
+      else {
+        this.editPage = false;
+        this.viewPage = true;
+        // console.log("val -- " + JSON.stringify(val, null, 2));
+        // let convertArr = val.map((element, index) => {
+        //   let obj = {
+        //     template: [].concat(...element.templates)
+        //   }
+        //   return obj;
+        // })
+        // console.warn("convert arr template = " + JSON.stringify(convertArr, null, 2))
+        // this.criticalArray = convertArr[0].template.filter(element =>  element.name == "criticalArray")
+        // this.warningArray = convertArr[0].template.filter(element =>  element.name == "warningArray")
+        // console.log("critical array val filtered == " + JSON.stringify(this.criticalArray, null, 2));
+        // console.log("warning array val filtered == " + JSON.stringify(this.warningArray, null, 2));
+      }
     })
   }
 
-  async askForName(templateName) {
-    templateName = templateName ? "Rename " + templateName : "Enter template name";
+  async askForName(typeOfAction) {
+    //templateName = templateName ? "Rename " + templateName : "Enter template name";
+    let templateName = (typeOfAction == "rename") ? "Rename " + this.templateName : (typeOfAction == "duplicate") ? "Enter duplicated templated name " : "Enter template name";
     let alert = await this.alertCtrl.create({
       header: templateName,
       inputs: [
@@ -184,11 +204,20 @@ export class NewTemplatesPage implements OnInit {
           text: 'Ok',
           handler: (alertData => {
             console.log("ok name1 = " + alertData.nameInput);
-            if (templateName == "Enter template name") {
-              this.addTemplate(alertData.nameInput);
+            //if (templateName == "Enter template name") {
+            if (typeOfAction == "rename") {
+              this.templateStorage.renameTemplate(alertData.nameInput, this.templateID).then((val) => {
+                console.warn("rename val = " + JSON.stringify(val, null, 2));
+                this.templateName = alertData.nameInput;
+              });
+            }
+            else if (typeOfAction == "duplicate") {
+              this.templateStorage.duplicateTemplate(alertData.nameInput, this.templateID).then(() => {
+                this.router.navigate(["/tabs/templates"], {replaceUrl: true});
+              })
             }
             else {
-              this.renameTemplate(alertData.nameInput);
+              this.addTemplate(alertData.nameInput, "add");
             }
           })
         }
@@ -303,13 +332,15 @@ export class NewTemplatesPage implements OnInit {
       colorCard: "danger",
       colorBtn: "redCard",
       toggle: false,
+      textCard: "Get Help Now"
     },
     {
       id: 1,
       type: "Warning",
       colorCard: "warning",
       colorBtn: "warning",
-      toggle: false
+      toggle: false,
+      textCard: "Caution: Symptom Management"
     }
   ]
 
@@ -337,39 +368,48 @@ export class NewTemplatesPage implements OnInit {
     popover.onDidDismiss().then((data) => { //method 2 ngOnInIt inside onDidDismiss()
       console.log("popup dismiss data = " + data.data);
       //Edit", "Rename", "Duplicate", "Create Crisis Plan", "Delete"];
-      let x = this.callAction(data.data)
-      console.log("x is " + x);
+      this.callAction(data.data);
     })
     return await popover.present();
   }
 
   callAction(type) { //https://ultimatecourses.com/blog/deprecating-the-switch-statement-for-object-literals
-    const dogSwitch = (x) => ({
-      "Edit": this.callEdit(),
-      "Rename": this.rename()
-    })[x];
-    let a = dogSwitch(type)
-    return a;
-    // var call = {
-    //   'Edit': () => this.callEdit(),
-    //   'Rename': () => this.rename()
-    // }
-    // call[type]();
+    var call = {
+      'Edit': () => this.callEdit(),
+      'Rename': () => this.askForName('rename'),
+      'Duplicate': () => this.askForName('duplicate'),
+      "Delete": () => this.delete()
+    }
+    call[type]();
   }
 
   callEdit() {
-    console.log("edit is called");
+    console.log("edit is called " + this.templateID);
+    this.editPage = true;
     return "hello"
   }
-  rename() {
-    console.log("calle rename")
-    this.askForName(this.templateName);
-    return "rename";
-  }
-  renameTemplate(nameToChange) {
-    this.templateStorage.renameTemplate(nameToChange, this.templateID).then((val) => {
-      console.warn("rename val = " + JSON.stringify(val, null, 2));
-      this.templateName = nameToChange;
+
+  delete() {
+    this.alertCtrl.create({
+      header: 'Are you sure you want to delete this template?',
+      message: 'Once deleted, there is no retrieving back!',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Delete',
+          handler: () => {
+            this.templateStorage.deleteTemplate(this.templateID).then(() => {
+              this.router.navigate(["/tabs/templates"], {replaceUrl: true});
+            })
+          }
+        }
+      ]
+    }).then(alert => {
+      alert.present();
     });
-  }  
+  }
+
 }

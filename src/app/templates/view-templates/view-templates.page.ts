@@ -86,7 +86,7 @@ export class ViewTemplatesPage implements OnInit {
     console.log("dynamic id = " + JSON.stringify(templateItem, null, 2))
     // this.router.navigateByUrl("/tabs/templates/new");
     this.navCtrl.navigateRoot("/tabs/templates/new").then(() => { //https://stackoverflow.com/questions/38342171/ionic-2-events-publish-and-subscribe-not-working
-      this.event.publish("edit", templateItem);
+      this.event.publish("view", templateItem);
     })
   }
 }
