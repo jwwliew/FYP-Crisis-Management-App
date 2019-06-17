@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
+import {v4 as uuid} from 'uuid';
 
 const TEMPLATE_KEY = "templateKey";
 const WARNING_KEY = "warningKey";
-
+const ALL_KEY = "allKey";
 @Injectable({
   providedIn: 'root'
 })
@@ -11,29 +12,51 @@ export class TemplateService {
 
   constructor(private storage: Storage) { }
 
-  createTemplate(finalArray) {
+  createTemplate(finalArray, templateName) {
     let arrKey = [TEMPLATE_KEY, WARNING_KEY];
 
     let promises = [this.getAllTemplate(TEMPLATE_KEY), this.getAllTemplate(WARNING_KEY)];
-    return Promise.all(promises).then(data => { //https://forum.ionicframework.com/t/localstorage-best-practice-to-set-multiple-keys/130106
-      console.warn("data == " + JSON.stringify(data));
+    // return Promise.all(promises).then(data => { //https://forum.ionicframework.com/t/localstorage-best-practice-to-set-multiple-keys/130106
+    //   console.warn("data == " + JSON.stringify(data));
+    //   finalArray.forEach((element, index) => {
+    //     console.warn(JSON.stringify(element));
+    //     data[index] = data[index] || [];
+    //     if (element && element.length > 0) { //https://stackoverflow.com/questions/46022712/how-to-check-if-local-storage-key-does-not-exist
+    //       console.log(element[0].combined);
+    //       element[0].combined = element[0].combined.filter(item => item.text !== "Action");
+    //       // element[0].combined.slice().reverse().forEach((item,index,object) => {
+    //       //   if (item.text == "Action") {
+    //       //     element[0].combined.splice(object.length - 1 - index, 1) //https://stackoverflow.com/questions/24812930/how-to-remove-element-from-array-in-foreach-loop
+    //       //   }
+    //       // });
+    //       console.log("afetr filter error " + JSON.stringify(element));
+    //       data[index].push(element);
+    //       console.error("data index == " + JSON.stringify(data[index]));
+    //     }
+    //     return this.storage.set(arrKey[index], data[index]);
+    //   })
+    // }) 
+    return this.getAllTemplate(ALL_KEY).then(data => {
+      console.log("get all key = " + JSON.stringify(data));
+      data = data || [];
+      let arr = [];
+      console.log("final array === " + JSON.stringify(finalArray, null, 2));
       finalArray.forEach((element, index) => {
-        console.warn(JSON.stringify(element));
-        data[index] = data[index] || [];
-        if (element && element.length > 0) { //https://stackoverflow.com/questions/46022712/how-to-check-if-local-storage-key-does-not-exist
-          console.log(element[0].combined);
+        // data[index] = data[index] || [];
+        console.warn("data index ---- " + JSON.stringify(data[index]));
+        if (element && element.length > 0) {
           element[0].combined = element[0].combined.filter(item => item.text !== "Action");
-          // element[0].combined.slice().reverse().forEach((item,index,object) => {
-          //   if (item.text == "Action") {
-          //     element[0].combined.splice(object.length - 1 - index, 1) //https://stackoverflow.com/questions/24812930/how-to-remove-element-from-array-in-foreach-loop
-          //   }
-          // });
-          console.log("afetr filter error " + JSON.stringify(element));
-          data[index].push(element);
-          console.error("data index == " + JSON.stringify(data[index]));
+          // data[index].push(element);
+          // arr.push(element);
         }
-        return this.storage.set(arrKey[index], data[index]);
-      })
+        element = element || [];
+        arr.push(element);
+      });
+      var result = {templates: [...arr], id: uuid(), name: templateName}; //https://stackoverflow.com/questions/42120358/change-property-in-array-with-spread-operator-returns-object-instead-of-array
+      data.push(result)
+      console.log("RESULT WATAR " + JSON.stringify(result, null, 2));
+      console.warn("final data === " + JSON.stringify(data, null, 2))
+      return this.storage.set(ALL_KEY, data)
     })
     // return this.getAllTemplate(TEMPLATE_KEY).then(val => {
     //   val = val || [];
@@ -45,10 +68,18 @@ export class TemplateService {
   getAllTemplate(type) {
     return this.storage.get(type);
   }
-    
+  
+  renameTemplate(name, templateID) {
+    return this.getAllTemplate(ALL_KEY).then(data => {
+      let itemIndex = data.findIndex(item => item.id === templateID);
+      data[itemIndex].name = name;
+      return this.storage.set(ALL_KEY, data);
+    })
+  }
+  
 } //end of this fucking class
 
- 
+
 
   /*
   constructor(private storage: Storage) { }

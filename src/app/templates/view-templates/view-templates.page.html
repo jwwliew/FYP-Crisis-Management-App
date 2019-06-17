@@ -12,11 +12,11 @@
 <ion-content>
   <button no-margin no-padding style="width: 100%; background-color:white">
 
-    <ion-card class="welcome-card">
+    <ion-card class="welcome-card" *ngFor="let item of allTemplate;" (click)="goToDynamicAddPage(item)">
 
       <ion-card-header color="tertiary">
         <ion-card-title style="color: white;font-weight: bold;font-size: 1.1em;padding: 0;margin:0 16px;">
-          Template Title
+          {{item.name}}
         </ion-card-title>
       </ion-card-header>
 
@@ -24,35 +24,13 @@
 
         <ion-row>
 
-          <ion-col size="6">
+          <ion-col size="6" *ngFor="let x of item.template; let i = index;">
             <!--https://ionicframework.com/docs/api/grid-->
-            <img class="imgCircle" src="assets/cough.svg" />
-            <p class="imgCircleText"> Fever </p>
-          </ion-col>
-
-          <ion-col size="6">
-            <img class="imgCircle" src="assets/cough.svg" />
-            <p class="imgCircleText"> Cough </p>
-          </ion-col>
-
-          <ion-col size="6">
-            <img class="imgCircle" src="assets/cough.svg" />
-            <p class="imgCircleText"> High blood pressure </p>
-          </ion-col>
-
-          <ion-col size="6">
-            <img class="imgCircle" src="assets/cough.svg" />
-            <p class="imgCircleText"> High blood pressure </p>
+            <img class="imgCircle" [src]="x.symptom.img" />  
+            <p class="imgCircleText"> {{x.symptom.text}} </p>
           </ion-col>
 
         </ion-row>
-
-        <!-- List of Text Items -->
-        <ion-list>
-          <ion-item *ngFor="let item of allTemplate; let i = index;">
-            <ion-label text-wrap> {{item[0].symptom.text}} </ion-label>
-          </ion-item>
-        </ion-list>
 
       </ion-grid>
 

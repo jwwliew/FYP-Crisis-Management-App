@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { NewTemplatesPage } from './new-templates.page';
+import { TemplatePopComponent } from '../template-pop/template-pop.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [NewTemplatesPage]
+  entryComponents: [TemplatePopComponent],
+  declarations: [NewTemplatesPage, TemplatePopComponent]
 })
 export class NewTemplatesPageModule {}

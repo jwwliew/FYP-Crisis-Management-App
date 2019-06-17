@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActionSheetController, AlertController, ToastController, Events } from '@ionic/angular';
+import { ActionSheetController, AlertController, ToastController, Events, PopoverController } from '@ionic/angular';
 import {v4 as uuid} from 'uuid';
 import { Router } from '@angular/router';
 import { TemplateService } from 'src/app/services/template.service';
+import { TemplatePopComponent } from '../template-pop/template-pop.component';
 
 @Component({
   selector: 'app-new-templates',
@@ -11,7 +12,22 @@ import { TemplateService } from 'src/app/services/template.service';
 })
 export class NewTemplatesPage implements OnInit {
 
-  constructor(private actionSheetCtrl: ActionSheetController, private router: Router, private templateStorage: TemplateService, private alertCtrl: AlertController, private toastCtrl: ToastController, private event: Events) { }
+  editPage = false;
+  templateName = "Create new template";
+  templateID: any;
+
+  constructor(private actionSheetCtrl: ActionSheetController, private router: Router, private templateStorage: TemplateService, private alertCtrl: AlertController, private toastCtrl: ToastController, private event: Events, private popoverCtrl: PopoverController) {
+    this.event.subscribe("edit", item => {
+      this.editPage = true;
+      this.templateName = item.name;
+      this.templateID = item.id;
+      console.warn("item received --- " + JSON.stringify(item, null, 2));
+      console.log(item.template);
+      this.criticalArray = item.template.filter(element =>  element.name == "criticalArray")
+      this.warningArray = item.template.filter(element => element.name == "warningArray");
+      console.log("this critical array = " + JSON.stringify(this.criticalArray, null, 2))
+    })
+  }
 
   ngOnInit() {
 
@@ -108,18 +124,6 @@ export class NewTemplatesPage implements OnInit {
   addNewCriticalArray(type, id) {
     console.log("clicked " + type); //critical or caution or good
     let thisArr = this.getArray(id);
-    let arr1 = {
-      id: uuid(),
-      img: "assets/temperature.svg",
-      text: "Select Symptom",
-      type: "Symptom"
-    }
-    let arr2 = {
-      id: uuid(),
-      img: "assets/empty.svg",
-      text: "Select Action",
-      type: "Action"
-    }
     let newPair = {
       // 'id': 1,
       symptom: {
@@ -128,29 +132,22 @@ export class NewTemplatesPage implements OnInit {
         img: "assets/temperature.svg"
       },
       combined: [
-        // {
-        //   "text": "Action",
-        //   "type": "Action",
-        //   "img": "assets/empty.svg"
-        // }
       ]
     }
-    // this.criticalArray.push(arr1);
-    // this.criticalArray.push(arr2);
-    // this.criticalArray.push(newPair);
     thisArr.push(newPair);
     console.log(thisArr);
   }
 
-  addTemplate() {
+  addTemplate(templateNameFromInput) {
     let completedArray = [this.criticalArray, this.warningArray];
+    let name = ["criticalArray", "warningArray"];
     console.log("critical array = " + JSON.stringify(this.criticalArray));
     console.log("warning array = " + JSON.stringify(this.warningArray));
-    let maparr = completedArray.map(eachArr => { //https://stackoverflow.com/questions/53817342/map-and-filter-mapped-array-in-javascript
+    let maparr = completedArray.map((eachArr, index) => { //https://stackoverflow.com/questions/53817342/map-and-filter-mapped-array-in-javascript
       console.log("before filter + " + JSON.stringify(eachArr));
       eachArr = eachArr.filter(data => data.symptom.text !== "Symptom");
       // eachArr.forEach(x => x.id = uuid());
-      eachArr.id = uuid();
+      eachArr.map(x => {x.id = uuid(); x.name = name[index]});
       console.error("after filter " + JSON.stringify(eachArr));
       return eachArr;
     })
@@ -158,76 +155,51 @@ export class NewTemplatesPage implements OnInit {
     console.log(JSON.stringify(maparr));
     // this.criticalArray = this.criticalArray.filter(data => data.symptom.text !== "Symptom");
     // this.criticalArray.forEach(x => x.id = uuid());
-    this.templateStorage.createTemplate(maparr).then(() => {
+    this.templateStorage.createTemplate(maparr, templateNameFromInput).then(() => {
       // this.event.publish("created", this.criticalArray);
       this.router.navigateByUrl('/tabs/templates'); //routing start from root level
     })
   }
 
-  jsonData = [
-    { 
-      'id': 1,
-      'symptom': { 
-        "text": "Cough",
-        "type": "Symptom",
-        "img": "assets/temperature.svg"
-      },
-      'combined': [
-        { 
-          "text": "CancerAct",
-          "type": "Action",
-          "img": "assets/temperature.svg"
+  async askForName(templateName) {
+    templateName = templateName ? "Rename " + templateName : "Enter template name";
+    let alert = await this.alertCtrl.create({
+      header: templateName,
+      inputs: [
+        {
+          name: 'nameInput',
+          type: 'text'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log("confirm cancel");
+          }
         },
         {
-          "text": "DieAct",
-          "type": "Action",
-          "img": "assets/temperature.svg"
-        },
-        {
-          "text": "kys kys kys",
-          "type": "Action",
-          "img": "assets/temperature.svg"
+          text: 'Ok',
+          handler: (alertData => {
+            console.log("ok name1 = " + alertData.nameInput);
+            if (templateName == "Enter template name") {
+              this.addTemplate(alertData.nameInput);
+            }
+            else {
+              this.renameTemplate(alertData.nameInput);
+            }
+          })
         }
       ]
-    },
-    {
-      'id': 2,
-      'symptom': { 
-        "text": "mid",
-        "type": "Symptom",
-        "img": "assets/temperature.svg"
-      }
-    },
-    {
-      'id': 3,
-      'symptom': { 
-        "text": "2222",
-        "type": "Symptom",
-        "img": "assets/temperature.svg"
-      },
-      'combined': [
-        { 
-          "text": "secondAct",
-          "type": "Action",
-          "img": "assets/temperature.svg"
-        },
-        {
-          "text": "secondAct2",
-          "type": "Action",
-          "img": "assets/temperature.svg"
-        },
-      ]
-    }
-  ]
+    });
+    await alert.present();
+  }
 
+  
   ionViewWillEnter() {
     console.log("ng init + " + JSON.stringify(this.criticalArray));
-    console.group("json data label");
-    console.log(this.jsonData);
-    this.jsonData.forEach((element,index) => {
-      console.log(this.jsonData[index]);
-    });
-    console.groupEnd();
   }
 
   // verify() {
@@ -355,5 +327,49 @@ export class NewTemplatesPage implements OnInit {
     let allArray = [this.criticalArray, this.warningArray]
     return allArray[id];
   }
- 
+
+
+  async popOverController(x) { 
+    const popover = await this.popoverCtrl.create({
+      component: TemplatePopComponent,
+      event: x, //https://www.youtube.com/watch?v=wMpGiniuZNc
+    });
+    popover.onDidDismiss().then((data) => { //method 2 ngOnInIt inside onDidDismiss()
+      console.log("popup dismiss data = " + data.data);
+      //Edit", "Rename", "Duplicate", "Create Crisis Plan", "Delete"];
+      let x = this.callAction(data.data)
+      console.log("x is " + x);
+    })
+    return await popover.present();
+  }
+
+  callAction(type) { //https://ultimatecourses.com/blog/deprecating-the-switch-statement-for-object-literals
+    const dogSwitch = (x) => ({
+      "Edit": this.callEdit(),
+      "Rename": this.rename()
+    })[x];
+    let a = dogSwitch(type)
+    return a;
+    // var call = {
+    //   'Edit': () => this.callEdit(),
+    //   'Rename': () => this.rename()
+    // }
+    // call[type]();
+  }
+
+  callEdit() {
+    console.log("edit is called");
+    return "hello"
+  }
+  rename() {
+    console.log("calle rename")
+    this.askForName(this.templateName);
+    return "rename";
+  }
+  renameTemplate(nameToChange) {
+    this.templateStorage.renameTemplate(nameToChange, this.templateID).then((val) => {
+      console.warn("rename val = " + JSON.stringify(val, null, 2));
+      this.templateName = nameToChange;
+    });
+  }  
 }
