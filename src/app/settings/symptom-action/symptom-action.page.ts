@@ -148,5 +148,8 @@ export class SymptomActionPage implements OnInit {
     await alert.present();
   }
 
+  goToAddPage() {
+    this.router.navigateByUrl('/tabs/settings/symptomAction/edit/' + this.selectedTab + "/" + "add"); //routing start from root level
+  }
 
 }

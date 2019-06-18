@@ -25,10 +25,12 @@ export class SettingService {
     return this.storage.get(this.thisKey);
   }
 
-  addReusable(item, type) {
+  addReusable(type, item) {
     var settingObj = {
       id: uuid(),
-      enName: item.nameInput
+      enName: item.enName,
+      chName: item.chName,
+      icon: "assets/cough.svg"
     };
     console.log("adding reusable item = " + JSON.stringify(item));
     return this.getType(type).then(result => {
@@ -45,7 +47,7 @@ export class SettingService {
   getOneSetting(type, id) {
     console.log("type = " + type);
     return this.getType(type).then((items: Setting[]) => {
-      console.log("items = " + items);
+      console.log("items = " + JSON.stringify(items));
       return items.filter(item => item.id == id)
     })
   }

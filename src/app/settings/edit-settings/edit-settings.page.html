@@ -7,7 +7,8 @@
       {{contentDetails.enName}}
     </ion-title>
     <ion-buttons slot="end">
-      <ion-label padding="true" (click)="save(thisForm.value)"> Save </ion-label>
+      <ion-button (click)="save(thisForm.value)" [disabled]="!thisForm.valid"> {{editID == 'add' ? 'Add' : 'Save'}} </ion-button>
+      <!-- <ion-label padding="true" (click)="save(thisForm.value)"> {{editID == 'add' ? 'Add' : 'Save'}} </ion-label> -->
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -17,12 +18,58 @@
   editSettings of {{editID}}
   <p> {{contentDetails.enName}} </p>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tooltip.js/1.3.2/tooltip.min.js"></script>
+
+<style>
+.change{
+    --background-color: transparent !important;
+    --outline: none !important;
+}
+</style>
+
+<script>
+  var x = document.querySelector(".change");
+  console.warn(x);
+  console.error("HELLO");
+</script>
   <!-- <ion-input type="text" [(ngModel)]="contentDetails.enName"></ion-input> -->
   <form [formGroup]="thisForm" (ngSubmit)="save(thisForm.value)">
+
+      <ion-item>
+        <ion-label position="floating"> English </ion-label>
+        <ion-input type="text" formControlName="english" required></ion-input>
+        <ion-buttons class="change" slot="end">
+          <ion-button slot="end" *ngIf="!thisForm.valid">
+            <ion-icon name="information-circle" slot="end" color="danger" *ngIf="!thisForm.valid"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+
+      <ion-item no-padding margin-start lines="none" *ngIf="!thisForm.valid">
+        <span style="color:red; margin-bottom:16px;">
+          Please enter at least english name
+        </span>
+      </ion-item>
+    
+    <!-- design for base on powerpoint's one
+    <ion-list>
+      <ion-item>
+        <ion-label color="secondary" margin-end floating> English </ion-label>
+        <ion-input type="text" formControlName="english" required>
+        </ion-input>
+        <ion-button clear item-end icon-only>
+          <ion-icon name="information-circle"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list> 
+    -->
+
+
     <ion-item>
-      <ion-label color="secondary" position="floating"> Title </ion-label>
-      <ion-input type="text" formControlName="title" required></ion-input> 
+      <ion-label color="secondary" position="floating"> Chinese </ion-label>
+      <ion-input type="text" formControlName="chinese"></ion-input>
     </ion-item>
+
     <!-- <ion-button class="submit-btn" expand="block" type="submit" [disabled]="!thisForm.valid">Update</ion-button> --> 
     <!-- https://stackoverflow.com/questions/49336255/how-can-i-submit-my-form-when-clicking-on-go-button-in-ionic-3-framework -->
   </form>

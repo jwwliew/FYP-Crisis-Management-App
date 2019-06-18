@@ -4,6 +4,8 @@ import {v4 as uuid} from 'uuid';
 import { Router } from '@angular/router';
 import { TemplateService } from 'src/app/services/template.service';
 import { TemplatePopComponent } from '../template-pop/template-pop.component';
+import { SettingService } from 'src/app/services/setting.service';
+import { Setting } from 'src/app/models/setting';
 
 @Component({
   selector: 'app-new-templates',
@@ -17,7 +19,10 @@ export class NewTemplatesPage implements OnInit {
   templateID: any;
   editPage = false;
 
-  constructor(private actionSheetCtrl: ActionSheetController, private router: Router, private templateStorage: TemplateService, private alertCtrl: AlertController, private toastCtrl: ToastController, private event: Events, private popoverCtrl: PopoverController) {
+  settingSymptom:Setting[] = [];
+  settingAction = [];
+
+  constructor(private actionSheetCtrl: ActionSheetController, private router: Router, private templateStorage: TemplateService, private alertCtrl: AlertController, private toastCtrl: ToastController, private event: Events, private popoverCtrl: PopoverController, private settingStorage: SettingService) {
     this.event.subscribe("view", item => { //or services https://stackoverflow.com/questions/54304481/ionic-4-angular-7-passing-object-data-to-another-page
       this.viewPage = true;
       this.templateName = item.name;
@@ -27,6 +32,15 @@ export class NewTemplatesPage implements OnInit {
       this.criticalArray = item.template.filter(element =>  element.name == "criticalArray")
       this.warningArray = item.template.filter(element => element.name == "warningArray");
       console.log("this critical array = " + JSON.stringify(this.criticalArray, null, 2))
+    })
+    this.event.subscribe("add", () => {
+
+      this.settingStorage.getType("Symptom").then(symptoms => {
+        this.settingSymptom = symptoms;
+      });
+      this.settingStorage.getType("Action").then(actions => {
+        this.settingAction = actions;
+      })
     })
   }
 
@@ -76,7 +90,20 @@ export class NewTemplatesPage implements OnInit {
     },
     
   ]
-
+  testData = [
+    {
+      "name": "NAME1",
+      "icon": "assets/cough.svg"
+    },
+    {
+      "name": "NAME2",
+      "icon": "assets/cough.svg"
+    },
+    {
+      "name": "NAME3",
+      "icon": "assets/cough.svg"
+    }
+  ]
   customSelectSheetOptions: any = {
     header: "Select symptom to take",
     // subHeader: "Select symptom to take",
@@ -96,17 +123,18 @@ export class NewTemplatesPage implements OnInit {
 
   createButtons(itemToUpdate, type) {
     let buttons = [];
-    this.itemData.forEach(element => {
+    let typeToCall = type == "Symptom" ? this.settingSymptom : this.settingAction
+    typeToCall.forEach(element => {
       let button = {
-        text: element.name,
+        text: element.enName,
         icon: element.icon,
         handler: () => {
-          console.log(`${element.name} clicked`);
+          console.log(`${element.enName} clicked`);
           if (type == "Symptom") {
-            itemToUpdate.symptom.text = element.name
+            itemToUpdate.symptom.text = element.enName
           }
           else {
-            itemToUpdate.text = element.name
+            itemToUpdate.text = element.enName
           }
           console.log("item to update " + JSON.stringify(itemToUpdate));
           // console.log("whole array = " + JSON.stringify(this.criticalArray));
@@ -114,6 +142,7 @@ export class NewTemplatesPage implements OnInit {
       }
       buttons.push(button);
     });
+
     buttons.push({
       text: "Cancel",
       icon: "close",

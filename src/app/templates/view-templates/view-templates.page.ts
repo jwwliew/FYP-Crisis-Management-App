@@ -73,7 +73,9 @@ export class ViewTemplatesPage implements OnInit {
 
   newTemplate() {
     console.log("clicked new template");
-    this.router.navigateByUrl('/tabs/templates/new'); //routing start from root level
+    this.router.navigateByUrl('/tabs/templates/new').then(() => { //routing start from root level
+      this.event.publish("add");
+    }); 
   }
 
   ionViewWillLeave() {

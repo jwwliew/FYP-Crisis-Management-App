@@ -16,9 +16,15 @@ export class EditSettingsPage implements OnInit {
   contentDetails: Setting = {} as any; //or put contactDetails?.enName in the html page https://stackoverflow.com/questions/35074365/typescript-interface-default-values, else have error   
   //error typeError: cannot read property 'enName' of undefined, https://stackoverflow.com/questions/47498666/cannot-read-property-of-undefined-angular-4-typescript
 
-  thisForm = new FormGroup({ //https://angular.io/api/forms/FormControlName#use-with-ngmodel
-    title: new FormControl('', Validators.required)
-  });
+  // thisForm = new FormGroup({ //https://angular.io/api/forms/FormControlName#use-with-ngmodel
+  //   english: new FormControl('', Validators.required),
+  //   chinese: new FormControl('')
+  // });
+
+  thisForm = this.formBuilder.group({
+    english: ['', Validators.required],
+    chinese: ['']
+  })
 
   constructor(private activatedRoute: ActivatedRoute, private settingService: SettingService, public formBuilder: FormBuilder, private router:Router) { }
 
@@ -27,11 +33,17 @@ export class EditSettingsPage implements OnInit {
     console.log("hello this page params = " + this.editID);
     this.selectedTab = this.activatedRoute.snapshot.paramMap.get("selectedTab");
     console.log("this selected tab = " + this.selectedTab);
-    this.settingService.getOneSetting(this.selectedTab, this.editID).then((obj) => {
-      this.contentDetails = obj[0];
-      console.log("content = " + JSON.stringify(this.contentDetails));
-      this.thisForm.controls['title'].setValue(obj[0].enName);
-    })
+    if (this.editID == "add") {
+      this.contentDetails.enName = "add new " + this.selectedTab;
+    }
+    else {
+      this.settingService.getOneSetting(this.selectedTab, this.editID).then((obj) => {
+        this.contentDetails = obj[0];
+        console.log("content = " + JSON.stringify(this.contentDetails));
+        this.thisForm.controls['english'].setValue(obj[0].enName);
+        this.thisForm.controls['chinese'].setValue(obj[0].chName);
+      })
+    }
     // this.thisForm = this.formBuilder.group({
     //   title: new FormControl('', Validators.required)
     // })
@@ -41,11 +53,19 @@ export class EditSettingsPage implements OnInit {
     console.log("clicked save " + JSON.stringify(value));
     let newValues = {
       id: this.editID,
-      enName: value.title
+      enName: value.english,
+      chName: value.chinese
     }
-    this.settingService.updateOneSetting(this.selectedTab, newValues).then(() => {
-      this.goBack();
-    })
+    if (this.editID == "add") {
+      this.settingService.addReusable(this.selectedTab, newValues).then(() => {
+        this.goBack();
+      })
+    }
+    else {
+      this.settingService.updateOneSetting(this.selectedTab, newValues).then(() => {
+        this.goBack();
+      })
+    }
   }
 
   goBack() {
