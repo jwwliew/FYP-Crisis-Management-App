@@ -24,13 +24,15 @@ export class SettingService {
     console.log("this key is " + this.thisKey);
     return this.storage.get(this.thisKey);
   }
+  
+  iconArray = ["assets/cough.svg", "assets/ambulance.svg", "assets/medication.svg", "assets/noshortness.svg", "assets/temperature.svg"]
 
   addReusable(type, item) {
     var settingObj = {
       id: uuid(),
       enName: item.enName,
       chName: item.chName,
-      icon: "assets/cough.svg"
+      icon: this.iconArray[Math.floor(Math.random() * this.iconArray.length)]
     };
     console.log("adding reusable item = " + JSON.stringify(item));
     return this.getType(type).then(result => {

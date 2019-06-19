@@ -16,3 +16,16 @@
 //     transform: translate(-50%, -50%) !important;
 //     //zoom: 105% !important; //translate will make the popup blurry text, hence use zoom negate
 // }
+
+.globalTitle{ //https://forum.ionicframework.com/t/navbar-ion-title-align-center-for-android/52263/18
+    color: white;
+    font-weight: bold;
+    font-size: 1.2em;
+    text-align: center;
+    // position: absolute;
+    // top:0;
+    // left: 50%;
+    // transform: translateX(-50%);
+    // height:100%;
+    // width:100%;
+}

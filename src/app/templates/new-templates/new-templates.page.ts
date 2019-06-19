@@ -51,66 +51,6 @@ export class NewTemplatesPage implements OnInit {
   criticalArray = [];
   warningArray = [];
 
-  itemData = [
-    {
-      "name": "NAME1",
-      "icon": "assets/cough.svg"
-    },
-    {
-      "name": "NAME2",
-      "icon": "assets/cough.svg"
-    },
-    {
-      "name": "NAME3",
-      "icon": "assets/cough.svg"
-    },
-    {
-      "name": "Cough",
-      "icon": "assets/cough.svg"
-    },
-    {
-      "name": "Cancer",
-      "icon": "assets/cough.svg"
-    },
-    {
-      "name": "Dead",
-      "icon": "assets/cough.svg"
-    },
-    {
-      "name": "Gtg",
-      "icon": "assets/cough.svg"
-    },
-    {
-      "name": "High Blood Pressure",
-      "icon": "assets/cough.svg"
-    },
-    {
-      "name": "Watar",
-      "icon": "assets/cough.svg"
-    },
-    
-  ]
-  testData = [
-    {
-      "name": "NAME1",
-      "icon": "assets/cough.svg"
-    },
-    {
-      "name": "NAME2",
-      "icon": "assets/cough.svg"
-    },
-    {
-      "name": "NAME3",
-      "icon": "assets/cough.svg"
-    }
-  ]
-  customSelectSheetOptions: any = {
-    header: "Select symptom to take",
-    // subHeader: "Select symptom to take",
-    // message: "Select symptom to take",
-    // translucent: true
-  }
-
 //https://stackoverflow.com/questions/48133216/custom-icons-on-ionic-select-with-actionsheet-interface-ionic2
   async presentActionSheet(symptomOrAction, item) { //https://ionicframework.com/docs/api/action-sheet
     const actionSheet = await this.actionSheetCtrl.create({
@@ -130,6 +70,7 @@ export class NewTemplatesPage implements OnInit {
         icon: element.icon,
         handler: () => {
           console.log(`${element.enName} clicked`);
+          console.log(itemToUpdate)
           if (type == "Symptom") {
             itemToUpdate.symptom.text = element.enName
           }
@@ -159,9 +100,16 @@ export class NewTemplatesPage implements OnInit {
       symptom: {
         text: "Symptom",
         type: "Symptom",
-        img: "assets/temperature.svg"
+        img: "assets/temperature.svg",
+        description: ""
       },
       combined: [
+        {
+          text: "Action",
+          type: "Action",
+          img: "assets/empty.svg",
+          description: ""
+        }
       ]
     }
     thisArr.push(newPair);
@@ -208,7 +156,10 @@ export class NewTemplatesPage implements OnInit {
       }
     })
   }
-
+  goToViewPageFromEdit() {
+    this.editPage = false;
+    this.viewPage = true;
+  }
   async askForName(typeOfAction) {
     //templateName = templateName ? "Rename " + templateName : "Enter template name";
     let templateName = (typeOfAction == "rename") ? "Rename " + this.templateName : (typeOfAction == "duplicate") ? "Enter duplicated templated name " : "Enter template name";
@@ -301,6 +252,7 @@ export class NewTemplatesPage implements OnInit {
                 img: "assets/empty.svg"
               }
               x.combined.push(newAction);
+              this.presentActionSheet("updateAction", newAction)
               // console.error("pushed after " + JSON.stringify(this.criticalArray));
               console.error("pushed after " + JSON.stringify(thisArr));
             })
