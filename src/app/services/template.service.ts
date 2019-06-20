@@ -43,9 +43,13 @@ export class TemplateService {
       console.log("final array === " + JSON.stringify(finalArray, null, 2));
       finalArray.forEach((element, index) => {
         // data[index] = data[index] || [];
-        console.warn("data index ---- " + JSON.stringify(data[index]));
+        // console.warn("data index ---- " + JSON.stringify(data[index]));
+        console.warn(`element index --> ${index}` + JSON.stringify(element, null, 2));
         if (element && element.length > 0) {
-          element[0].combined = element[0].combined.filter(item => item.text !== "Action");
+          console.log("filtered element [0]" + JSON.stringify(element[0], null, 2));
+          console.log("element lenggth --> " + element[0].combined.length);
+          element[0].combined = element[0].combined.filter(item => item.text !== "Action"); //https://stackoverflow.com/questions/9289/removing-elements-with-array-map-in-javascript need to dynamic
+          console.error(`filtered!!! ${index} ` + JSON.stringify(element[index], null, 2));
           // data[index].push(element);
           // arr.push(element);
         }

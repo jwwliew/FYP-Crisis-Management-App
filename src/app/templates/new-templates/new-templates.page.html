@@ -6,11 +6,13 @@
       <ion-back-button defaultHref="/tabs/templates/new" (click)="goToViewPageFromEdit()" *ngIf="editPage"></ion-back-button>
     </ion-buttons>
     
-    <ion-title class="globalTitle" text-center mode="ios"> {{templateName}} </ion-title>
+    <ion-title> {{templateName}} </ion-title>
 
-    <ion-button slot="end" (click)="askForName()" *ngIf="!viewPage && !editPage">
-      <ion-icon ios="ios-add-circle" md="md-add"></ion-icon>
-    </ion-button>
+    <ion-buttons slot="end" *ngIf="!viewPage && !editPage">
+      <ion-button (click)="askForName()">
+        Add
+      </ion-button>
+    </ion-buttons>
 
     <ion-buttons slot="end" *ngIf="viewPage && !editPage">
       <ion-button (click)="popOverController($event, templateName)">
@@ -18,9 +20,11 @@
       </ion-button>
     </ion-buttons>
     
-    <ion-button slot="end" (click)="addTemplate('Update')" *ngIf="editPage">
-      Save
-    </ion-button>
+    <ion-buttons slot="end" *ngIf="editPage">
+      <ion-button (click)="addTemplate('Update')">
+        Save
+      </ion-button>
+    </ion-buttons>
 
   </ion-toolbar>
 </ion-header>
@@ -33,7 +37,7 @@
     height: 100%;
     padding: 4%;
     /* background-color:#000000 !important; */
-    border: 1px solid black; 
+    /* border: 1px solid black;  */
   }
 
   .imgCircleText {
@@ -124,7 +128,7 @@ ion-grid {
     <ion-grid style="padding:3%" *ngIf="!viewPage || editPage"> <!--https://forum.ionicframework.com/t/fab-button-backdrop/80019-->
 
     
-      <ion-row *ngFor="let item of getArray(globalItem.id); let i = index;" [ngClass]="{'blur': globalItem.toggle}">
+      <ion-row *ngFor="let item of getArray(globalItem.id); let i = index;" [ngClass]="{'blur': globalItem.toggle}" style="border-bottom: 1px solid black">
           <ion-col size="6">
               <ion-card (click)="presentActionSheet('Symptom', item)">
                 <img class="imgCircle" [src]="item.symptom.img" /> <!-- https://stackoverflow.com/questions/45263542/ngmodel-value-in-img-src-ionic-3 -->
@@ -147,7 +151,7 @@ ion-grid {
                   <ion-card>
                     <ion-item>
                       <ion-label position="floating">Description</ion-label>
-                      <ion-textarea rows="4" placeholder="fill up description here..." [(ngModel)]="item.description"></ion-textarea>
+                      <ion-textarea rows="4" placeholder="fill up description here..." [(ngModel)]="x.description"></ion-textarea>
                     </ion-item>
                   </ion-card>
                 </ion-col>
@@ -187,16 +191,16 @@ ion-grid {
       
       <ion-row *ngFor="let item of getArray(globalItem.id)">
 
-        <ion-col size="6">
+        <ion-col size="6" style="border-right: 1px solid black">
           <img class="imgCircle" [src]="item.symptom.img" />
-          <p class="imgCircleText"> {{item.symptom.description}} </p>
+          <p class="imgCircleText"> {{item.symptom.description == "" ? item.symptom.text : item.symptom.description}} </p>
         </ion-col>
         
         <ng-container *ngFor="let x of item.combined; let actIndex = index;">
           <ion-col size="6" *ngIf="actIndex != 0"></ion-col>
           <ion-col size="6">
             <img class="imgCircle" [src]="x.img"/>
-            <p class="imgCircleText"> {{x.description}} </p>
+            <p class="imgCircleText"> {{x.description == "" ? x.text : x.description}} </p>
           </ion-col>
         </ng-container>
 

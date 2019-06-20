@@ -4,3 +4,22 @@
 // styles are for the entire app and not just one component. Additionally, this 
 // file can hold Sass mixins, functions, and placeholder classes to be imported 
 // and used throughout the application.
+
+// .action-sheet-button-inner.sc-ion-action-sheet-md{
+    // flex-flow: row-reverse !important;
+    // position: absolute !important;
+// }
+
+
+.wholeActionSheet span:not(:last-child) {  //for android, but switch mode to ios so this css will not apply
+    margin-left: 16%;
+}
+
+.action-sheet-icon.sc-ion-action-sheet-md{
+    margin-right: 16px;
+}
+
+.action-sheet-group.sc-ion-action-sheet-ios{ //ios scroll css somehow overflow is hidden but not on android
+    overflow: scroll;
+    //max-height: 434px;
+}

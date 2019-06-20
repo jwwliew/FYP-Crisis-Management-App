@@ -19,6 +19,41 @@ export class NewTemplatesPage implements OnInit {
   templateID: any;
   editPage = false;
 
+  settingObj = [
+    {
+      id: uuid(),
+      enName: "Fever from pdf",
+      icon: "assets/pdfcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "No breath from pdf",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Got breath",
+      icon: "assets/pdfgotbreath.png"
+    }
+  ]
+  actionObj = [
+    {
+      id: uuid(),
+      enName: "call 995",
+      icon: "assets/pdfcall995.png"
+    },
+    {
+      id: uuid(),
+      enName: "Continue regular medications",
+      icon: "assets/pdfcontinuemed.png"
+    },
+    {
+      id: uuid(),
+      enName: "Maintain usual activities/exercise levels",
+      icon: "assets/pdfmaintain.png"
+    }
+  ]
+
   settingSymptom:Setting[] = [];
   settingAction = [];
 
@@ -33,14 +68,14 @@ export class NewTemplatesPage implements OnInit {
       this.warningArray = item.template.filter(element => element.name == "warningArray");
       console.log("this critical array = " + JSON.stringify(this.criticalArray, null, 2))
     })
-    this.event.subscribe("add", () => {
 
-      this.settingStorage.getType("Symptom").then(symptoms => {
-        this.settingSymptom = symptoms;
-      });
-      this.settingStorage.getType("Action").then(actions => {
-        this.settingAction = actions;
-      })
+    this.settingStorage.getType("Symptom").then(symptoms => {
+      this.settingSymptom = symptoms ? [...this.settingObj, ...symptoms] : [...this.settingObj];
+      // this.settingSymptom = [...this.settingObj, ...symptoms];
+    });
+    this.settingStorage.getType("Action").then(actions => {
+      this.settingAction = actions ? [...this.actionObj, ...actions] : [...this.actionObj];
+      // this.settingAction = [...this.actionObj, ...actions];
     })
   }
 
@@ -53,10 +88,12 @@ export class NewTemplatesPage implements OnInit {
 
 //https://stackoverflow.com/questions/48133216/custom-icons-on-ionic-select-with-actionsheet-interface-ionic2
   async presentActionSheet(symptomOrAction, item) { //https://ionicframework.com/docs/api/action-sheet
+    symptomOrAction = symptomOrAction == "updateAction" ? "action" : symptomOrAction
     const actionSheet = await this.actionSheetCtrl.create({
-      header: 'Select a symptom from below ' + symptomOrAction,
+      header: "Select a " + symptomOrAction.toLowerCase() + " from below",
       cssClass: "wholeActionSheet",
-      buttons: this.createButtons(item, symptomOrAction)
+      buttons: this.createButtons(item, symptomOrAction),
+      mode: "ios"
     });
     await actionSheet.present();
   }
@@ -64,18 +101,27 @@ export class NewTemplatesPage implements OnInit {
   createButtons(itemToUpdate, type) {
     let buttons = [];
     let typeToCall = type == "Symptom" ? this.settingSymptom : this.settingAction
-    typeToCall.forEach(element => {
+    typeToCall.forEach((element, index) => {
+      let style = document.createElement('style'); //https://github.com/ionic-team/ionic/issues/6589
+      style.type = "text/css";
+      style.innerHTML = ".customCSSClass" + index + '{background: url('+ "'" + element.icon + "'" + ') no-repeat !important; padding: 40px 20% 40px 25% !important; margin-top:25px !important; background-size:80px 80px !important; margin-left: 30px !important;}';
+      document.getElementsByTagName('head')[0].appendChild(style);
+      
       let button = {
         text: element.enName,
-        icon: element.icon,
+        //icon: "assets/icon/cough.png",
+        cssClass: 'customCSSClass'+ index,
         handler: () => {
           console.log(`${element.enName} clicked`);
           console.log(itemToUpdate)
           if (type == "Symptom") {
-            itemToUpdate.symptom.text = element.enName
+            itemToUpdate.symptom.text = element.enName;
+            itemToUpdate.symptom.img = element.icon;
           }
           else {
-            itemToUpdate.text = element.enName
+            console.log("update action?");
+            itemToUpdate.text = element.enName;
+            itemToUpdate.img = element.icon;
           }
           console.log("item to update " + JSON.stringify(itemToUpdate));
           // console.log("whole array = " + JSON.stringify(this.criticalArray));
@@ -112,7 +158,7 @@ export class NewTemplatesPage implements OnInit {
         }
       ]
     }
-    thisArr.push(newPair);
+    thisArr.push(newPair); //double push
     console.log(thisArr);
   }
 
@@ -122,15 +168,15 @@ export class NewTemplatesPage implements OnInit {
     console.log("critical array = " + JSON.stringify(this.criticalArray));
     console.log("warning array = " + JSON.stringify(this.warningArray));
     let maparr = completedArray.map((eachArr, index) => { //https://stackoverflow.com/questions/53817342/map-and-filter-mapped-array-in-javascript
-      console.log("before filter + " + JSON.stringify(eachArr));
+      console.warn("before filter + " + JSON.stringify(eachArr, null, 2));
       eachArr = eachArr.filter(data => data.symptom.text !== "Symptom");
       // eachArr.forEach(x => x.id = uuid());
       eachArr.map(x => {x.id = uuid(); x.name = name[index]});
-      console.error("after filter " + JSON.stringify(eachArr));
+      console.error("after filter " + JSON.stringify(eachArr, null, 2));
       return eachArr;
     })
     console.warn("in middle watar" + JSON.stringify(completedArray[0]))
-    console.log(JSON.stringify(maparr));
+    console.error(JSON.stringify(maparr, null, 2));
     // this.criticalArray = this.criticalArray.filter(data => data.symptom.text !== "Symptom");
     // this.criticalArray.forEach(x => x.id = uuid());
     this.templateStorage.createTemplate(maparr, templateNameFromInput, addOrUpdate, this.templateID, this.templateName).then((val) => {
@@ -157,6 +203,9 @@ export class NewTemplatesPage implements OnInit {
     })
   }
   goToViewPageFromEdit() {
+    this.criticalArray = [...this.backUpCriticalArray];
+    this.warningArray = [...this.backUpWarningArray];
+    console.log("going back to view page ... " + JSON.stringify(this.backUpCriticalArray,null,2));
     this.editPage = false;
     this.viewPage = true;
   }
@@ -249,7 +298,8 @@ export class NewTemplatesPage implements OnInit {
               let newAction = {
                 text: "Action",
                 type: "Action",
-                img: "assets/empty.svg"
+                img: "assets/empty.svg",
+                description: ""
               }
               x.combined.push(newAction);
               this.presentActionSheet("updateAction", newAction)
@@ -359,13 +409,21 @@ export class NewTemplatesPage implements OnInit {
       'Edit': () => this.callEdit(),
       'Rename': () => this.askForName('rename'),
       'Duplicate': () => this.askForName('duplicate'),
-      "Delete": () => this.delete()
-    }
-    call[type]();
+      "Delete": () => this.delete(),
+      "": () => ""
+    };
+    (call[type] || call[""])();
   }
-
+  backUpCriticalArray = [];
+  backUpWarningArray = [];
   callEdit() {
     console.log("edit is called " + this.templateID);
+    this.backUpCriticalArray = JSON.parse(JSON.stringify(this.criticalArray)); //need to deep copy to remove reference
+    // this.backUpCriticalArray = [...this.criticalArray];
+    // this.backUpCriticalArray = this.criticalArray.slice(0);
+    // this.backUpCriticalArray = this.criticalArray.map(object => { return [...object]})
+    this.backUpWarningArray = this.warningArray.slice();
+    console.log("critical array === " + JSON.stringify(this.backUpCriticalArray, null, 2))
     this.editPage = true;
     return "hello"
   }
