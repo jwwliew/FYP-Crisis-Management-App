@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title style="color: white;font-weight: bold;font-size: 1.2em;padding: 0;margin: 0 16px; text-align: center;">
-      New Crisis Plan<ion-icon name="arrow-forward" (click)="nextPage()"></ion-icon>
+      New Crisis Plan<ion-icon name="arrow-forward" (click)="nextPage()" style="position:right;"></ion-icon>
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -49,7 +49,7 @@
 
       <ion-card-content>
         <!---CONTENT-->
-        <ion-input value=""></ion-input>
+        <ion-input type="text" [(ngModel)]="planName"></ion-input>
       </ion-card-content>
     </ion-card>
   </ion-list>

@@ -1,3 +1,9 @@
 ion-card-title{
     font-size: 99%;
 }
+ion-input {
+    width:100%;
+    background: linear-gradient(to right, #000, #000) 5px calc(100% - 5px)/calc(100% - 5px) 2px no-repeat;
+    background-color: #fcfcfc;
+    padding: 5px;  
+}

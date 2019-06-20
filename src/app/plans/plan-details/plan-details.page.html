@@ -1,37 +1,71 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>plan_details</ion-title>
+  <ion-toolbar color="primary">
+    <ion-title style="color: white;font-weight: bold;font-size: 1.2em;padding: 0;margin: 0 16px; text-align: center;">
+      Details<ion-icon name="save" style="float: right" (click)="PlanDetails()"></ion-icon>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-list lines="none">
-    <ion-card class="welcome-card" style="height: 1%">
+    <ion-card class="welcome-card">
       <ion-card-header color="tertiary">
-        <ion-card-title>TCS Contact</ion-card-title>
+        <ion-card-title>Plan Details</ion-card-title>
       </ion-card-header>
 
       <ion-card-content>
-          <div>
-              <table id="tblOne" style="width:50%; float:left">
-                <tr>
-                  <td>Name</td>
-                </tr>
-                <tr>
-                    <td>TCS Name</td>
-                  </tr>
-              </table>
-              <table id="tblTwo" style="width:50%; float:left">
-                <tr>
-                  <td>NRIC</td>
-                </tr>
-                <tr>
-                    <td>TCS Contact</td>
-                  </tr>
-              </table> 
-              </div>
+        <div>
+          <table id="tblOne" style="width:50%; float:left">
+            <tr>
+              <td>Name:</td>
+              <ion-input type="text" [(ngModel)]="pName"></ion-input>
+            </tr>
+            <p></p>
+            <tr>
+              <td>TCS Name:</td>
+              <ion-input type="text" [(ngModel)]="tcsName"></ion-input>
+            </tr>
+          </table>
+          <table id="tblTwo" style="width:50%; float:left">
+            <tr>
+              <td>NRIC:</td>
+              <ion-input type="text" [(ngModel)]="pNric"></ion-input>
+            </tr>
+            <tr>
+              <td>TCS Contact:</td>
+              <ion-input type="text" [(ngModel)]="tcsContact"></ion-input>
+            </tr>
+          </table>
+        </div>
       </ion-card-content>
 
+    </ion-card>
+  </ion-list>
+  <ion-list lines="none">
+    <ion-card class="welcome-card">
+      <ion-card-header color="tertiary">
+        <ion-card-title>Appointment (OPTIONAL)</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div>
+          <table id="tblOne" style="width:50%; float:left">
+            <tr>
+              <td>Clinic Name:</td>
+              <p></p>
+              <ion-input style="width: 250%"></ion-input>
+            </tr>
+          </table>
+          <ion-item>
+            <ion-label>Date</ion-label>
+            <ion-datetime display-format="DD/MMM/YYYY"></ion-datetime>
+          </ion-item>
+          <ion-item>
+            <ion-label>Date</ion-label>
+            <ion-datetime displayFormat="h:mm A" minuteValues="0,15,30,45"></ion-datetime>
+          </ion-item>
+        </div>
+      </ion-card-content>
     </ion-card>
   </ion-list>
 </ion-content>
