@@ -111,8 +111,6 @@ export class TemplateService {
 
 
   /*
-  constructor(private storage: Storage) { }
-
   // get one template by id
   getTemplateItemById(id): Promise<TemplateRecord> {
     return this.storage.get(TEMPLATETABLE_KEY).then(result => {
