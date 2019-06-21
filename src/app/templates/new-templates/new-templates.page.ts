@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { ActionSheetController, AlertController, ToastController, Events, PopoverController } from '@ionic/angular';
 import {v4 as uuid} from 'uuid';
 import { Router } from '@angular/router';
@@ -57,7 +57,7 @@ export class NewTemplatesPage implements OnInit {
   settingSymptom:Setting[] = [];
   settingAction = [];
 
-  constructor(private actionSheetCtrl: ActionSheetController, private router: Router, private templateStorage: TemplateService, private alertCtrl: AlertController, private toastCtrl: ToastController, private event: Events, private popoverCtrl: PopoverController, private settingStorage: SettingService) {
+  constructor(private actionSheetCtrl: ActionSheetController, private router: Router, private templateStorage: TemplateService, private alertCtrl: AlertController, private toastCtrl: ToastController, private event: Events, private popoverCtrl: PopoverController, private settingStorage: SettingService, private zone: NgZone) {
     this.event.subscribe("view", item => { //or services https://stackoverflow.com/questions/54304481/ionic-4-angular-7-passing-object-data-to-another-page
       this.viewPage = true;
       this.templateName = item.name;
@@ -69,13 +69,10 @@ export class NewTemplatesPage implements OnInit {
       console.log("this critical array = " + JSON.stringify(this.criticalArray, null, 2))
     })
 
-    this.settingStorage.getType("Symptom").then(symptoms => {
-      this.settingSymptom = symptoms ? [...this.settingObj, ...symptoms] : [...this.settingObj];
-      // this.settingSymptom = [...this.settingObj, ...symptoms];
-    });
-    this.settingStorage.getType("Action").then(actions => {
-      this.settingAction = actions ? [...this.actionObj, ...actions] : [...this.actionObj];
-      // this.settingAction = [...this.actionObj, ...actions];
+    let promises = [this.settingStorage.getType("Symptom"), this.settingStorage.getType("Action")];
+    Promise.all(promises).then(data => {
+      this.settingSymptom = data[0] ? [...this.settingObj, ...data[0]] : [...this.settingObj];
+      this.settingAction = data[1] ? [...this.actionObj, ...data[1]] : [...this.actionObj];
     })
   }
 
@@ -114,15 +111,18 @@ export class NewTemplatesPage implements OnInit {
         handler: () => {
           console.log(`${element.enName} clicked`);
           console.log(itemToUpdate)
-          if (type == "Symptom") {
-            itemToUpdate.symptom.text = element.enName;
-            itemToUpdate.symptom.img = element.icon;
-          }
-          else {
-            console.log("update action?");
-            itemToUpdate.text = element.enName;
-            itemToUpdate.img = element.icon;
-          }
+      //put zone here
+          this.zone.run(() => {
+            if (type == "Symptom") {
+              itemToUpdate.symptom.text = element.enName;
+              itemToUpdate.symptom.img = element.icon;
+            }
+            else {
+              console.log("update action?");
+              itemToUpdate.text = element.enName;
+              itemToUpdate.img = element.icon;
+            }
+          })
           console.log("item to update " + JSON.stringify(itemToUpdate));
           // console.log("whole array = " + JSON.stringify(this.criticalArray));
         }
@@ -144,6 +144,7 @@ export class NewTemplatesPage implements OnInit {
     let newPair = {
       // 'id': 1,
       symptom: {
+        id: uuid(),
         text: "Symptom",
         type: "Symptom",
         img: "assets/temperature.svg",
@@ -151,6 +152,7 @@ export class NewTemplatesPage implements OnInit {
       },
       combined: [
         {
+          id: uuid(),
           text: "Action",
           type: "Action",
           img: "assets/empty.svg",
@@ -171,7 +173,16 @@ export class NewTemplatesPage implements OnInit {
       console.warn("before filter + " + JSON.stringify(eachArr, null, 2));
       eachArr = eachArr.filter(data => data.symptom.text !== "Symptom");
       // eachArr.forEach(x => x.id = uuid());
-      eachArr.map(x => {x.id = uuid(); x.name = name[index]});
+      eachArr.map(x => {
+        console.warn("x ===== " + JSON.stringify(x,null,2))
+        x.combined.forEach((element,pos) => {
+          console.error("element combined === " + JSON.stringify(element,null,2));
+          if (element.text == "Action") {
+            x.combined.splice(pos,1);
+          }
+        });
+        x.id = uuid(); x.name = name[index]
+      });
       console.error("after filter " + JSON.stringify(eachArr, null, 2));
       return eachArr;
     })
@@ -181,10 +192,26 @@ export class NewTemplatesPage implements OnInit {
     // this.criticalArray.forEach(x => x.id = uuid());
     this.templateStorage.createTemplate(maparr, templateNameFromInput, addOrUpdate, this.templateID, this.templateName).then((val) => {
       // this.event.publish("created", this.criticalArray);
+      console.error("VAL " + JSON.stringify(val,null,2))
       if (addOrUpdate == "add") {
         this.router.navigateByUrl('/tabs/templates'); //routing start from root level
       }
       else {
+        console.warn("criticla array view page true = " + JSON.stringify(this.criticalArray, null, 2));
+        console.error("VAL [0] " + JSON.stringify(val[0].templates,null,2));
+        // this.criticalArray.filter(x => x.symptom.text !== "Symptom").forEach((x,index) => {
+        //   console.log("X === " + JSON.stringify(x,null,2))
+        //   if (x.combined.text == "Action") {
+        //     console.error("SPLICE");
+        //     x.combined.splice(index, 1)
+        //   }
+        // });
+        val.forEach(element => {
+          console.log("finally elmeent ?? " + JSON.stringify(element.id,null,2))
+        });
+        this.criticalArray = val.find(x => x.id == this.templateID).templates[0];
+        this.warningArray = val.find(x => x.id == this.templateID).templates[1];
+        console.warn("after filter " + JSON.stringify(this.criticalArray,null,2))
         this.editPage = false;
         this.viewPage = true;
         // console.log("val -- " + JSON.stringify(val, null, 2));
@@ -294,8 +321,11 @@ export class NewTemplatesPage implements OnInit {
             handler: (alertData => {
               console.log("ok name1 = " + alertData);
               // let x = this.criticalArray.find(x => x.symptom.text == alertData);
-              let x = thisArr.find(x => x.symptom.text == alertData)
+              console.warn("this arr = " + JSON.stringify(thisArr, null, 2))
+              let x = thisArr.find(x => x.symptom.id == alertData);
+              console.error("X + " + JSON.stringify(x,null,2));
               let newAction = {
+                id: uuid(),
                 text: "Action",
                 type: "Action",
                 img: "assets/empty.svg",
@@ -323,7 +353,8 @@ export class NewTemplatesPage implements OnInit {
       let radioBtn = {
         type: "radio",
         label: element.symptom.text,
-        value: element.symptom.text
+        // value: element.symptom.text
+        value: element.symptom.id
       }
       radioBtns.push(radioBtn);
     })
