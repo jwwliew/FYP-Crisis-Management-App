@@ -57,31 +57,103 @@ export class NewTemplatesPage implements OnInit {
   settingSymptom:Setting[] = [];
   settingAction = [];
 
-  constructor(private actionSheetCtrl: ActionSheetController, private router: Router, private templateStorage: TemplateService, private alertCtrl: AlertController, private toastCtrl: ToastController, private event: Events, private popoverCtrl: PopoverController, private settingStorage: SettingService, private zone: NgZone) {
-    this.event.subscribe("view", item => { //or services https://stackoverflow.com/questions/54304481/ionic-4-angular-7-passing-object-data-to-another-page
-      this.viewPage = true;
-      this.templateName = item.name;
-      this.templateID = item.id;
-      console.warn("item received --- " + JSON.stringify(item, null, 2));
-      console.log(item.template);
-      this.criticalArray = item.template.filter(element =>  element.name == "criticalArray")
-      this.warningArray = item.template.filter(element => element.name == "warningArray");
-      console.log("this critical array = " + JSON.stringify(this.criticalArray, null, 2))
-    })
-
-    let promises = [this.settingStorage.getType("Symptom"), this.settingStorage.getType("Action")];
-    Promise.all(promises).then(data => {
-      this.settingSymptom = data[0] ? [...this.settingObj, ...data[0]] : [...this.settingObj];
-      this.settingAction = data[1] ? [...this.actionObj, ...data[1]] : [...this.actionObj];
-    })
-  }
+  constructor(private actionSheetCtrl: ActionSheetController, private router: Router, private templateStorage: TemplateService, private alertCtrl: AlertController, 
+    private toastCtrl: ToastController, private event: Events, private popoverCtrl: PopoverController, private settingStorage: SettingService, private zone: NgZone) {
+      console.error("CONSTURCTOR CALLlED")
+      this.event.subscribe("view", item => { //or services https://stackoverflow.com/questions/54304481/ionic-4-angular-7-passing-object-data-to-another-page
+        this.viewPage = true;
+        console.log("view page = " + this.viewPage + " edit page = " + this.editPage);
+        this.templateName = item.name;
+        this.templateID = item.id;
+        console.warn("item received --- " + JSON.stringify(item, null, 2));
+        console.log(item.template);
+        this.criticalArray = item.template.filter(element =>  element.name == "criticalArray")
+        this.warningArray = item.template.filter(element => element.name == "warningArray");
+        console.log("this critical array = " + JSON.stringify(this.criticalArray, null, 2))
+      })
+  
+      let promises = [this.settingStorage.getType("Symptom"), this.settingStorage.getType("Action")];
+      Promise.all(promises).then(data => {
+        this.settingSymptom = data[0] ? [...this.settingObj, ...data[0]] : [...this.settingObj];
+        this.settingAction = data[1] ? [...this.actionObj, ...data[1]] : [...this.actionObj];
+      })
+    }
 
   ngOnInit() {
-
   }
-
   criticalArray = [];
   warningArray = [];
+
+  checked = [];
+
+  pressEvent(type, thisObject, arrayID) {
+    if (this.checked.length == 0) {
+      if (type == 'Symptom') {
+        console.warn("whole symptom = " + JSON.stringify(thisObject, null, 2));
+        thisObject.combined.forEach(element => {
+          element.whatsapp = true;
+          element.arrayID = arrayID;
+          // this.checked.push(element.id);
+          this.checked.push(element);
+        });
+      }
+      else {
+        console.warn(" type = " + type)
+        thisObject.whatsapp = true;
+        thisObject.arrayID = arrayID;
+        // this.checked.push(thisObject.id);
+        this.checked.push(thisObject);
+      }
+      // this.checked.push(x.combined[0].id);
+      // x.whatsapp = true;
+      // x.combined[0].whatsapp = true;
+    }
+    console.error("this.checked after pressed = " + JSON.stringify(this.checked, null, 2));
+  }
+
+  clickEvent(type, wholeItem, arrayID) {
+    console.log("pressed clicked" + JSON.stringify(wholeItem,null,2));
+    console.error("whole checked array before anything = " + JSON.stringify(this.checked, null, 2));
+    let itemConverted = type == "Symptom" ? wholeItem.combined[0] : wholeItem
+    itemConverted.whatsapp = !itemConverted.whatsapp;
+    console.warn("item index = " + itemConverted.id);
+    //let itemIndex = this.checked.indexOf(itemConverted.id);
+    let itemIndex = this.checked.findIndex(x => x.id == itemConverted.id);
+
+    if (itemIndex !== -1) {
+      this.checked.splice(itemIndex, 1);
+      console.error("spliced!!!");
+    }
+    else {
+      // this.checked.push(itemConverted.id);
+      itemConverted.arrayID = arrayID;
+      this.checked.push(itemConverted);
+      console.error("pusheddd!!!");
+    }
+    console.error("spliced finish checked array = " + JSON.stringify(this.checked, null, 2));
+  }
+
+  clearArray() {
+    console.error("clicked clear");
+    this.checked.forEach(element => {
+      console.error("element == " + JSON.stringify(element, null, 2));
+      element.whatsapp = false;
+    });
+    this.checked.length = 0;
+  }
+
+  deleteArray() {
+    this.checked.forEach(element => {
+      let thisArray = this.getArray(element.arrayID);
+      let index = thisArray[0].combined.findIndex(x => x.id == element.id);
+      thisArray[0].combined.splice(index, 1);
+    });
+    this.criticalArray = this.criticalArray.filter(x => x.combined.length !== 0);
+    this.warningArray = this.warningArray.filter(x => x.combined.length !== 0);
+    console.error("after del critical array = " + JSON.stringify(this.criticalArray,null, 2));
+    console.error("after del warning array = " + JSON.stringify(this.warningArray,null, 2));
+    this.checked.length = 0;
+  }
 
 //https://stackoverflow.com/questions/48133216/custom-icons-on-ionic-select-with-actionsheet-interface-ionic2
   async presentActionSheet(symptomOrAction, item) { //https://ionicframework.com/docs/api/action-sheet
@@ -177,6 +249,8 @@ export class NewTemplatesPage implements OnInit {
         console.warn("x ===== " + JSON.stringify(x,null,2))
         x.combined.forEach((element,pos) => {
           console.error("element combined === " + JSON.stringify(element,null,2));
+          delete element.arrayID;
+          delete element.whatsapp;
           if (element.text == "Action") {
             x.combined.splice(pos,1);
           }
@@ -322,19 +396,25 @@ export class NewTemplatesPage implements OnInit {
               console.log("ok name1 = " + alertData);
               // let x = this.criticalArray.find(x => x.symptom.text == alertData);
               console.warn("this arr = " + JSON.stringify(thisArr, null, 2))
-              let x = thisArr.find(x => x.symptom.id == alertData);
-              console.error("X + " + JSON.stringify(x,null,2));
-              let newAction = {
-                id: uuid(),
-                text: "Action",
-                type: "Action",
-                img: "assets/empty.svg",
-                description: ""
+              if (alertData === undefined) {
+                this.presentToastWithOptions();
+                return false; //https://stackoverflow.com/questions/45969821/alert-controller-input-box-validation
               }
-              x.combined.push(newAction);
-              this.presentActionSheet("updateAction", newAction)
-              // console.error("pushed after " + JSON.stringify(this.criticalArray));
-              console.error("pushed after " + JSON.stringify(thisArr));
+              else {
+                let x = thisArr.find(x => x.symptom.id == alertData);
+                console.error("X + " + JSON.stringify(x,null,2));
+                let newAction = {
+                  id: uuid(),
+                  text: "Action",
+                  type: "Action",
+                  img: "assets/empty.svg",
+                  description: ""
+                }
+                x.combined.push(newAction);
+                this.presentActionSheet("updateAction", newAction)
+                // console.error("pushed after " + JSON.stringify(this.criticalArray));
+                console.error("pushed after " + JSON.stringify(thisArr));
+              }
             })
           }
         ]

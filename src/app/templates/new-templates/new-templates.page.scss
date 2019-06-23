@@ -9,10 +9,16 @@
     color: red;
     text-align: center;
     margin-top: 12px;
-    margin-right: 54px;
+    margin-left: 4px;
     position: absolute;
     font-size:19px;
+    &Two{
+        @extend .addLabel;
+            margin-top: 16px;
+            margin-left: 16px;
+    }
 }
+
 
 ion-fab-list{
     flex-direction: column;

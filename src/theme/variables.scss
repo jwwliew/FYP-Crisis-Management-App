@@ -82,6 +82,13 @@
   --ion-color-redCard-shade: #e00000;
   --ion-color-redCard-tint: #ff1a1a;
 
+  --ion-color-greenCard: #1ebea5;
+  --ion-color-greenCard-rgb: 30,190,165;
+  --ion-color-greenCard-contrast: #000000;
+  --ion-color-greenCard-contrast-rgb: 0,0,0;
+  --ion-color-greenCard-shade: #1aa791;
+  --ion-color-greenCard-tint: #35c5ae;
+
 }
 
 // .ion-color-redCard {
@@ -93,7 +100,7 @@
 //   --ion-color-tint: var(--ion-color-redCard-tint) !important;
 // }
 
-$customColors: ('redCard'); //https://medium.com/@paulstelzer/ionic-4-how-to-add-more-colors-and-use-them-as-color-in-buttons-and-more-7175ab4ae4e7
+$customColors: ('redCard', 'greenCard'); //https://medium.com/@paulstelzer/ionic-4-how-to-add-more-colors-and-use-them-as-color-in-buttons-and-more-7175ab4ae4e7
 @each $color in $customColors {
   .ion-color-#{$color} {
     --ion-color-base: var(--ion-color-#{$color}) !important;

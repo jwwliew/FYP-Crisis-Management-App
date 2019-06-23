@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar color="primary" *ngIf="checked.length == 0">
 
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/templates" *ngIf="!editPage"></ion-back-button>
@@ -26,6 +26,19 @@
       </ion-button>
     </ion-buttons>
 
+  </ion-toolbar>
+
+  <ion-toolbar color="greenCard" *ngIf="checked.length > 0">
+    <ion-buttons slot="start">
+        <ion-back-button defaultHref="/tabs/templates/new" (click)="clearArray()"></ion-back-button>
+        <span> {{checked.length}} </span>
+    </ion-buttons>
+
+    <ion-buttons slot="end">
+      <ion-icon name="trash" style="font-size: 24px; margin-right:14px;" (click)="deleteArray()"></ion-icon>
+    </ion-buttons>
+ 
+  
   </ion-toolbar>
 </ion-header>
 
@@ -85,6 +98,43 @@ ion-grid {
   /* transition: -webkit-filter 200ms linear; */
 }
 
+.highlight{
+  background-color: #1ebea5;
+}
+
+ion-content{
+  --padding-start: 4px;
+  --padding-end: 4px;
+}
+/* ion-grid{
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+} */
+.gridReplace {
+  background-color: #d3d3d3;
+  padding-top: 6%;
+  padding-bottom: 3%;
+}
+
+ion-card-title{
+  color: white;
+  font-weight: bold;
+  font-size: 1.1em;
+  padding: 0;
+  margin: 0 4px;
+}
+
+ion-textarea{
+  margin:0;
+}
+
+.yellowItem{
+  --border-width: 0px;
+  --inner-padding-end: 0;
+  --padding-start: 0;
+}
+
+
 </style>
 
 <ion-content padding>
@@ -92,14 +142,14 @@ ion-grid {
   <ion-card class="welcome-card" *ngFor="let globalItem of frontViewData">
 
     <ion-card-header [color]="globalItem.colorCard">
-      <ion-card-title style="color: white;font-weight: bold;font-size: 1.1em;padding: 0;margin:0 16px;">
+      <ion-card-title>
         {{globalItem.textCard}}
       </ion-card-title>
 
       <ion-content *ngIf="!viewPage || editPage">
         <ion-fab vertical="top" horizontal="end" edge slot="fixed">
           <!-- <ion-fab-button size="small" (click)="addNewCriticalArray('Critical')" class="btnAdd" color="redCard"> -->
-          <ion-fab-button size="small" class="btnAdd" (click)="globalItem.toggle=!globalItem.toggle">
+          <ion-fab-button size="small" class="btnAdd" (click)="globalItem.toggle=!globalItem.toggle" [disabled]="checked.length > 0">
             <ion-icon name="{{!globalItem.toggle ? 'md-add' : 'md-close'}}"></ion-icon>
           </ion-fab-button>
 
@@ -125,53 +175,81 @@ ion-grid {
     </ion-card-header>
 
 
-    <ion-grid style="padding:3%" *ngIf="!viewPage || editPage"> <!--https://forum.ionicframework.com/t/fab-button-backdrop/80019-->
+    <div class="gridReplace" *ngIf="!viewPage || editPage"> <!--https://forum.ionicframework.com/t/fab-button-backdrop/80019-->
 
     
-      <ion-row *ngFor="let item of getArray(globalItem.id); let i = index;" [ngClass]="{'blur': globalItem.toggle}" style="border-bottom: 1px solid black">
-          <ion-col size="6">
-              <ion-card (click)="presentActionSheet('Symptom', item)">
-                <img class="imgCircle" [src]="item.symptom.img" /> <!-- https://stackoverflow.com/questions/45263542/ngmodel-value-in-img-src-ionic-3 -->
-                <p class="imgCircleText"> {{item.symptom.text}} </p>
-              </ion-card>
-              <ion-card>
-                <ion-item>
-                  <ion-label position="floating">Description</ion-label>
-                  <ion-textarea rows="4" placeholder="fill up description here..." [(ngModel)]="item.symptom.description"></ion-textarea>
-                </ion-item>
-              </ion-card>
+      <ion-row *ngFor="let item of getArray(globalItem.id); let i = index;" style="border-bottom: 1px solid black" 
+      [ngClass]="{'blur': globalItem.toggle}">
+
+      <!-- first column aka symptom -->
+        <ion-col [size]="checked.length > 0 ? 5.5 : 6" [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}"
+        (press)="pressEvent('Symptom', item, globalItem.id);" (click)="checked.length > 0 && clickEvent('Symptom', item, globalItem.id)">
+            <ion-card (click)="checked.length == 0 && presentActionSheet('Symptom', item, globalItem.id)" [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}">
+              <img class="imgCircle" [src]="item.symptom.img" /> <!-- https://stackoverflow.com/questions/45263542/ngmodel-value-in-img-src-ionic-3 -->
+              <p class="imgCircleText"> {{item.symptom.text}} </p>
+            </ion-card>
+            <ion-card>
+              <ion-item no-padding class="yellowItem">
+                <ion-textarea rows="4" placeholder="fill up description here..." [readonly]="item.combined[0]?.whatsapp"
+                [(ngModel)]="item.symptom.description" [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}"></ion-textarea>
+              </ion-item>
+            </ion-card>
+        </ion-col>
+
+        <!-- for each second column aka action -->
+        <ng-container *ngFor="let x of item.combined; let actIndex = index;">
+
+          <ion-col [size]="checked.length > 0 ? 5.5 : 6" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}" 
+            (press)="pressEvent('Action', x, globalItem.id)" (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id)" *ngIf="actIndex != 0" ></ion-col>
+
+          <ion-col [size]="checked.length > 0 ? 5.5 : 6" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}"
+            (press)="actIndex == 0 ? pressEvent('Symptom', item, globalItem.id) : pressEvent('Action', x, globalItem.id);" 
+            (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id)">
+
+            <ion-card (click)="checked.length == 0 && presentActionSheet('Action', x)" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}">
+              <img class="imgCircle" [src]="x.img" /> 
+              <p class="imgCircleText"> {{x.text}}</p>
+            </ion-card>
+
+            <ion-card>
+              <ion-item no-padding class="yellowItem">
+                <ion-textarea rows="4" placeholder="fill up description here..." [readonly]="x.whatsapp"
+                [(ngModel)]="x.description" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}"></ion-textarea>
+              </ion-item>
+            </ion-card>
+        
+
           </ion-col>
-              <ng-container *ngFor="let x of item.combined; let actIndex = index;">  
-                <ion-col size="6" *ngIf="actIndex != 0"></ion-col>
-                <ion-col size="6">
-                  <ion-card (click)="presentActionSheet('Action', x)">
-                    <img class="imgCircle" [src]="x.img" /> 
-                    <p class="imgCircleText"> {{x.text}}</p>
-                  </ion-card>
-                  <ion-card>
-                    <ion-item>
-                      <ion-label position="floating">Description</ion-label>
-                      <ion-textarea rows="4" placeholder="fill up description here..." [(ngModel)]="x.description"></ion-textarea>
-                    </ion-item>
-                  </ion-card>
-                </ion-col>
-              </ng-container>
+
+          <ion-col size="1" *ngIf="checked.length > 0" [ngClass]="{'highlight': x.whatsapp}" (click)="clickEvent('Action', x, globalItem.id)">
+            <ion-checkbox [checked]="x.whatsapp"></ion-checkbox>
+          </ion-col>
+
+        </ng-container>
+
       </ion-row>
 
 
 
-        <ion-row style="height:150px;" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!checkType(globalItem.id)"></ion-row>
+      <ion-row style="height:150px;" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!checkType(globalItem.id)"></ion-row>
 
-        <ion-row *ngIf="globalItem.toggle"> <!--https://stackoverflow.com/questions/28975673/how-to-blurcss-div-without-blur-child-element/29249483-->
-          <ion-col size="4" (click)="globalItem.toggle=!globalItem.toggle; addNewCriticalArray(globalItem.type, globalItem.id)">
+
+      <ng-container *ngIf="globalItem.toggle">  <!--https://stackoverflow.com/questions/28975673/how-to-blurcss-div-without-blur-child-element/29249483-->
+        <ion-row (click)="globalItem.toggle=!globalItem.toggle; addNewCriticalArray(globalItem.type, globalItem.id)">
+          <ion-col size="4">
             <ion-fab-button [color]="globalItem.colorBtn" style="float:right">
               <ion-icon name="add"></ion-icon>
             </ion-fab-button>
-          </ion-col>
-          <ion-col size="8">
-            <ion-label class="addLabel"> Add symptom and action</ion-label>
-          </ion-col>
-          <ion-col size="4" (click)="globalItem.toggle=!globalItem.toggle; popUp(globalItem.id);" *ngIf="checkType(globalItem.id)">
+            </ion-col>
+            <ion-col size="8">
+              <ion-label class="addLabel"> Add symptom</ion-label>
+              <br>
+              <ion-label class="addLabelTwo"> and action </ion-label>
+            </ion-col>
+        </ion-row>
+
+        <ion-row *ngIf="checkType(globalItem.id)" (click)="globalItem.toggle=!globalItem.toggle; popUp(globalItem.id);">
+          <ion-col size="4">
             <ion-fab-button [color]="globalItem.colorBtn" style="float:right">
               <ion-icon name="add"></ion-icon>
             </ion-fab-button>
@@ -180,10 +258,10 @@ ion-grid {
             <ion-label class="addLabel"> Add action</ion-label>
           </ion-col>
         </ion-row>
-
+      </ng-container>
   
       
-    </ion-grid>
+    </div>
 
 
     <!-- view page when click on one template... show icon and text only -->
