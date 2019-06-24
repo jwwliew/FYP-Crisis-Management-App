@@ -1,31 +1,37 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title style="color: white;font-weight: bold;font-size: 1.2em;padding: 0;margin: 0 16px; text-align: center;">
+    <ion-title>
       Settings
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
+<style>
+  ion-label {
+    margin-left: 6%;
+    font-weight: bold;
+  }
+</style>
 <ion-content>
-  <ion-button href="/tabs/settings/symptomAction">Move to setting page</ion-button>
+  <!-- <ion-button href="/tabs/settings/symptomAction">Move to setting page</ion-button> -->
   <!-- List of Text Items -->
-  <ion-list>
+  <ion-list lines="full">
 
-    <ion-item (click)="onClick()">
-      <ion-label>Pokémon Yellow</ion-label>
+    <ion-item (click)="onClick()" color="black">
+      <ion-icon name="md-medkit"></ion-icon>
+      <ion-label>Symptom & Action</ion-label>
     </ion-item>
-    <ion-item>
-      <ion-label>Mega Man X</ion-label>
+
+    <ion-item color="black">
+        <ion-icon name="book"></ion-icon>
+      <ion-label>Tutorial</ion-label>
     </ion-item>
-    <ion-item>
-      <ion-label>The Legend of Zelda</ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>Pac-Man</ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>Super Mario World</ion-label>
+
+    <ion-item color="black">
+      <ion-icon name="ios-information-circle"></ion-icon>
+      <ion-label>About</ion-label>
     </ion-item>
 
   </ion-list>
+
 </ion-content>

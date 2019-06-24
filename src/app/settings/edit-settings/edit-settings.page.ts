@@ -23,7 +23,9 @@ export class EditSettingsPage implements OnInit {
 
   thisForm = this.formBuilder.group({
     english: ['', Validators.required],
-    chinese: ['']
+    chinese: '',
+    malay: '',
+    tamil: ''
   })
 
   constructor(private activatedRoute: ActivatedRoute, private settingService: SettingService, public formBuilder: FormBuilder, private router:Router) { }
@@ -34,7 +36,7 @@ export class EditSettingsPage implements OnInit {
     this.selectedTab = this.activatedRoute.snapshot.paramMap.get("selectedTab");
     console.log("this selected tab = " + this.selectedTab);
     if (this.editID == "add") {
-      this.contentDetails.enName = "add new " + this.selectedTab;
+      this.contentDetails.enName = "New " + this.selectedTab;
     }
     else {
       this.settingService.getOneSetting(this.selectedTab, this.editID).then((obj) => {
@@ -42,6 +44,8 @@ export class EditSettingsPage implements OnInit {
         console.log("content = " + JSON.stringify(this.contentDetails));
         this.thisForm.controls['english'].setValue(obj[0].enName);
         this.thisForm.controls['chinese'].setValue(obj[0].chName);
+        this.thisForm.controls['malay'].setValue(obj[0].myName);
+        this.thisForm.controls['tamil'].setValue(obj[0].tmName);
       })
     }
     // this.thisForm = this.formBuilder.group({
@@ -54,7 +58,9 @@ export class EditSettingsPage implements OnInit {
     let newValues = {
       id: this.editID,
       enName: value.english,
-      chName: value.chinese
+      chName: value.chinese,
+      myName: value.malay,
+      tmName: value.tamil
     }
     if (this.editID == "add") {
       this.settingService.addReusable(this.selectedTab, newValues).then(() => {

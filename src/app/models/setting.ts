@@ -4,4 +4,5 @@ export interface Setting {
     chName?: string;
     myName?: string;
     tmName?: string;
+    icon?: string;
 }

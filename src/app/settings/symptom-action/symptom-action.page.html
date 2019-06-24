@@ -1,18 +1,30 @@
 <ion-header>
-  <ion-toolbar color="primary">
-    <ion-title style="color: white;font-weight: bold;font-size: 1.2em;padding: 0;margin: 0 16px; text-align: center;">
+  <ion-toolbar [color]="checked.length > 0 ? 'greenCard' : 'primary'">
+    <ion-title>
       Content
     </ion-title>
     <!-- <ion-button slot="start" href="/tabs/tab1" routerDirection="back">Back</ion-button> -->
-    <ion-button slot="start">
+    <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/settings"></ion-back-button>
-    </ion-button>
-    <ion-button slot="end" *ngIf="checked.length > 0" (click)="deleteSelected()">
-      <ion-icon name="trash" md="md-trash"></ion-icon>
-    </ion-button>
+      <span *ngIf="checked.length > 0"> {{checked.length}} </span>
+    </ion-buttons>
+    <ion-buttons slot="end" *ngIf="checked.length > 0" (click)="deleteSelected()">
+        <ion-icon name="trash" style="font-size: 24px; margin-right:18px;"></ion-icon>
+    </ion-buttons>
+    <ion-buttons slot="end" *ngIf="checked.length == 0">
+      <ion-button (click)="goToAddPage()">
+        New
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
+<style>
+  .list-md {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+</style>
 <ion-content>
   <ion-grid style="border-bottom: 1px solid coral">
     <ion-row> 
@@ -30,25 +42,26 @@
     </ion-row>
   </ion-grid>
 
-  <ion-list *ngIf="selectedTab == 'Symptom'">
-    <ion-item *ngFor="let item of symptomList | async; let i = index" (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)">
-        <ion-checkbox *ngIf="checked.length > 0" [(ngModel)]="item.checked" (ionChange)="check($event, item)"></ion-checkbox>
+  <ion-list *ngIf="selectedTab == 'Symptom'" lines="full">
+    <ion-item *ngFor="let item of symptomList | async; let i = index" (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)" [color]="item.checked && 'greenCard'">
       {{item.enName}}
+      <ion-checkbox mode="ios" slot="end" *ngIf="checked.length > 0" [(ngModel)]="item.checked" (ionChange)="check(item)"></ion-checkbox>
     </ion-item>
   </ion-list>
 
-  <ion-list *ngIf="selectedTab == 'Action'">
-    <ion-item *ngFor="let item of actionList | async; let i = index" (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)">
-        <ion-checkbox *ngIf="checked.length > 0" [(ngModel)]="item.checked" (ionChange)="check($event, item)"></ion-checkbox>
+  <ion-list *ngIf="selectedTab == 'Action'" lines="full">
+    <ion-item *ngFor="let item of actionList | async; let i = index" (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)" [color]="item.checked && 'greenCard'">
       {{item.enName}}
+      <ion-checkbox mode="ios" slot="end" *ngIf="checked.length > 0" [(ngModel)]="item.checked" (ionChange)="check(item)"></ion-checkbox>
     </ion-item>
   </ion-list>
 
   <!-- fab placed to the top end -->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="goToAddPage()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
-  </ion-fab>
+  </ion-fab> 
+  -->
   
 </ion-content>

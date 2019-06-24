@@ -15,13 +15,7 @@ export class ViewSettingsPage implements OnInit {
   }
 
   onClick() {
-    this.event.publish("name", "hello from setting page");
     this.router.navigateByUrl('/tabs/settings/symptomAction'); //routing start from root level
-    console.log("clicked on symp");
-    
   }
 
-  // ionViewDidLeave() {
-  //   this.event.publish("name", "hello from setting page");
-  // }
 }

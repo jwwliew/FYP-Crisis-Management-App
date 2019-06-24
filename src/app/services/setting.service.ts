@@ -28,10 +28,12 @@ export class SettingService {
   iconArray = ["assets/cough.svg", "assets/ambulance.svg", "assets/medication.svg", "assets/noshortness.svg", "assets/temperature.svg"]
 
   addReusable(type, item) {
-    var settingObj = {
+    var settingObj: Setting = {
       id: uuid(),
       enName: item.enName,
       chName: item.chName,
+      myName: item.myName,
+      tmName: item.tmName,
       icon: this.iconArray[Math.floor(Math.random() * this.iconArray.length)]
     };
     console.log("adding reusable item = " + JSON.stringify(item));

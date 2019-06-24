@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar mode="ios">
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
@@ -13,25 +13,24 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <h1>selected tab: {{selectedTab}} </h1>
-  editSettings of {{editID}}
-  <p> {{contentDetails.enName}} </p>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tooltip.js/1.3.2/tooltip.min.js"></script>
-
 <style>
-.change{
-    --background-color: transparent !important;
-    --outline: none !important;
-}
+  .imgCircle {
+    border-radius: 50%;
+    height: 33%;
+    margin: 0 auto;
+    margin-top: 6%;
+  }
 </style>
 
-<script>
-  var x = document.querySelector(".change");
-  console.warn(x);
-  console.error("HELLO");
-</script>
+<ion-content>
+    <!-- <h1>selected tab: {{selectedTab}} </h1>
+    editSettings of {{editID}}
+    <p> {{contentDetails.enName}} </p> 
+    -->
+    
+  <ion-img class="imgCircle" src="assets/cough.svg"></ion-img>
+
+
   <!-- <ion-input type="text" [(ngModel)]="contentDetails.enName"></ion-input> -->
   <form [formGroup]="thisForm" (ngSubmit)="save(thisForm.value)">
 
@@ -70,6 +69,15 @@
       <ion-input type="text" formControlName="chinese"></ion-input>
     </ion-item>
 
+    <ion-item>
+      <ion-label color="secondary" position="floating"> Malay </ion-label>
+      <ion-input type="text" formControlName="malay"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label color="secondary" position="floating"> Tamil </ion-label>
+      <ion-input type="text" formControlName="tamil"></ion-input>
+    </ion-item>
     <!-- <ion-button class="submit-btn" expand="block" type="submit" [disabled]="!thisForm.valid">Update</ion-button> --> 
     <!-- https://stackoverflow.com/questions/49336255/how-can-i-submit-my-form-when-clicking-on-go-button-in-ionic-3-framework -->
   </form>
