@@ -90,6 +90,12 @@ export class NewTemplatesPage implements OnInit {
     if (this.checked.length == 0) {
       if (type == 'Symptom') {
         console.warn("whole symptom = " + JSON.stringify(thisObject, null, 2));
+        if (thisObject.combined.length == 0) {
+          thisObject.combined = [{
+            id: uuid(),
+            temporary: true
+          }]
+        }
         thisObject.combined.forEach(element => {
           element.whatsapp = true;
           element.arrayID = arrayID;
@@ -144,9 +150,21 @@ export class NewTemplatesPage implements OnInit {
 
   deleteArray() {
     this.checked.forEach(element => {
+      console.error("deleting this element === " + JSON.stringify(element,null,2));
       let thisArray = this.getArray(element.arrayID);
-      let index = thisArray[0].combined.findIndex(x => x.id == element.id);
-      thisArray[0].combined.splice(index, 1);
+      console.error("this array retrieved = " + JSON.stringify(thisArray,null,2));
+      console.warn(thisArray[0].combined[0])
+      // let index = thisArray[0].combined.findIndex(x => x.id == element.id);
+      // let index = thisArray.findIndex(x => x.combined.findIndex(y => y.id == element.id));
+      let index;
+      thisArray.map((x, keyIndex) => {
+        var found = x.combined.some(y => y.id == element.id)
+        if (found) index = keyIndex;
+      });
+      console.error("index === " + index);
+      let arrayIndex = thisArray[index].combined.findIndex(y => y.id == element.id);
+      console.error("array index ---- " + arrayIndex);
+      thisArray[index].combined.splice(arrayIndex, 1);
     });
     this.criticalArray = this.criticalArray.filter(x => x.combined.length !== 0);
     this.warningArray = this.warningArray.filter(x => x.combined.length !== 0);
@@ -251,6 +269,8 @@ export class NewTemplatesPage implements OnInit {
           console.error("element combined === " + JSON.stringify(element,null,2));
           delete element.arrayID;
           delete element.whatsapp;
+            // delete element.id;
+            // delete element.temporary;
           if (element.text == "Action") {
             x.combined.splice(pos,1);
           }
@@ -529,12 +549,27 @@ export class NewTemplatesPage implements OnInit {
   backUpWarningArray = [];
   callEdit() {
     console.log("edit is called " + this.templateID);
+    let newAction = {
+      id: uuid(),
+      text: "Action",
+      type: "Action",
+      img: "assets/empty.svg",
+      description: ""
+    }
     this.backUpCriticalArray = JSON.parse(JSON.stringify(this.criticalArray)); //need to deep copy to remove reference
     // this.backUpCriticalArray = [...this.criticalArray];
     // this.backUpCriticalArray = this.criticalArray.slice(0);
     // this.backUpCriticalArray = this.criticalArray.map(object => { return [...object]})
     this.backUpWarningArray = this.warningArray.slice();
     console.log("critical array === " + JSON.stringify(this.backUpCriticalArray, null, 2))
+    let totalArray = [this.criticalArray, this.warningArray]
+    totalArray.forEach(element => {
+      element.forEach(array => {
+        if (array.combined.length == 0) {
+          array.combined.push(newAction);
+        }
+      });
+    })
     this.editPage = true;
     return "hello"
   }
