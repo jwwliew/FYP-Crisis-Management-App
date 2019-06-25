@@ -10,44 +10,56 @@ const key = "plan";
   providedIn: 'root'
 })
 export class PlanService {
+  public items = [];
+  constructor(private storage: Storage) {
+    this.items = [
 
-  constructor(private storage: Storage) { }
+    ];
+  }
 
+  //search
+  filterItems(items) {
+    return this.items.filter(item => {
+      return item.title.toLowerCase().indexOf(items.toLowerCase()) > -1;
+    });
+  }
   //get all
   getAllPlan() {
     return this.storage.get(key);
+    console.log(this.items);
   }
-  /*
-    //filter 
-    getPlanFilter(key) {
-      return this.storage.get(id).then(result => {
-        return result.filter(item => item.id === id);
-      });
-  
-    }
-  */
+
+  getPlanFilter() {
+    return this.storage.get(key).then(result => {
+      return result.filter(item => item);
+    });
+
+  }
+
   //insert
   //newitem= pname, Details--->
-  addPlanDetails(newitem, pnric, tcsname, tcscontact) {
+  addPlanDetails(pname, pnric, tcsname, tcscontact) {
     return this.storage.get(key).then((items) => {
       let details = {
-        name: newitem,
+        name: pname,
         nric: pnric,
         cname: tcsname,
         ccontact: tcscontact
       }
+      console.log(details)
       if (items) {
         items.push(details);
         return this.storage.set(key, items);
       } else {
         return this.storage.set(key, [details]);
+
       }
     });
   }
-//new plan
+  //new plan
   addNewPlan(newitem) {
     return this.storage.get(key).then((items) => {
-
+     
       if (items) {
         items.push(newitem);
         return this.storage.set(key, items);
@@ -56,6 +68,18 @@ export class PlanService {
       }
     });
   }
+//add language
+addLanguage(newitem) {
+  return this.storage.get(key).then((items) => {
+   
+    if (items) {
+      items.push(newitem);
+      return this.storage.set(key, items);
+    } else {
+      return this.storage.set(key, [newitem]);
+    }
+  });
+}
 
   //edit
   editPlan(item) {

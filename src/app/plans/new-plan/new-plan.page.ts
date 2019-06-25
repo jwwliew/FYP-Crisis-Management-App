@@ -15,14 +15,25 @@ export class NewPlanPage implements OnInit {
 
   planName: any;
 
+
   ngOnInit() {
   }
 
+  globalLanguage = [[0, "English"], [1, "中文"], [2, "Malay"], [3, "Tamil"]];
+  defaultLanguage = 0;
+
+  selectRadio() {
+    console.log("selected " + this.defaultLanguage);
+    this.PlanService.addLanguage(this.defaultLanguage).then(() => { }
+    )
+  };
+
   nextPage() {
     console.log(this.planName)
-        this.PlanService.addNewPlan(this.planName).then(() => {
-      this.router.navigateByUrl('tabs/plans/details');
-    });
+    // this.router.navigate (
+    //  ['/tabs/plans/details',this.planName]
+    this.router.navigateByUrl('tabs/plans/details/' + this.planName);
+    //)
   }
 
 }

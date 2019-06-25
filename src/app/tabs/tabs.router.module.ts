@@ -19,7 +19,7 @@ const routes: Routes = [
                         loadChildren: '../plans/new-plan/new-plan.module#NewPlanPageModule'
                     },
                     {
-                        path: 'details',
+                        path: 'details/:id',
                         loadChildren: '../plans/plan-details/plan-details.module#PlanDetailsPageModule'
                     }
 

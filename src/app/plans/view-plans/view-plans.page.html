@@ -1,50 +1,56 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title style="color: white;font-weight: bold;font-size: 1.2em;padding: 0;margin: 0 16px; text-align: center;">
-      <ion-icon name="add" style="float: left" (click)="onClick()"></ion-icon>Plans <ion-icon name="funnel" ></ion-icon>
+    <ion-title>
+      <ion-icon name="add" style="float:left" (click)="onClick()"></ion-icon>Plans
     </ion-title>
+    <ion-icon name="funnel" style="float: right" (click)="presentActionSheet()"></ion-icon>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  
+
   <!----THIS IS SEARCH BAR---->
-  <ion-searchbar></ion-searchbar>
-   <!-----------cate---------------------->
+  <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="setFilteredItems()"></ion-searchbar>
+  <!-----------cate---------------------->
   <div class="row">
-      &nbsp;&nbsp; Name &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      &nbsp;Contact&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp; Date
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name &nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;Contact&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Date
   </div>
+
   <!-----------LIST---------------------->
   <ion-list lines="none">
-    <button no-margin no-padding style="height: auto;width: 100%;;background-color: white" (click)="goToTestPage()">
+    
       <ion-card class="welcome-card" style="height: 1%">
         <ion-card-header color="tertiary">
         </ion-card-header>
-        
+        <!-- LOOP HERE -->
         <ion-card-content>
+          <ion-item *ngFor="let item of details">
+                 <h6>{{item.name}}</h6>
+                 <h6>{{item.ccontact}}</h6>
                  
+          </ion-item>
+
         </ion-card-content>
       </ion-card>
-    </button>
-    <button no-margin no-padding style="height: auto;width: 100%;;background-color: white" (click)="goToTestPage()">
+    
       <ion-card class="welcome-card">
         <ion-card-header color="tertiary">
         </ion-card-header>
         <ion-card-content>
-                 <p>Jery           2</p>
+          <p>Jery 2</p>
         </ion-card-content>
       </ion-card>
-    </button>
-    <button no-margin no-padding style="height: auto;width: 100%;;background-color: white" (click)="goToTestPage()">
+    
       <ion-card class="welcome-card" style="height: 1%">
         <ion-card-header color="tertiary">
         </ion-card-header>
         <ion-card-content>
-                 <p>Jery           3</p>
+          <p>Jery 3</p>
         </ion-card-content>
       </ion-card>
-    </button>
-  </ion-list>
   
-</ion-content>   
+  </ion-list>
+
+</ion-content>

@@ -1,8 +1,9 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title style="color: white;font-weight: bold;font-size: 1.2em;padding: 0;margin: 0 16px; text-align: center;">
-      New Crisis Plan<ion-icon name="arrow-forward" (click)="nextPage()" style="position:right;"></ion-icon>
+    <ion-title>
+      New Crisis Plan
     </ion-title>
+    <ion-icon name="arrow-forward" (click)="nextPage()" style="float:right;"></ion-icon>
   </ion-toolbar>
 </ion-header>
 
@@ -16,25 +17,11 @@
 
       <ion-card-content>
         <ion-list>
-          <ion-radio-group>
-            <ion-item>
-              <ion-label>English</ion-label>
-              <ion-radio slot="end" value="el" checked></ion-radio>
-            </ion-item>
-            <hr>
-            <ion-item>
-              <ion-label>Chinese</ion-label>
-              <ion-radio slot="end" value="cn"></ion-radio>
-            </ion-item>
-            <hr>
-            <ion-item>
-              <ion-label>Malay</ion-label>
-              <ion-radio slot="end" value="ml"></ion-radio>
-            </ion-item>
-            <hr>
-            <ion-item>
-              <ion-label>Tmail</ion-label>
-              <ion-radio slot="end" value="tl"></ion-radio>
+          <ion-radio-group [(ngModel)]="defaultLanguage" (ionChange)="selectRadio()">
+            <ion-item *ngFor="let thisLanguage of globalLanguage; let i = index" [lines]="i == 3 ? 'none' : 'full'" [ngStyle]="thisLanguage == defaultLanguage && {'font-weight': 'bold'}" button>
+              <ion-label>{{thisLanguage[1]}}</ion-label>
+              <ion-radio [value]="thisLanguage[0]" color="originalPrimary" mode="md"></ion-radio>
+              <ion-ripple-effect></ion-ripple-effect>
             </ion-item>
           </ion-radio-group>
         </ion-list>

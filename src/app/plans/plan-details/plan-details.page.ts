@@ -1,8 +1,8 @@
 import { Component, OnInit, NgZone } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { PlanService } from './../../services/plan.service';
 import { IonRadio, IonSelect } from '@ionic/angular';
-
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-plan-details',
@@ -11,19 +11,25 @@ import { IonRadio, IonSelect } from '@ionic/angular';
 })
 export class PlanDetailsPage implements OnInit {
 
-  constructor(private router: Router, private PlanService: PlanService, private NgZone: NgZone) { }
+  constructor(private router: Router, private PlanService: PlanService, private NgZone: NgZone, public toastController: ToastController, private activatedRoute: ActivatedRoute) { }
   pNric: any;
   pName: any;
   tcsName: any;
-  tcsContact:any;
+  tcsContact: any;
+  planName: any;
 
   ngOnInit() {
+  
+    this.planName = this.activatedRoute.snapshot.paramMap.get('id');
+   
   }
   ;
 
   PlanDetails() {
-    console.log(this.pName,this.pNric,this.tcsName,this.tcsContact);
-    this.PlanService.addPlanDetails(this.pName,this.pNric,this.tcsName,this.tcsContact).then(() => {
+    console.log(this.pName, this.pNric, this.tcsName, this.tcsContact);
+    this.PlanService.addPlanDetails(this.pName, this.pNric, this.tcsName, this.tcsContact).then(() => {
     });
   }
+
+
 }
