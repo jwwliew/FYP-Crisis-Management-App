@@ -19,59 +19,6 @@ export class NewTemplatesPage implements OnInit {
   templateID: any;
   editPage = false;
 
-  settingObj: Setting[] = [
-    {
-      id: uuid(),
-      enName: "Fever from pdf",
-      chName: "发烧",
-      myName: "fever malay",
-      tmName: "fever tamil",
-      icon: "assets/pdfcough.png",
-    },
-    {
-      id: uuid(),
-      enName: "No breath from pdf",
-      chName: "没有气息",
-      myName: "no breadth malay",
-      tmName: "no breadth tamil",
-      icon: "assets/pdfnobreath.png"
-    },
-    {
-      id: uuid(),
-      enName: "Got breath",
-      chName: "有呼吸",
-      myName: "got breath malay",
-      tmName: "got breath tamil",
-      icon: "assets/pdfgotbreath.png"
-    }
-  ]
-  actionObj: SettingAction[] = [
-    {
-      id: uuid(),
-      enName: "Call 995",
-      chName: "呼叫995",
-      myName: "call 995 malay",
-      tmName: "call 995 tamil",
-      icon: "assets/pdfcall995.png",
-    },
-    {
-      id: uuid(),
-      enName: "Continue regular medications",
-      chName: "继续定期服用中药",
-      myName: "continue regular med malay",
-      tmName: "continue regular med tamil",
-      icon: "assets/pdfcontinuemed.png"
-    },
-    {
-      id: uuid(),
-      enName: "Maintain usual activities/exercise levels",
-      chName: "保持通常的活动/运动水平",
-      myName: "maintain usual activities malay",
-      tmName: "maintain usual activities tamil",
-      icon: "assets/pdfmaintain.png"
-    }
-  ]
-
   settingSymptom:Setting[] = [];
   settingAction = [];
 
@@ -80,6 +27,27 @@ export class NewTemplatesPage implements OnInit {
 
   selectRadio() {
     console.error("selected " + this.defaultLanguage);
+    console.error("this setting symptom === " + JSON.stringify(this.settingSymptom, null, 2));
+    let completedArray = [this.criticalArray, this.warningArray, this.goodArray];
+    console.error("completed array ===== " + JSON.stringify(completedArray, null, 2));
+    completedArray.forEach(eachArr => {
+
+      eachArr.forEach(x => {
+
+        let oneSetting = this.settingSymptom.find(thisSetting => thisSetting.id == x.symptom.symptomID);
+        oneSetting ? 
+          x.symptom.text = [oneSetting.enName, oneSetting.chName, oneSetting.myName, oneSetting.tmName][this.defaultLanguage] || oneSetting.enName
+          : x.symptom.text = ["Symptom", "症状", "gejala", "அறிகுறி"][this.defaultLanguage];
+        
+        x.combined.forEach(element => {
+          let oneAction = this.settingAction.find(thisSetting => thisSetting.id == element.actionID);
+          oneAction ?
+            element.text = [oneAction.enName, oneAction.chName, oneAction.myName, oneAction.tmName][this.defaultLanguage] || oneAction.enName
+            : element.text = ["Action", "行动", "tindakan", "நடவடிக்கை"][this.defaultLanguage];
+        });
+      })
+    })
+    console.error("mapparrr ---> " + JSON.stringify(completedArray, null, 2));
   }
 
   constructor(private actionSheetCtrl: ActionSheetController, private router: Router, private templateStorage: TemplateService, private alertCtrl: AlertController, 
@@ -94,21 +62,27 @@ export class NewTemplatesPage implements OnInit {
         console.log(item.template);
         this.criticalArray = item.template.filter(element =>  element.name == "criticalArray")
         this.warningArray = item.template.filter(element => element.name == "warningArray");
+        this.goodArray = item.template.filter(element => element.name =="goodArray");
         console.log("this critical array = " + JSON.stringify(this.criticalArray, null, 2))
       })
   
       let promises = [this.settingStorage.getType("Symptom"), this.settingStorage.getType("Action")];
       Promise.all(promises).then(data => {
-        this.settingSymptom = data[0] ? [...this.settingObj, ...data[0]] : [...this.settingObj];
-        this.settingAction = data[1] ? [...this.actionObj, ...data[1]] : [...this.actionObj];
+        // console.error("data promises " + JSON.stringify(data,null,2));
+        this.settingSymptom = data[0];
+        this.settingAction = data[1];
+        // this.settingSymptom = data[0] ? [...this.settingObj, ...data[0]] : [...this.settingObj];
+        // this.settingAction = data[1] ? [...this.actionObj, ...data[1]] : [...this.actionObj];
         console.error("setting symptom data[0] " + JSON.stringify(this.settingSymptom, null, 2));
       })
     }
 
   ngOnInit() {
   }
+
   criticalArray = [];
   warningArray = [];
+  goodArray = [];
 
   checked = [];
 
@@ -161,7 +135,7 @@ export class NewTemplatesPage implements OnInit {
       console.error("deleting this element === " + JSON.stringify(element,null,2));
       let thisArray = this.getArray(element.arrayID);
       console.error("this array retrieved = " + JSON.stringify(thisArray,null,2));
-      console.warn(thisArray[0].combined[0])
+      console.warn(thisArray[0].combined[0]);
       // let index = thisArray[0].combined.findIndex(x => x.id == element.id);
       // let index = thisArray.findIndex(x => x.combined.findIndex(y => y.id == element.id));
       let index;
@@ -176,6 +150,7 @@ export class NewTemplatesPage implements OnInit {
     });
     this.criticalArray = this.criticalArray.filter(x => x.combined.length !== 0);
     this.warningArray = this.warningArray.filter(x => x.combined.length !== 0);
+    this.goodArray = this.goodArray.filter(x => x.combined.length !== 0);
     console.error("after del critical array = " + JSON.stringify(this.criticalArray,null, 2));
     console.error("after del warning array = " + JSON.stringify(this.warningArray,null, 2));
     this.checked.length = 0;
@@ -211,21 +186,23 @@ export class NewTemplatesPage implements OnInit {
         //icon: "assets/icon/cough.png",
         cssClass: 'customCSSClass'+ index,
         handler: () => {
-          console.log(`${element.enName} clicked`);
-          console.log(itemToUpdate)
+          console.log(`${element.enName} clicked and full element --> ` + JSON.stringify(element, null, 2));
+          console.log("item to update ==> " + JSON.stringify(itemToUpdate, null, 2));
       //put zone here
           this.zone.run(() => {
             if (type == "Symptom") {
               itemToUpdate.symptom.text = nameLanguage;
               itemToUpdate.symptom.img = element.icon;
+              itemToUpdate.symptom.symptomID = element.id;
             }
             else {
               console.log("update action?");
               itemToUpdate.text = nameLanguage;
               itemToUpdate.img = element.icon;
+              itemToUpdate.actionID = element.id;
             }
           })
-          console.log("item to update " + JSON.stringify(itemToUpdate));
+          console.warn("item to update " + JSON.stringify(itemToUpdate, null, 2));
           // console.log("whole array = " + JSON.stringify(this.criticalArray));
         }
       }
@@ -250,7 +227,8 @@ export class NewTemplatesPage implements OnInit {
         text: "Symptom",
         type: "Symptom",
         img: "assets/empty.svg",
-        description: ""
+        description: "",
+        symptomID: "",
       },
       combined: [
         {
@@ -258,7 +236,8 @@ export class NewTemplatesPage implements OnInit {
           text: "Action",
           type: "Action",
           img: "assets/empty.svg",
-          description: ""
+          description: "",
+          actionID: ""
         }
       ]
     }
@@ -267,8 +246,8 @@ export class NewTemplatesPage implements OnInit {
   }
 
   addTemplate(templateNameFromInput, addOrUpdate) {
-    let completedArray = [this.criticalArray, this.warningArray];
-    let name = ["criticalArray", "warningArray"];
+    let completedArray = [this.criticalArray, this.warningArray, this.goodArray];
+    let name = ["criticalArray", "warningArray", "goodArray"];
     console.log("critical array = " + JSON.stringify(this.criticalArray));
     console.log("warning array = " + JSON.stringify(this.warningArray));
     let maparr = completedArray.map((eachArr, index) => { //https://stackoverflow.com/questions/53817342/map-and-filter-mapped-array-in-javascript
@@ -329,6 +308,7 @@ export class NewTemplatesPage implements OnInit {
         });
         this.criticalArray = val.find(x => x.id == this.templateID).templates[0];
         this.warningArray = val.find(x => x.id == this.templateID).templates[1];
+        this.goodArray = val.find(x => x.id == this.templateID).templates[2];
         console.warn("after filter " + JSON.stringify(this.criticalArray,null,2))
         this.editPage = false;
         this.viewPage = true;
@@ -350,6 +330,7 @@ export class NewTemplatesPage implements OnInit {
   goToViewPageFromEdit() {
     this.criticalArray = [...this.backUpCriticalArray];
     this.warningArray = [...this.backUpWarningArray];
+    this.goodArray = [...this.backUpGoodArray];
     console.log("going back to view page ... " + JSON.stringify(this.backUpCriticalArray,null,2));
     this.editPage = false;
     this.viewPage = true;
@@ -452,7 +433,8 @@ export class NewTemplatesPage implements OnInit {
                   text: "Action",
                   type: "Action",
                   img: "assets/empty.svg",
-                  description: ""
+                  description: "",
+                  actionID: ""
                 }
                 x.combined.push(newAction);
                 this.presentActionSheet("updateAction", newAction)
@@ -527,6 +509,13 @@ export class NewTemplatesPage implements OnInit {
       colorBtn: "warning",
       toggle: false,
       textCard: "Caution: Symptom Management"
+    },
+    {
+      id: 2,
+      type: "Good",
+      colorCard: "success",
+      toggle: false,
+      textCard: "I'm feeling well"
     }
   ]
 
@@ -541,7 +530,7 @@ export class NewTemplatesPage implements OnInit {
   }
 
   getArray(id) {
-    let allArray = [this.criticalArray, this.warningArray]
+    let allArray = [this.criticalArray, this.warningArray, this.goodArray]
     return allArray[id];
   }
 
@@ -572,7 +561,8 @@ export class NewTemplatesPage implements OnInit {
 
   backUpCriticalArray = [];
   backUpWarningArray = [];
-  
+  backUpGoodArray = [];
+
   callEdit() {
     console.log("edit is called " + this.templateID);
     let newAction = {
@@ -580,15 +570,18 @@ export class NewTemplatesPage implements OnInit {
       text: "Action",
       type: "Action",
       img: "assets/empty.svg",
-      description: ""
+      description: "",
+      actionID: ""
     }
     this.backUpCriticalArray = JSON.parse(JSON.stringify(this.criticalArray)); //need to deep copy to remove reference
     // this.backUpCriticalArray = [...this.criticalArray];
     // this.backUpCriticalArray = this.criticalArray.slice(0);
     // this.backUpCriticalArray = this.criticalArray.map(object => { return [...object]})
     this.backUpWarningArray = this.warningArray.slice();
-    console.log("critical array === " + JSON.stringify(this.backUpCriticalArray, null, 2))
-    let totalArray = [this.criticalArray, this.warningArray]
+    this.backUpGoodArray = [...this.goodArray];
+
+    console.log("critical array === " + JSON.stringify(this.backUpCriticalArray, null, 2));
+    let totalArray = [this.criticalArray, this.warningArray, this.goodArray];
     totalArray.forEach(element => {
       element.forEach(array => {
         if (array.combined.length == 0) {

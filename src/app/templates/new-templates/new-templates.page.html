@@ -147,7 +147,7 @@ ion-textarea{
     </ion-card-header>
     <ion-list>
       <ion-radio-group [(ngModel)]="defaultLanguage" (ionChange)="selectRadio()">
-        <ion-item *ngFor="let thisLanguage of globalLanguage; let i = index" [lines]="i == 3 ? 'none' : 'full'" [ngStyle]="thisLanguage == defaultLanguage && {'font-weight': 'bold'}" button>
+        <ion-item *ngFor="let thisLanguage of globalLanguage; let i = index" [lines]="i == 3 ? 'none' : 'full'" [ngStyle]="thisLanguage[0] == defaultLanguage && {'font-weight': 'bold'}" button>
           <ion-label>{{thisLanguage[1]}}</ion-label>
           <ion-radio [value]="thisLanguage[0]" color="originalPrimary" mode="md"></ion-radio>
           <ion-ripple-effect></ion-ripple-effect>
@@ -239,7 +239,7 @@ ion-textarea{
           </ion-col>
 
           <ion-col size="1.5" *ngIf="checked.length > 0" [ngClass]="{'highlight': x.whatsapp}" (click)="clickEvent('Action', x, globalItem.id)">
-            <ion-checkbox [checked]="x.whatsapp" mode="ios"></ion-checkbox>
+            <ion-checkbox [checked]="x.whatsapp" mode="ios" color="success"></ion-checkbox>
           </ion-col>
 
         </ng-container>

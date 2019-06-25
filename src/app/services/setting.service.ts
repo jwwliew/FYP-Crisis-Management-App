@@ -60,8 +60,8 @@ export class SettingService {
   getOneSetting(type, id) {
     console.log("type = " + type);
     return this.getType(type).then((items: Setting[]) => {
-      console.log("items = " + JSON.stringify(items));
-      return items.filter(item => item.id == id)
+      console.error("items = " + JSON.stringify(items, null, 2));
+      return items.find(item => item.id == id) //previously used filter returns array need [0] to access in editSettings page
     })
   }
 
