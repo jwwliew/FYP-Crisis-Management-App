@@ -40,12 +40,13 @@ export class EditSettingsPage implements OnInit {
     }
     else {
       this.settingService.getOneSetting(this.selectedTab, this.editID).then((obj) => {
-        this.contentDetails = obj[0];
+        console.error("OBJ --->> " + JSON.stringify(obj,null,2))
+        this.contentDetails = obj;
         console.log("content = " + JSON.stringify(this.contentDetails));
-        this.thisForm.controls['english'].setValue(obj[0].enName);
-        this.thisForm.controls['chinese'].setValue(obj[0].chName);
-        this.thisForm.controls['malay'].setValue(obj[0].myName);
-        this.thisForm.controls['tamil'].setValue(obj[0].tmName);
+        this.thisForm.controls['english'].setValue(obj.enName);
+        this.thisForm.controls['chinese'].setValue(obj.chName);
+        this.thisForm.controls['malay'].setValue(obj.myName);
+        this.thisForm.controls['tamil'].setValue(obj.tmName);
       })
     }
     // this.thisForm = this.formBuilder.group({

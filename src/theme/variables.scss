@@ -95,6 +95,13 @@
   --ion-color-originalPrimary-contrast-rgb: 255,255,255;
   --ion-color-originalPrimary-shade: #3171e0;
   --ion-color-originalPrimary-tint: #4c8dff;
+
+  --ion-color-testColor: #9de1fe;
+  --ion-color-testColor-rgb: 157,225,254;
+  --ion-color-testColor-contrast: #000000;
+  --ion-color-testColor-contrast-rgb: 0,0,0;
+  --ion-color-testColor-shade: #8ac6e0;
+  --ion-color-testColor-tint: #a7e4fe;
 }
 
 // .ion-color-redCard {
@@ -106,7 +113,7 @@
 //   --ion-color-tint: var(--ion-color-redCard-tint) !important;
 // }
 
-$customColors: ('redCard', 'greenCard', 'originalPrimary'); //https://medium.com/@paulstelzer/ionic-4-how-to-add-more-colors-and-use-them-as-color-in-buttons-and-more-7175ab4ae4e7
+$customColors: ('redCard', 'greenCard', 'originalPrimary', 'testColor'); //https://medium.com/@paulstelzer/ionic-4-how-to-add-more-colors-and-use-them-as-color-in-buttons-and-more-7175ab4ae4e7
 @each $color in $customColors {
   .ion-color-#{$color} {
     --ion-color-base: var(--ion-color-#{$color}) !important;
