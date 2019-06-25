@@ -62,16 +62,10 @@ export class EditSettingsPage implements OnInit {
       myName: value.malay,
       tmName: value.tamil
     }
-    if (this.editID == "add") {
-      this.settingService.addReusable(this.selectedTab, newValues).then(() => {
-        this.goBack();
-      })
-    }
-    else {
-      this.settingService.updateOneSetting(this.selectedTab, newValues).then(() => {
-        this.goBack();
-      })
-    }
+    let functionToCall = this.editID == "add" ? this.settingService.addReusable(this.selectedTab, newValues) : this.settingService.updateOneSetting(this.selectedTab, newValues)
+    functionToCall.then(() => {
+      this.goBack();
+    })
   }
 
   goBack() {

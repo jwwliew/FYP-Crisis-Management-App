@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { TemplateService } from 'src/app/services/template.service';
 import { TemplatePopComponent } from '../template-pop/template-pop.component';
 import { SettingService } from 'src/app/services/setting.service';
-import { Setting } from 'src/app/models/setting';
+import { Setting, SettingAction } from 'src/app/models/setting';
 
 @Component({
   selector: 'app-new-templates',
@@ -19,43 +19,68 @@ export class NewTemplatesPage implements OnInit {
   templateID: any;
   editPage = false;
 
-  settingObj = [
+  settingObj: Setting[] = [
     {
       id: uuid(),
       enName: "Fever from pdf",
-      icon: "assets/pdfcough.png"
+      chName: "发烧",
+      myName: "fever malay",
+      tmName: "fever tamil",
+      icon: "assets/pdfcough.png",
     },
     {
       id: uuid(),
       enName: "No breath from pdf",
+      chName: "没有气息",
+      myName: "no breadth malay",
+      tmName: "no breadth tamil",
       icon: "assets/pdfnobreath.png"
     },
     {
       id: uuid(),
       enName: "Got breath",
+      chName: "有呼吸",
+      myName: "got breath malay",
+      tmName: "got breath tamil",
       icon: "assets/pdfgotbreath.png"
     }
   ]
-  actionObj = [
+  actionObj: SettingAction[] = [
     {
       id: uuid(),
-      enName: "call 995",
-      icon: "assets/pdfcall995.png"
+      enName: "Call 995",
+      chName: "呼叫995",
+      myName: "call 995 malay",
+      tmName: "call 995 tamil",
+      icon: "assets/pdfcall995.png",
     },
     {
       id: uuid(),
       enName: "Continue regular medications",
+      chName: "继续定期服用中药",
+      myName: "continue regular med malay",
+      tmName: "continue regular med tamil",
       icon: "assets/pdfcontinuemed.png"
     },
     {
       id: uuid(),
       enName: "Maintain usual activities/exercise levels",
+      chName: "保持通常的活动/运动水平",
+      myName: "maintain usual activities malay",
+      tmName: "maintain usual activities tamil",
       icon: "assets/pdfmaintain.png"
     }
   ]
 
   settingSymptom:Setting[] = [];
   settingAction = [];
+
+  globalLanguage = [[0, "English"], [1, "中文"], [2, "Malay"], [3, "Tamil"]];
+  defaultLanguage = 0;
+
+  selectRadio() {
+    console.error("selected " + this.defaultLanguage);
+  }
 
   constructor(private actionSheetCtrl: ActionSheetController, private router: Router, private templateStorage: TemplateService, private alertCtrl: AlertController, 
     private toastCtrl: ToastController, private event: Events, private popoverCtrl: PopoverController, private settingStorage: SettingService, private zone: NgZone) {
@@ -76,6 +101,7 @@ export class NewTemplatesPage implements OnInit {
       Promise.all(promises).then(data => {
         this.settingSymptom = data[0] ? [...this.settingObj, ...data[0]] : [...this.settingObj];
         this.settingAction = data[1] ? [...this.actionObj, ...data[1]] : [...this.actionObj];
+        console.error("setting symptom data[0] " + JSON.stringify(this.settingSymptom, null, 2));
       })
     }
 
@@ -88,31 +114,13 @@ export class NewTemplatesPage implements OnInit {
 
   pressEvent(type, thisObject, arrayID) {
     if (this.checked.length == 0) {
-      if (type == 'Symptom') {
-        console.warn("whole symptom = " + JSON.stringify(thisObject, null, 2));
-        if (thisObject.combined.length == 0) {
-          thisObject.combined = [{
-            id: uuid(),
-            temporary: true
-          }]
-        }
-        thisObject.combined.forEach(element => {
-          element.whatsapp = true;
-          element.arrayID = arrayID;
-          // this.checked.push(element.id);
-          this.checked.push(element);
-        });
-      }
-      else {
-        console.warn(" type = " + type)
-        thisObject.whatsapp = true;
-        thisObject.arrayID = arrayID;
-        // this.checked.push(thisObject.id);
-        this.checked.push(thisObject);
-      }
-      // this.checked.push(x.combined[0].id);
-      // x.whatsapp = true;
-      // x.combined[0].whatsapp = true;
+      let dynamicObj = type == "Symptom" ? thisObject.combined : [thisObject];
+      console.error("dynamic obj = " + JSON.stringify(dynamicObj,null, 2));
+      dynamicObj.forEach(element => {
+        element.whatsapp = true;
+        element.arrayID = arrayID;
+        this.checked.push(element);
+      });
     }
     console.error("this.checked after pressed = " + JSON.stringify(this.checked, null, 2));
   }
@@ -188,14 +196,18 @@ export class NewTemplatesPage implements OnInit {
   createButtons(itemToUpdate, type) {
     let buttons = [];
     let typeToCall = type == "Symptom" ? this.settingSymptom : this.settingAction
-    typeToCall.forEach((element, index) => {
+    typeToCall.forEach((element: Setting, index) => {
       let style = document.createElement('style'); //https://github.com/ionic-team/ionic/issues/6589
       style.type = "text/css";
       style.innerHTML = ".customCSSClass" + index + '{background: url('+ "'" + element.icon + "'" + ') no-repeat !important; padding: 40px 20% 40px 25% !important; margin-top:25px !important; background-size:80px 80px !important; margin-left: 30px !important;}';
       document.getElementsByTagName('head')[0].appendChild(style);
-      
+
+      let elementArray = [element.enName, element.chName, element.myName, element.tmName];
+      let nameLanguage = elementArray[this.defaultLanguage] || element.enName;
+
       let button = {
-        text: element.enName,
+        // text: element.enName,
+        text: nameLanguage,
         //icon: "assets/icon/cough.png",
         cssClass: 'customCSSClass'+ index,
         handler: () => {
@@ -204,12 +216,12 @@ export class NewTemplatesPage implements OnInit {
       //put zone here
           this.zone.run(() => {
             if (type == "Symptom") {
-              itemToUpdate.symptom.text = element.enName;
+              itemToUpdate.symptom.text = nameLanguage;
               itemToUpdate.symptom.img = element.icon;
             }
             else {
               console.log("update action?");
-              itemToUpdate.text = element.enName;
+              itemToUpdate.text = nameLanguage;
               itemToUpdate.img = element.icon;
             }
           })
@@ -237,7 +249,7 @@ export class NewTemplatesPage implements OnInit {
         id: uuid(),
         text: "Symptom",
         type: "Symptom",
-        img: "assets/temperature.svg",
+        img: "assets/empty.svg",
         description: ""
       },
       combined: [
@@ -260,26 +272,38 @@ export class NewTemplatesPage implements OnInit {
     console.log("critical array = " + JSON.stringify(this.criticalArray));
     console.log("warning array = " + JSON.stringify(this.warningArray));
     let maparr = completedArray.map((eachArr, index) => { //https://stackoverflow.com/questions/53817342/map-and-filter-mapped-array-in-javascript
-      console.warn("before filter + " + JSON.stringify(eachArr, null, 2));
       eachArr = eachArr.filter(data => data.symptom.text !== "Symptom");
-      // eachArr.forEach(x => x.id = uuid());
       eachArr.map(x => {
-        console.warn("x ===== " + JSON.stringify(x,null,2))
-        x.combined.forEach((element,pos) => {
-          console.error("element combined === " + JSON.stringify(element,null,2));
-          delete element.arrayID;
+        x.combined = x.combined.filter(thisAction => thisAction.text !== "Action");
+        x.combined.forEach(element => {
           delete element.whatsapp;
-            // delete element.id;
-            // delete element.temporary;
-          if (element.text == "Action") {
-            x.combined.splice(pos,1);
-          }
+          delete element.arrayID; 
         });
-        x.id = uuid(); x.name = name[index]
+        x.id = uuid(); 
+        x.name = name[index];
       });
-      console.error("after filter " + JSON.stringify(eachArr, null, 2));
       return eachArr;
+      // eachArr.forEach((x,xIndex) => {
+      //   if (x.symptom.text == "Symptom") {
+      //     eachArr.splice(xIndex, 1);
+      //   }
+      //   else {
+      //     x.combined.forEach((element,elementIndex) => {
+      //       if (element.text == "Action") {
+      //         x.combined.splice(elementIndex, 1);
+      //       }
+      //       else {
+      //         delete element.whatsapp;
+      //         delete element.arrayID;
+      //       }
+      //       x.id = uuid();
+      //       x.name = name[index];
+      //     });
+      //   }
+      // })
+      // return eachArr;
     })
+    
     console.warn("in middle watar" + JSON.stringify(completedArray[0]))
     console.error(JSON.stringify(maparr, null, 2));
     // this.criticalArray = this.criticalArray.filter(data => data.symptom.text !== "Symptom");
@@ -545,8 +569,10 @@ export class NewTemplatesPage implements OnInit {
     };
     (call[type] || call[""])();
   }
+
   backUpCriticalArray = [];
   backUpWarningArray = [];
+  
   callEdit() {
     console.log("edit is called " + this.templateID);
     let newAction = {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { Setting } from '../models/setting';
+import { Setting, SettingAction } from '../models/setting';
 
 import {v4 as uuid} from 'uuid';
 
@@ -17,10 +17,7 @@ export class SettingService {
   constructor(private storage: Storage) { }
 
   getType(type) {
-    this.thisKey = STORAGE_KEY;
-    if (type == "Action") {
-      this.thisKey = ACTION_KEY
-    }
+    this.thisKey = type == "Symptom" ? STORAGE_KEY : ACTION_KEY
     console.log("this key is " + this.thisKey);
     return this.storage.get(this.thisKey);
   }
@@ -28,14 +25,26 @@ export class SettingService {
   iconArray = ["assets/cough.svg", "assets/ambulance.svg", "assets/medication.svg", "assets/noshortness.svg", "assets/temperature.svg"]
 
   addReusable(type, item) {
-    var settingObj: Setting = {
-      id: uuid(),
-      enName: item.enName,
-      chName: item.chName,
-      myName: item.myName,
-      tmName: item.tmName,
-      icon: this.iconArray[Math.floor(Math.random() * this.iconArray.length)]
-    };
+    if (type == "Symptom") {
+      var settingObj: Setting = {
+        id: uuid(),
+        enName: item.enName,
+        chName: item.chName,
+        myName: item.myName,
+        tmName: item.tmName,
+        icon: this.iconArray[Math.floor(Math.random() * this.iconArray.length)]
+      };
+    }
+    else {
+      var settingObj: SettingAction = {
+        id: uuid(),
+        enName: item.enName,
+        chName: item.chName,
+        myName: item.myName,
+        tmName: item.tmName,
+        icon: this.iconArray[Math.floor(Math.random() * this.iconArray.length)]
+      }
+    }
     console.log("adding reusable item = " + JSON.stringify(item));
     return this.getType(type).then(result => {
       result = result || [];
@@ -71,7 +80,7 @@ export class SettingService {
     return this.getType(type).then((items: Setting[]) => {
       checkedArray.forEach(element => {
         console.log('eleemtn = ' + element);
-        items.splice(items.findIndex(item => item.id === element), 1);
+        items.splice(items.findIndex(item => item.id === element.id), 1);
       });
       return this.storage.set(this.thisKey, items);
     })

@@ -37,7 +37,7 @@
     <ion-buttons slot="end">
       <ion-icon name="trash" style="font-size: 24px; margin-right:14px;" (click)="deleteArray()"></ion-icon>
     </ion-buttons>
- 
+
   
   </ion-toolbar>
 </ion-header>
@@ -138,6 +138,23 @@ ion-textarea{
 </style>
 
 <ion-content padding>
+
+  <ion-card *ngIf="!viewPage || editPage">
+    <ion-card-header color="tertiary">
+      <ion-card-title>
+        Select Language
+      </ion-card-title>
+    </ion-card-header>
+    <ion-list>
+      <ion-radio-group [(ngModel)]="defaultLanguage" (ionChange)="selectRadio()">
+        <ion-item *ngFor="let thisLanguage of globalLanguage; let i = index" [lines]="i == 3 ? 'none' : 'full'" [ngStyle]="thisLanguage == defaultLanguage && {'font-weight': 'bold'}" button>
+          <ion-label>{{thisLanguage[1]}}</ion-label>
+          <ion-radio [value]="thisLanguage[0]" color="originalPrimary" mode="md"></ion-radio>
+          <ion-ripple-effect></ion-ripple-effect>
+        </ion-item>
+      </ion-radio-group>
+    </ion-list>
+  </ion-card>
 
   <ion-card class="welcome-card" *ngFor="let globalItem of frontViewData">
 

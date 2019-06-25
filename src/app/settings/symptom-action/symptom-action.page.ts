@@ -14,17 +14,20 @@ export class SymptomActionPage implements OnInit {
 
   selectedTab = "Symptom";
   //symptomList = ["ok", "hi"];
-  symptomList: any;
+  symptomList = [];
   //actionList = ["action", "action2"];
-  actionList: any;
+  actionList = [];
 
   checked = []
 
   pressEvent(x) {
     console.log("pressed " + JSON.stringify(x));
     if (this.checked.length == 0) {
-      this.checked.push(x.id);
-      x.checked = true; 
+      this.checked.push({
+        id: x.id,
+        selectedType: this.selectedTab
+      });
+      x.checked = true;
       console.log("length not == 0 hold");
     }
     console.log("after press checked = " + this.checked);
@@ -32,8 +35,9 @@ export class SymptomActionPage implements OnInit {
 
   check(item) { //https://forum.ionicframework.com/t/determining-if-checkbox-is-checked/68628/5, https://forum.ionicframework.com/t/how-to-check-if-checkboxes-is-checked-or-unchecked/68799/7
     console.log(item);
-    let itemID = this.checked.indexOf(item.id);
-    itemID !== -1 ? this.checked.splice(itemID, 1) : this.checked.push(item.id)
+    // let itemID = this.checked.indexOf(item.id);
+    let itemID = this.checked.findIndex(x => x.id == item.id);
+    itemID !== -1 ? this.checked.splice(itemID, 1) : this.checked.push({id: item.id, selectedType: this.selectedTab})
     console.log("Checked == " + this.checked);
   }
   
@@ -45,6 +49,17 @@ export class SymptomActionPage implements OnInit {
       this.checked.length = 0;
       this.loadItems();
     });
+  }
+
+  clearArray() {
+    this.checked.forEach(x => {
+      let thisArray = x.selectedType == "Symptom" ? this.symptomList : this.actionList
+      console.error("this array = " + JSON.stringify(thisArray,null,2))
+      let thisElement = thisArray.find(oneItem => oneItem.id == x.id);
+      console.error("this leement === " + JSON.stringify(thisElement,null,2));
+      thisElement.checked = false;
+    })
+    this.checked.length = 0;
   }
 
   constructor(private alertCtrl: AlertController, private settingService: SettingService, private ngzone: NgZone, public event: Events, private router: Router) {
@@ -59,14 +74,14 @@ export class SymptomActionPage implements OnInit {
   }
 
   loadItems() {
-    this.symptomList = this.settingService.getType("Symptom");
-    this.actionList = this.settingService.getType("Action");
+    this.settingService.getType("Symptom").then(val => this.symptomList = val);
+    this.settingService.getType("Action").then(val => this.actionList = val);
   }
 
   goToType(type) {
     this.selectedTab = type;
     console.log(`selected ${this.selectedTab} tab`);
-    this.checked.length = 0;
+    this.clearArray();
   }
 
   selectedSymptom(id) {
