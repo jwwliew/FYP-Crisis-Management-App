@@ -1,4 +1,4 @@
-import { SettingAction, Setting } from './models/setting';
+import { SettingAction, Setting } from './models/symptomaction';
 import { Component } from '@angular/core';
 
 import { Platform } from '@ionic/angular';
@@ -26,15 +26,8 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-      this.storage.get("settingStorageKey").then(val => {
-        if (!val) { //https://forum.ionicframework.com/t/how-to-check-first-run-app-with-ionic-app/117214/2
-          console.warn("val not found")
-          this.storage.set("settingStorageKey", this.globalSettingObj);
-          this.storage.set("actionKey", this.globalActionObj);
-        }
-        else {
-          console.error("VAL FOUND")
-        }
+      this.storage.length().then(length => {
+        length == 0 && (this.storage.set("settingStorageKey", this.globalSettingObj), this.storage.set("actionKey", this.globalActionObj))
       })
     });
   }

@@ -1,4 +1,4 @@
-import { SettingService } from './../../services/setting.service';
+import { SymptomActionService } from '../../services/symptomaction.service';
 import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { AlertController, Events } from '@ionic/angular';
 import { Router } from '@angular/router';
@@ -62,7 +62,7 @@ export class SymptomActionPage implements OnInit {
     this.checked.length = 0;
   }
 
-  constructor(private alertCtrl: AlertController, private settingService: SettingService, private ngzone: NgZone, public event: Events, private router: Router) {
+  constructor(private alertCtrl: AlertController, private settingService: SymptomActionService, private ngzone: NgZone, public event: Events, private router: Router) {
   }
 
   ngOnInit() {

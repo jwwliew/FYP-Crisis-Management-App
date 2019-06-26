@@ -1,7 +1,7 @@
-import { Setting } from './../../models/setting';
+import { Setting } from '../../models/symptomaction';
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import { SettingService } from 'src/app/services/setting.service';
+import { SymptomActionService } from 'src/app/services/symptomaction.service';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 
 @Component({
@@ -28,7 +28,7 @@ export class EditSettingsPage implements OnInit {
     tamil: ''
   })
 
-  constructor(private activatedRoute: ActivatedRoute, private settingService: SettingService, public formBuilder: FormBuilder, private router:Router) { }
+  constructor(private activatedRoute: ActivatedRoute, private settingService: SymptomActionService, public formBuilder: FormBuilder, private router:Router) { }
 
   ngOnInit() {
     this.editID = this.activatedRoute.snapshot.paramMap.get("id");
@@ -56,12 +56,14 @@ export class EditSettingsPage implements OnInit {
 
   save(value) {
     console.log("clicked save " + JSON.stringify(value));
-    let newValues = {
+    console.error("content detail obj before saving = " + JSON.stringify(this.contentDetails, null, 2));
+    let newValues: Setting = {
       id: this.editID,
       enName: value.english,
       chName: value.chinese,
       myName: value.malay,
-      tmName: value.tamil
+      tmName: value.tamil,
+      icon: this.contentDetails.icon
     }
     let functionToCall = this.editID == "add" ? this.settingService.addReusable(this.selectedTab, newValues) : this.settingService.updateOneSetting(this.selectedTab, newValues)
     functionToCall.then(() => {

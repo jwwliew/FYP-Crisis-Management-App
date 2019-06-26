@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SettingService } from './setting.service';
+import { SymptomActionService } from './symptomaction.service';
 
 describe('SettingService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: SettingService = TestBed.get(SettingService);
+    const service: SymptomActionService = TestBed.get(SymptomActionService);
     expect(service).toBeTruthy();
   });
 });

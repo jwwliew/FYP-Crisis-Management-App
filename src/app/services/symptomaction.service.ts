@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { Setting, SettingAction } from '../models/setting';
+import { Setting, SettingAction } from '../models/symptomaction';
 
 import {v4 as uuid} from 'uuid';
 
@@ -10,7 +10,7 @@ const ACTION_KEY = "actionKey";
 @Injectable({
   providedIn: 'root'
 })
-export class SettingService {
+export class SymptomActionService {
 
   thisKey: any;
 

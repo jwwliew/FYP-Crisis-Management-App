@@ -4,8 +4,8 @@ import {v4 as uuid} from 'uuid';
 import { Router } from '@angular/router';
 import { TemplateService } from 'src/app/services/template.service';
 import { TemplatePopComponent } from '../template-pop/template-pop.component';
-import { SettingService } from 'src/app/services/setting.service';
-import { Setting, SettingAction } from 'src/app/models/setting';
+import { SymptomActionService } from 'src/app/services/symptomaction.service';
+import { Setting, SettingAction } from 'src/app/models/symptomaction';
 
 @Component({
   selector: 'app-new-templates',
@@ -51,7 +51,7 @@ export class NewTemplatesPage implements OnInit {
   }
 
   constructor(private actionSheetCtrl: ActionSheetController, private router: Router, private templateStorage: TemplateService, private alertCtrl: AlertController, 
-    private toastCtrl: ToastController, private event: Events, private popoverCtrl: PopoverController, private settingStorage: SettingService, private zone: NgZone) {
+    private toastCtrl: ToastController, private event: Events, private popoverCtrl: PopoverController, private settingStorage: SymptomActionService, private zone: NgZone) {
       console.error("CONSTURCTOR CALLlED")
       this.event.subscribe("view", item => { //or services https://stackoverflow.com/questions/54304481/ionic-4-angular-7-passing-object-data-to-another-page
         this.viewPage = true;

@@ -1,17 +1,17 @@
 <ion-tabs>
 
   <ion-tab-bar slot="bottom" color="secondary">
-    <ion-tab-button tab="plans">
+    <ion-tab-button (click)="goToRoot(0)">
       <ion-icon name="ios-list"></ion-icon>
       <ion-label>Plans</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="templates">
+    <ion-tab-button (click)="goToRoot(1)">
       <ion-icon name="ios-paper"></ion-icon>
       <ion-label>Templates</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="settings">
+    <ion-tab-button (click)="goToRoot(2)">
       <ion-icon name="ios-settings"></ion-icon>
       <ion-label>Settings</ion-label>
     </ion-tab-button>

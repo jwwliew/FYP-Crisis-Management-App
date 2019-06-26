@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tabs',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TabsPage implements OnInit {
 
-  constructor() { }
+  constructor(private navCtrl: NavController) { }
 
   ngOnInit() {
   }
 
+  goToRoot(location) {
+    let rootLocations = ["/tabs/plans", "/tabs/templates", "/tabs/settings"];
+    this.navCtrl.navigateRoot(rootLocations[location]);
+  }
 }
