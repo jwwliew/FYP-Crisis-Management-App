@@ -337,7 +337,7 @@ export class NewTemplatesPage implements OnInit {
   }
   async askForName(typeOfAction) {
     //templateName = templateName ? "Rename " + templateName : "Enter template name";
-    let templateName = (typeOfAction == "rename") ? "Rename " + this.templateName : (typeOfAction == "duplicate") ? "Enter duplicated templated name " : "Enter template name";
+    let templateName = (typeOfAction == "rename") ? "Enter new name" : (typeOfAction == "duplicate") ? "Enter name of the duplicated template" : "Enter template name"
     let alert = await this.alertCtrl.create({
       header: templateName,
       inputs: [

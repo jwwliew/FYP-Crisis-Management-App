@@ -1,7 +1,8 @@
 <ion-list>
-  <ion-item *ngFor="let item of menuOptions" (click)="close(item)">
+  <ion-item *ngFor="let item of menuOptions; let i = index;" (click)="close(item)" [lines]="i == 4 ? 'none' : 'full'" button>
     <ion-label>
       {{item}}
     </ion-label>
+    <ion-ripple-effect></ion-ripple-effect>
   </ion-item>
 </ion-list>

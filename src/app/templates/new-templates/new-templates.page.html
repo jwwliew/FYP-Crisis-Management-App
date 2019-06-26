@@ -195,7 +195,7 @@ ion-textarea{
     <div class="gridReplace" *ngIf="!viewPage || editPage"> <!--https://forum.ionicframework.com/t/fab-button-backdrop/80019-->
 
     
-      <ion-row *ngFor="let item of getArray(globalItem.id); let i = index;" style="border-bottom: 1px solid black" 
+      <ion-row *ngFor="let item of getArray(globalItem.id); let i = index;" style="border-bottom: 2px solid #A9A9A9" 
       [ngClass]="{'blur': globalItem.toggle}">
 
       <!-- first column aka symptom -->
@@ -286,14 +286,16 @@ ion-textarea{
       
       <ion-row *ngFor="let item of getArray(globalItem.id)">
 
-        <ion-col size="6" style="border-right: 1px solid black">
+        <ion-col size="6">
           <img class="imgCircle" [src]="item.symptom.img" />
           <p class="imgCircleText"> {{item.symptom.description == "" ? item.symptom.text : item.symptom.description}} </p>
         </ion-col>
+
+        <ion-col size="6" *ngIf="item.combined.length == 0" style="border-left: 2.5px solid #d3d3d3"></ion-col>
         
         <ng-container *ngFor="let x of item.combined; let actIndex = index;">
           <ion-col size="6" *ngIf="actIndex != 0"></ion-col>
-          <ion-col size="6">
+          <ion-col size="6" style="border-left: 2.5px solid #d3d3d3">
             <img class="imgCircle" [src]="x.img"/>
             <p class="imgCircleText"> {{x.description == "" ? x.text : x.description}} </p>
           </ion-col>

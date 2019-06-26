@@ -44,6 +44,9 @@
 
   <ion-list *ngIf="selectedTab == 'Symptom'" lines="full">
     <ion-item *ngFor="let item of symptomList" (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)" [color]="item.checked && 'greenCard'">
+      <ion-thumbnail slot="start">
+        <img [src]="item.icon"/>
+      </ion-thumbnail>
       {{item.enName}}
       <ion-checkbox mode="ios" slot="end" *ngIf="checked.length > 0" [(ngModel)]="item.checked" (ionChange)="check(item)"></ion-checkbox>
     </ion-item>
@@ -51,6 +54,9 @@
 
   <ion-list *ngIf="selectedTab == 'Action'" lines="full">
     <ion-item *ngFor="let item of actionList" (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)" [color]="item.checked && 'greenCard'">
+      <ion-thumbnail slot="start">
+        <img [src]="item.icon"/>
+      </ion-thumbnail>
       {{item.enName}}
       <ion-checkbox mode="ios" slot="end" *ngIf="checked.length > 0" [(ngModel)]="item.checked" (ionChange)="check(item)"></ion-checkbox>
     </ion-item>

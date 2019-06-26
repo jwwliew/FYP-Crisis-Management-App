@@ -9,7 +9,21 @@
   </ion-toolbar>
 </ion-header>
 
+<style>
+  #noTemplateDiv {
+    margin: 24px;
+    padding: 12px;
+    border: 1px solid green;
+    font-size: 18px;
+  }
+</style>
+
 <ion-content>
+
+  <div *ngIf="allTemplate.length == 0" id="noTemplateDiv">
+    Click "New" at the right top of this screen to create a template.
+  </div>
+
   <button no-margin no-padding style="width: 100%; background-color:white">
 
     <ion-card class="welcome-card" *ngFor="let item of allTemplate;" (click)="goToDynamicAddPage(item)">
