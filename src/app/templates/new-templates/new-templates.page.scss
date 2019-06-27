@@ -4,23 +4,3 @@
 // ion-grid {
 //     background-color: color(redCard)
 // }
-.addLabel {
-    font-weight: bold;
-    color: red;
-    text-align: center;
-    margin-top: 12px;
-    margin-left: 4px;
-    position: absolute;
-    font-size:19px;
-    &Two{
-        @extend .addLabel;
-            margin-top: 16px;
-            margin-left: 16px;
-    }
-}
-
-
-ion-fab-list{
-    flex-direction: column;
-    margin-top:16px;
-}

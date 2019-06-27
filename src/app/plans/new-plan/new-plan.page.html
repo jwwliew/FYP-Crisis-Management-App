@@ -18,7 +18,7 @@
       <ion-card-content>
         <ion-list>
           <ion-radio-group [(ngModel)]="defaultLanguage" (ionChange)="selectRadio()">
-            <ion-item *ngFor="let thisLanguage of globalLanguage; let i = index" [lines]="i == 3 ? 'none' : 'full'" [ngStyle]="thisLanguage == defaultLanguage && {'font-weight': 'bold'}" button>
+            <ion-item *ngFor="let thisLanguage of globalLanguage; let i = index" [lines]="i == 3 ? 'none' : 'full'" [ngStyle]="thisLanguage[0] == defaultLanguage && {'font-weight': 'bold'}" button>
               <ion-label>{{thisLanguage[1]}}</ion-label>
               <ion-radio [value]="thisLanguage[0]" color="originalPrimary" mode="md"></ion-radio>
               <ion-ripple-effect></ion-ripple-effect>

@@ -46,7 +46,7 @@ export class ViewTemplatesPage implements OnInit {
     //   console.log(this.allTemplate);
     // })
     this.templateService.getAllTemplate("allKey").then(val => {
-      console.group("json data view page");
+      console.group("json data view page " + JSON.stringify(val,null,2));
       console.log(val);
       console.groupEnd();
       val = val || []; //prevent null if val empty at start no storage
@@ -56,7 +56,8 @@ export class ViewTemplatesPage implements OnInit {
         let obj = {
           id: val[index].id,
           name: val[index].name,
-          template: [].concat(...element.templates)
+          template: [].concat(...element.templates),
+          language: val[index].language
         }
         return obj;
       });

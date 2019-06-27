@@ -1,8 +1,7 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { TemplateService } from 'src/app/services/template.service';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PlanService } from './../../services/plan.service';
-import { IonRadio, IonSelect } from '@ionic/angular';
-
 
 @Component({
   selector: 'app-new-plan',
@@ -11,7 +10,7 @@ import { IonRadio, IonSelect } from '@ionic/angular';
 })
 export class NewPlanPage implements OnInit {
 
-  constructor(private router: Router, private PlanService: PlanService, private NgZone: NgZone) { }
+  constructor(private router: Router, private PlanService: PlanService, private templateService: TemplateService) { }
 
   planName: any;
 
@@ -19,7 +18,7 @@ export class NewPlanPage implements OnInit {
   ngOnInit() {
   }
 
-  globalLanguage = [[0, "English"], [1, "中文"], [2, "Malay"], [3, "Tamil"]];
+  globalLanguage = this.templateService.getGlobalLanguage();
   defaultLanguage = 0;
 
   selectRadio() {
@@ -32,8 +31,9 @@ export class NewPlanPage implements OnInit {
     console.log(this.planName)
     // this.router.navigate (
     //  ['/tabs/plans/details',this.planName]
-    this.router.navigateByUrl('tabs/plans/details/' + this.planName);
+    this.router.navigateByUrl('/tabs/plans/details/' + this.planName);
     //)
   }
+
 
 }
