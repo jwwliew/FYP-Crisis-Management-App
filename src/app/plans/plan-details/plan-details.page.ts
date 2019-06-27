@@ -20,14 +20,18 @@ export class PlanDetailsPage implements OnInit {
   tcsContact: any;
   planName: any;
 
+
   ngOnInit() {
     // this.planName = this.activatedRoute.snapshot.paramMap.get('id');
   }
   
 
   PlanDetails() {
-    console.log(this.pName, this.pNric, this.tcsName, this.tcsContact);
-    this.PlanService.addPlanDetails(this.pName, this.pNric, this.tcsName, this.tcsContact).then(() => {
+
+    console.log(this.planName,this.pName, this.pNric, this.tcsName, this.tcsContact);
+    this.PlanService.addPlanDetails(this.planName,this.pName, this.pNric, this.tcsName, this.tcsContact).then(() => {
+      this.router.navigateByUrl('');
+      
     });
   }
 

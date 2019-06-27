@@ -13,44 +13,24 @@
   <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="setFilteredItems()"></ion-searchbar>
   <!-----------cate---------------------->
   <div class="row">
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name &nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp; Name &nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;Contact&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Date
   </div>
 
   <!-----------LIST---------------------->
   <ion-list lines="none">
-    
-      <ion-card class="welcome-card" style="height: 1%">
-        <ion-card-header color="tertiary">
-        </ion-card-header>
-        <!-- LOOP HERE -->
-        <ion-card-content>
-          <ion-item *ngFor="let item of details">
-                 <h6>{{item.name}}</h6>
-                 <h6>{{item.ccontact}}</h6>
-                 
-          </ion-item>
 
-        </ion-card-content>
-      </ion-card>
-    
-      <ion-card class="welcome-card">
-        <ion-card-header color="tertiary">
-        </ion-card-header>
-        <ion-card-content>
-          <p>Jery 2</p>
-        </ion-card-content>
-      </ion-card>
-    
-      <ion-card class="welcome-card" style="height: 1%">
-        <ion-card-header color="tertiary">
-        </ion-card-header>
-        <ion-card-content>
-          <p>Jery 3</p>
-        </ion-card-content>
-      </ion-card>
-  
+    <ion-card class="welcome-card" lines="full" *ngFor="let item of details; let i=index">
+      <ion-card-header color="tertiary">
+      </ion-card-header>
+      <!-- LOOP HERE -->
+      <ion-card-content>
+        <ion-item>
+          <h6>{{item.name}}</h6>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h6>{{item.ccontact}}</h6>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
   </ion-list>
 
 </ion-content>

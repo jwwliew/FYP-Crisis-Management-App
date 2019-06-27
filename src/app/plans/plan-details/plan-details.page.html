@@ -68,13 +68,13 @@
               <ion-input style="width: 250%"></ion-input>
             </tr>
           </table>
-          <ion-item>
-            <ion-label>Date</ion-label>
-            <ion-datetime display-format="DD/MMM/YYYY"></ion-datetime>
+          <ion-item lines="full">
+            <ion-label>Date:</ion-label>
+            <ion-datetime placeholder="eg. 29 June 2019" [(ngModel)]="datedmy" (ionChange)="dateChanged($event)" display-format="DD/MMM/YYYY"></ion-datetime>
           </ion-item>
-          <ion-item>
-            <ion-label>Date</ion-label>
-            <ion-datetime displayFormat="h:mm A" minuteValues="0,15,30,45"></ion-datetime>
+          <ion-item lines="full">
+            <ion-label>Time:&nbsp;&nbsp; </ion-label>
+            <ion-datetime placeholder="eg. 13:30 am/pm" displayFormat="h:mm A" ></ion-datetime>
           </ion-item>
         </div>
       </ion-card-content>

@@ -17,8 +17,8 @@ export class ViewPlansPage implements OnInit {
   plan: any;
 
   ngOnInit() {
-   this.PlanService.getAllPlan().then(cname=>{
-    this.details=cname
+    this.PlanService.getAllPlan().then(plandetails => {
+      this.details = plandetails
     });
 
   }
@@ -39,12 +39,7 @@ export class ViewPlansPage implements OnInit {
   goToTestPage() {
     this.router.navigateByUrl('/templatedetails');
   }
-
-  //get
-  getPlanName() {
-    this.PlanService.getAllPlan();
-  }
-
+  
   //Filter
   async presentActionSheet() {
     const actionSheet = await this.actionSheetController.create({

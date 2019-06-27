@@ -38,13 +38,15 @@ export class PlanService {
 
   //insert
   //newitem= pname, Details--->
-  addPlanDetails(pname, pnric, tcsname, tcscontact) {
+  addPlanDetails(planName,pname, pnric, tcsname, tcscontact) {
     return this.storage.get(key).then((items) => {
       let details = {
+        planName:planName,
         name: pname,
         nric: pnric,
         cname: tcsname,
-        ccontact: tcscontact
+        ccontact: tcscontact,
+       
       }
       console.log(details)
       if (items) {
