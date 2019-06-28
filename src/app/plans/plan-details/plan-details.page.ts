@@ -3,7 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { PlanService } from './../../services/plan.service';
 import { ToastController } from '@ionic/angular';
 import { TemplateService } from 'src/app/services/template.service';
-import {v4 as uuid} from 'uuid';
+import { v4 as uuid } from 'uuid';
+
 @Component({
   selector: 'app-plan-details',
   templateUrl: './plan-details.page.html',
@@ -11,7 +12,7 @@ import {v4 as uuid} from 'uuid';
 })
 export class PlanDetailsPage implements OnInit {
 
-  constructor(private router: Router, private PlanService: PlanService, public toastController: ToastController, private activatedRoute: ActivatedRoute, 
+  constructor(private router: Router, private PlanService: PlanService, public toastController: ToastController, private activatedRoute: ActivatedRoute,
     private templateService: TemplateService) { }
 
   pNric: any;
@@ -19,19 +20,29 @@ export class PlanDetailsPage implements OnInit {
   tcsName: any;
   tcsContact: any;
   planName: any;
-
+  date1: string; // PLAN CREATED @ date
 
   ngOnInit() {
+
     // this.planName = this.activatedRoute.snapshot.paramMap.get('id');
+
+
   }
-  
+
+  // dateChanged(time) {
+  // console.log(time);
+  // console.log(this.datedmy);
+  // }
+  // datedmy: any;
 
   PlanDetails() {
+    let date = new Date();
+    let date1 = date.getDate().toString() + '/' + (date.getMonth() + 1).toString() + '/' + date.getFullYear().toString();
 
-    console.log(this.planName,this.pName, this.pNric, this.tcsName, this.tcsContact);
-    this.PlanService.addPlanDetails(this.planName,this.pName, this.pNric, this.tcsName, this.tcsContact).then(() => {
+    console.log(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact);
+    this.PlanService.addPlanDetails(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact).then(() => {
       this.router.navigateByUrl('');
-      
+
     });
   }
 
@@ -57,7 +68,7 @@ export class PlanDetailsPage implements OnInit {
   checkType(id) {
     return this.templateService.getArray(id).length > 0 ? true : false
   }
-  
+
   pressEvent(type, thisObject, arrayID) {
     this.templateService.pressEvent(type, thisObject, arrayID);
   }

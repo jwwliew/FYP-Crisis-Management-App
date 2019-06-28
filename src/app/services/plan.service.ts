@@ -3,6 +3,7 @@ import { Storage } from '@ionic/storage';
 import { Plan } from '../models/plan';
 import { ValueAccessor } from '@ionic/angular/dist/directives/control-value-accessors/value-accessor';
 import { stringify } from 'querystring';
+import { ReactiveFormsModule } from '@angular/forms';
 
 const key = "plan";
 
@@ -12,11 +13,15 @@ const key = "plan";
 export class PlanService {
   public items = [];
   constructor(private storage: Storage) {
-    this.items = [
 
-    ];
   }
+  getEditDetails(id) {
+    return this.storage.get(key).then(result => {
+      return result.find(item => item.name == id);
+    }
+    )
 
+  }
   //search
   filterItems(items) {
     return this.items.filter(item => {
@@ -38,15 +43,16 @@ export class PlanService {
 
   //insert
   //newitem= pname, Details--->
-  addPlanDetails(planName,pname, pnric, tcsname, tcscontact) {
+  addPlanDetails(indexL, date1, planName, pname, pnric, tcsname, tcscontact) {
     return this.storage.get(key).then((items) => {
       let details = {
-        planName:planName,
+        planName: planName,
         name: pname,
         nric: pnric,
         cname: tcsname,
         ccontact: tcscontact,
-       
+        createdDate: date1,
+        language: indexL
       }
       console.log(details)
       if (items) {
@@ -61,7 +67,7 @@ export class PlanService {
   //new plan
   addNewPlan(newitem) {
     return this.storage.get(key).then((items) => {
-     
+
       if (items) {
         items.push(newitem);
         return this.storage.set(key, items);
@@ -70,18 +76,18 @@ export class PlanService {
       }
     });
   }
-//add language
-addLanguage(newitem) {
-  return this.storage.get(key).then((items) => {
-   
-    if (items) {
-      items.push(newitem);
-      return this.storage.set(key, items);
-    } else {
-      return this.storage.set(key, [newitem]);
-    }
-  });
-}
+  //add language
+  addLanguage(newitem) {
+    return this.storage.get(key).then((items) => {
+
+      if (items) {
+        items.push(newitem);
+        return this.storage.set(key, items);
+      } else {
+        return this.storage.set(key, [newitem]);
+      }
+    });
+  }
 
   //edit
   editPlan(item) {

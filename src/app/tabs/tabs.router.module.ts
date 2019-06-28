@@ -21,6 +21,10 @@ const routes: Routes = [
                     {
                         path: 'details/:language/:id',
                         loadChildren: '../plans/plan-details/plan-details.module#PlanDetailsPageModule'
+                    },
+                    {
+                        path: 'editplan/:item',
+                        loadChildren: '../plans/editplan/editplan.module#EditplanPageModule'
                     }
 
                 ]
@@ -50,14 +54,14 @@ const routes: Routes = [
                         children: [
                             {
                                 path: '',
-                                loadChildren: '../settings/symptom-action/symptom-action.module#SymptomActionPageModule'        
+                                loadChildren: '../settings/symptom-action/symptom-action.module#SymptomActionPageModule'
                             },
                             {
                                 path: 'edit/:selectedTab/:id',
                                 loadChildren: '../settings/edit-settings/edit-settings.module#EditSettingsPageModule'
                             }
                         ]
-                        
+
                     }
                 ]
             }

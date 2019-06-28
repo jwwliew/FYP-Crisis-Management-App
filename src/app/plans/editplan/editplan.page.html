@@ -1,0 +1,86 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button>
+        PDF
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{details.planName}}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+        Edit
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list lines="none">
+    <ion-card class="welcome-card">
+      <ion-card-header color="tertiary">
+        <ion-card-title>Plan Details</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div>
+          <table id="tblOne" style="width:50%; float:left" >
+            <tr>
+              <td>Name:</td>
+              <ion-input>
+                {{details.name}}
+              </ion-input>
+            </tr>
+            <p></p>
+            <tr>
+              <td>TCS Name:</td>
+              <ion-input>{{details.cname}}</ion-input>
+            </tr>
+          </table>
+          <table id="tblTwo" style="width:50%; float:left">
+            <tr>
+              <td>NRIC:</td>
+              <ion-input>{{details.nric}}</ion-input>
+            </tr>
+            <tr>
+              <td>TCS Contact:</td>
+              <ion-input>{{details.ccontact}}</ion-input>
+            </tr>
+          </table>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+  <ion-list lines="none">
+    <ion-card class="welcome-card">
+      <ion-card-header color="tertiary">
+        <ion-card-title>Appointment (OPTIONAL)</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div>
+          <table id="tblOne" style="width:50%; float:left">
+            <tr>
+              <td>Clinic Name:</td>
+              <p></p>
+              <ion-input style="width: 250%"></ion-input>
+            </tr>
+          </table>
+          <ion-item lines="full">
+            <ion-label>Date:</ion-label>
+            <ion-datetime placeholder="eg. 29 June 2019" [(ngModel)]="datedmy" (ionChange)="dateChanged($event)"
+              display-format="DD/MMM/YYYY"></ion-datetime>
+          </ion-item>
+          <ion-item lines="full">
+            <ion-label>Time:&nbsp;&nbsp; </ion-label>
+            <ion-datetime placeholder="eg. 13:30 am/pm" displayFormat="h:mm A"></ion-datetime>
+          </ion-item>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+
+
+
+</ion-content>

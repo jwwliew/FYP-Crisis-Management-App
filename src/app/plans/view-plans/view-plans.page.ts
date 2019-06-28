@@ -39,7 +39,11 @@ export class ViewPlansPage implements OnInit {
   goToTestPage() {
     this.router.navigateByUrl('/templatedetails');
   }
-  
+
+  goEdit(item) {
+    this.router.navigateByUrl('tabs/plans/editplan/'+item.name)
+  }
+
   //Filter
   async presentActionSheet() {
     const actionSheet = await this.actionSheetController.create({
