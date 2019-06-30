@@ -17,10 +17,12 @@ export class ViewPlansPage implements OnInit {
   plan: any;
 
   ngOnInit() {
+  }
+
+  ionViewWillEnter() {
     this.PlanService.getAllPlan().then(plandetails => {
       this.details = plandetails
     });
-
   }
 
   details: any;
@@ -41,7 +43,7 @@ export class ViewPlansPage implements OnInit {
   }
 
   goEdit(item) {
-    this.router.navigateByUrl('tabs/plans/editplan/'+item.name)
+    this.router.navigateByUrl('tabs/plans/editplan/'+item.id)
   }
 
   //Filter

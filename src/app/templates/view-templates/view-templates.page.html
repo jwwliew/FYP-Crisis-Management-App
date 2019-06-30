@@ -16,6 +16,13 @@
     border: 1px solid green;
     font-size: 18px;
   }
+
+  ion-card { 
+    border-radius: 16px;
+    background-color: white;
+    color: black; /* text */
+  }
+  
 </style>
 
 <ion-content>
@@ -24,31 +31,29 @@
     Click "New" at the right top of this screen to create a template.
   </div>
 
-  <button no-margin no-padding style="width: 100%; background-color:white">
 
-    <ion-card class="welcome-card" *ngFor="let item of allTemplate;" (click)="goToDynamicAddPage(item)">
+  <ion-card class="welcome-card" *ngFor="let item of allTemplate;" (click)="goToDynamicAddPage(item)" style="margin-top: 6%">
 
-      <ion-card-header color="tertiary">
-        <ion-card-title style="color: white;font-weight: bold;font-size: 1.1em;padding: 0;margin:0 16px;">
-          {{item.name}}
-        </ion-card-title>
-      </ion-card-header>
+    <ion-card-header color="tertiary">
+      <ion-card-title style="color: white;font-weight: bold;font-size: 1.1em;padding: 0;margin:0 16px;">
+        {{item.name}}
+      </ion-card-title>
+    </ion-card-header>
 
-      <ion-grid style="padding:3%">
+    <ion-grid style="padding:3%">
 
-        <ion-row>
+      <ion-row>
 
-          <ion-col size="6" *ngFor="let x of item.template; let i = index;">
-            <!--https://ionicframework.com/docs/api/grid-->
-            <img class="imgCircle" [src]="x.symptom.img" />  
-            <p class="imgCircleText"> {{x.symptom.text}} </p>
-          </ion-col>
+        <ion-col size="6" *ngFor="let x of item.template; let i = index;">
+          <!--https://ionicframework.com/docs/api/grid-->
+          <img class="imgCircle" [src]="x.symptom.img" />  
+          <p class="imgCircleText"> {{x.symptom.text}} </p>
+        </ion-col>
 
-        </ion-row>
+      </ion-row>
 
-      </ion-grid>
+    </ion-grid>
 
-    </ion-card>
+  </ion-card>
 
-  </button>
 </ion-content>

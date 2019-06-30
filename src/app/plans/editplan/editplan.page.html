@@ -83,4 +83,144 @@
 
 
 
+
+
+  <!-- Test my data yong rui -->
+  <style>
+    .imgCircle {
+      float: left;
+      border-radius: 50%;
+      width: 50%;
+      height: 100%;
+      padding: 4%;
+      /* background-color:#000000 !important; */
+      /* border: 1px solid black;  */
+    }
+
+    .imgCircleText {
+      /* height:100%; */
+      /* margin:16px; */
+      white-space: normal;
+      text-align: left;
+      margin-top: 12%;
+      /*FIXME: https://ionicframework.com/docs/v3/theming/css-utilities/ */
+    }
+
+    /* 
+ion-content{
+  --ion-background-color:grey;
+} */
+
+    ion-card {
+      border-radius: 16px;
+      background-color: white;
+      color: black;
+      /* text */
+    }
+
+    ion-grid {
+      background-color: #d3d3d3;
+    }
+
+    .btnAdd {
+      margin-top: 18px !important;
+    }
+
+    .blur {
+      filter: blur(15px);
+      -webkit-filter: blur(15px);
+      opacity: 1;
+      background-color: #FFF;
+      transition: -webkit-filter 200ms linear;
+      height: 100%;
+      width: 100%;
+      position: absolute;
+    }
+
+    .blurTitle {
+
+      filter: blur(15px);
+      -webkit-filter: blur(15px);
+      /* transition: -webkit-filter 200ms linear; */
+    }
+
+    /* .highlight{
+  background-color: #1ebea5;
+} */
+
+    ion-content {
+      --padding-start: 4px;
+      --padding-end: 4px;
+    }
+
+    /* ion-grid{
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+} */
+    .gridReplace {
+      background-color: #d3d3d3;
+      padding-top: 6%;
+      padding-bottom: 3%;
+    }
+
+    ion-card-title {
+      color: white;
+      font-weight: bold;
+      font-size: 1.1em;
+      padding: 0;
+      margin: 0 4px;
+    }
+
+    ion-textarea {
+      margin: 0;
+    }
+
+    .yellowItem {
+      --border-width: 0px;
+      --inner-padding-end: 0;
+      --padding-start: 0;
+    }
+  </style>
+
+  <!-- Test my data yong rui -->
+  <ion-card *ngFor="let globalItem of frontViewData">
+    <ion-card-header [color]="globalItem.colorCard">
+      <ion-card-title>
+        {{globalItem.textCard}}
+      </ion-card-title>
+    </ion-card-header>
+
+    <!-- view page when click on one template... show icon and text only -->
+    <!-- <ion-grid style="padding:3%; background-color: #FFF" *ngIf="viewPage && !editPage"> -->
+    <ion-grid style="padding:3%; background-color: #FFF">
+      
+      <ion-row *ngFor="let item of getArray(globalItem.id)">
+  
+        <ion-col size="6">
+          <img class="imgCircle" [src]="item.symptom.img" />
+          <p class="imgCircleText"> {{item.symptom.description == "" ? item.symptom.text : item.symptom.description}} </p>
+        </ion-col>
+  
+        <ion-col size="6" *ngIf="item.combined.length == 0" style="border-left: 2.5px solid #d3d3d3"></ion-col>
+          
+          <ng-container *ngFor="let x of item.combined; let actIndex = index;">
+            <ion-col size="6" *ngIf="actIndex != 0"></ion-col>
+            <ion-col size="6" style="border-left: 2.5px solid #d3d3d3">
+              <img class="imgCircle" [src]="x.img"/>
+              <p class="imgCircleText"> {{x.description == "" ? x.text : x.description}} </p>
+            </ion-col>
+          </ng-container>
+  
+      </ion-row>
+        
+      <ion-row style="height:45px;" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!checkType(globalItem.id)">
+        <p text-center style="width:100%"> No symptoms and actions added </p>
+      </ion-row>
+  
+    </ion-grid>
+
+  </ion-card>
+
+  
+
 </ion-content>

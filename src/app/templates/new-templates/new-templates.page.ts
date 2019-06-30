@@ -144,7 +144,9 @@ export class NewTemplatesPage implements OnInit {
 
   async askForName(typeOfAction) {
     //templateName = templateName ? "Rename " + templateName : "Enter template name";
-    let templateName = (typeOfAction == "rename") ? "Enter new name" : (typeOfAction == "duplicate") ? "Enter name of the duplicated template" : "Enter template name"
+    let templateName = (typeOfAction == "rename") ? "Enter new name" : 
+      (typeOfAction == "duplicate") ? "Enter name of the duplicated template" :
+      (typeOfAction == "Create Crisis Plan") ? "Enter Crisis Plan name" : "Enter template name"
     let alert = await this.alertCtrl.create({
       header: templateName,
       inputs: [
@@ -178,6 +180,9 @@ export class NewTemplatesPage implements OnInit {
                 this.router.navigate(["/tabs/templates"], {replaceUrl: true});
               })
             }
+            else if (typeOfAction == "Create Crisis Plan") {
+              this.router.navigateByUrl("/tabs/plans/details/" + this.defaultLanguage + "/" + alertData.nameInput);
+            }
             else {
               this.addTemplate(alertData.nameInput, "add");
             }
@@ -190,7 +195,7 @@ export class NewTemplatesPage implements OnInit {
 
   
   ionViewWillEnter() {
-    console.log("ng init + ");
+    console.log("ng init + " + JSON.stringify(this.templateService.getAllArray(),null,2));
     this.frontViewData = this.getFrontViewData();
   }
 
@@ -240,10 +245,10 @@ export class NewTemplatesPage implements OnInit {
       'Edit': () => this.callEdit(),
       'Rename': () => this.askForName('rename'),
       'Duplicate': () => this.askForName('duplicate'),
+      "Create Crisis Plan": () => this.askForName('Create Crisis Plan'),
       "Delete": () => this.delete(),
-      "": () => ""
     };
-    (call[type] || call[""])();
+    call[type]();
   }
 
   callEdit() {

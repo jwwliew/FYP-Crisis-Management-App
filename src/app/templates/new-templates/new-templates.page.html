@@ -139,7 +139,7 @@ ion-textarea{
 
 <ion-content padding>
 
-  <ion-card *ngIf="!viewPage || editPage">
+  <ion-card *ngIf="!viewPage || editPage" style="margin-bottom: 6%">
     <ion-card-header color="tertiary">
       <ion-card-title>
         Select Language
@@ -156,7 +156,7 @@ ion-textarea{
     </ion-list>
   </ion-card>
 
-  <ion-card class="welcome-card" *ngFor="let globalItem of frontViewData">
+  <ion-card class="welcome-card" *ngFor="let globalItem of frontViewData; let globalIndex = index;" [ngStyle]="globalIndex !== 0 && {'margin-top': '6%'}">
 
     <ion-card-header [color]="globalItem.colorCard">
       <ion-card-title>
@@ -303,7 +303,9 @@ ion-textarea{
 
       </ion-row>
       
-      <ion-row style="height:60px;" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!checkType(globalItem.id)"></ion-row>
+      <ion-row style="height:45px;" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!checkType(globalItem.id)">
+        <p text-center style="width:100%"> No symptoms and actions added </p>
+      </ion-row>
 
     </ion-grid>
   

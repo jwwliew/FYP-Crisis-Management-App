@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import { SymptomActionService } from 'src/app/services/symptomaction.service';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { TemplateService } from 'src/app/services/template.service';
 
 @Component({
   selector: 'app-edit-settings',
@@ -28,7 +29,8 @@ export class EditSettingsPage implements OnInit {
     tamil: ''
   })
 
-  constructor(private activatedRoute: ActivatedRoute, private settingService: SymptomActionService, public formBuilder: FormBuilder, private router:Router) { }
+  constructor(private activatedRoute: ActivatedRoute, private settingService: SymptomActionService, public formBuilder: FormBuilder, private router:Router, 
+    private templateService: TemplateService) { }
 
   ngOnInit() {
     this.editID = this.activatedRoute.snapshot.paramMap.get("id");
@@ -56,6 +58,10 @@ export class EditSettingsPage implements OnInit {
 
   save(value) {
     console.log("clicked save " + JSON.stringify(value));
+    if (value.english == "") {
+      this.templateService.presentToastWithOptions();
+      return false;
+    }
     console.error("content detail obj before saving = " + JSON.stringify(this.contentDetails, null, 2));
     let newValues: Setting = {
       id: this.editID,

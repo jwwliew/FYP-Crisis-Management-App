@@ -1,7 +1,7 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PlanService } from './../../services/plan.service';
-import { ToastController } from '@ionic/angular';
+import { ToastController, Events } from '@ionic/angular';
 import { TemplateService } from 'src/app/services/template.service';
 import { v4 as uuid } from 'uuid';
 
@@ -13,7 +13,7 @@ import { v4 as uuid } from 'uuid';
 export class PlanDetailsPage implements OnInit {
 
   constructor(private router: Router, private PlanService: PlanService, public toastController: ToastController, private activatedRoute: ActivatedRoute,
-    private templateService: TemplateService) { }
+    private templateService: TemplateService, private event: Events) { }
 
   pNric: any;
   pName: any;
@@ -38,10 +38,10 @@ export class PlanDetailsPage implements OnInit {
   PlanDetails() {
     let date = new Date();
     let date1 = date.getDate().toString() + '/' + (date.getMonth() + 1).toString() + '/' + date.getFullYear().toString();
-
+    let maparr = this.templateService.cleansedArray();
     console.log(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact);
-    this.PlanService.addPlanDetails(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact).then(() => {
-      this.router.navigateByUrl('');
+    this.PlanService.addPlanDetails(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact, maparr).then(() => {
+      this.router.navigateByUrl('/tabs/plans');
 
     });
   }
@@ -56,11 +56,18 @@ export class PlanDetailsPage implements OnInit {
 
   ionViewWillEnter() {
     // this.frontViewData = this.templateService.getFrontViewData();
-    this.planName = this.activatedRoute.snapshot.paramMap.get('id');
+    this.planName = this.activatedRoute.snapshot.paramMap.get('planName');
+    this.defaultLanguage = +this.activatedRoute.snapshot.paramMap.get("languageID");
     console.error("plan name = " + this.planName);
-    console.error("this front view data = " + JSON.stringify(this.frontViewData, null, 2));
+    console.warn("default lang = " + this.defaultLanguage);
+    this.templateService.callEdit(this.defaultLanguage);
+    this.templateService.setGlobalSettings();
   }
 
+  goBackToTemplate() {
+    this.templateService.goToViewPageFromEdit();
+  }
+  
   getArray(id) {
     return this.templateService.getArray(id);
   }
