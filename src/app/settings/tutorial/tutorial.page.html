@@ -1,0 +1,86 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Tutorial</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/settings"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<style>
+  ion-slide {
+    height: 80vh;
+    /* https://angularfirebase.com/lessons/ionic4-intro-slides-tutorial-to-educate-app-users/ 
+  https://etenbo.com/ionic-4-build-a-slider-with-ionic-slides/  */
+    flex-direction: column;
+  }
+
+  img {
+    max-width: 100vw;
+    max-height: 90vh;
+    overflow: hidden;
+  }
+  p {
+    color: red;
+    font-weight: bold;
+  }
+  ion-slides {
+    --bullet-background: black;
+    /* --bullet-background-active: #0F0F10; */
+  }
+  
+</style>
+
+<ion-content>
+
+  <ion-slides pager="true" [options]="slideOpts">
+    
+    <ion-slide>
+      <img src="assets/tutorial1.png"/>
+      <p>This page will be shown when there is no new template, click "New" to view how to add template</p>
+    </ion-slide>
+
+    <ion-slide>
+      <img src="assets/tutorial2.png"/>
+      <p>Language will change respectively for the symptoms and action. Click on the "+" button to add new symptom/action</p>
+    </ion-slide>
+
+    <ion-slide>
+      <img src="assets/tutorial3.png"/>
+      <p>Click on add symptom and action to add 1 symptom and 1 action</p>
+    </ion-slide>
+
+    <ion-slide>
+      <img src="assets/tutorial4.png"/>
+      <p>Add more action will be available after you have added symptom and action</p>
+    </ion-slide>
+
+    <ion-slide>
+      <img src="assets/tutorial5.png"/>
+   
+      <p>When clicking on add action, you have to select the symptom you would like to add the action to</p> 
+    </ion-slide>
+
+    <ion-slide>
+      <img src="assets/tutorial6.png"/>
+      <p> Once action added, popup will appear and you can select your desired action e.g. Call 995</p>
+    </ion-slide>
+
+    <ion-slide>
+      <img src="assets/tutorial7.png"/>
+      <p>This is how the final screen will look like, keep adding on as many symptoms and action as you like!</p>
+    </ion-slide>
+
+    <ion-slide>
+      <img src="assets/tutorial8.png"/>
+      <p> You can also long press symptom/action to delete them!</p>
+    </ion-slide>
+    
+    <ion-slide>
+      <h1>You have come to the end of the tutorial for templates</h1>
+      <ion-button [routerLink]="['/tabs/templates/new']">Get started</ion-button>
+    </ion-slide>
+
+  </ion-slides>
+
+</ion-content>

@@ -229,6 +229,7 @@ export class TemplateService {
       id: 2,
       type: "Good",
       colorCard: "success",
+      colorBtn: "success",
       toggle: false,
       textCard: "I'm feeling well"
     }

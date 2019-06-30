@@ -14,8 +14,9 @@ export class ViewSettingsPage implements OnInit {
   ngOnInit() {
   }
 
-  onClick() {
-    this.router.navigateByUrl('/tabs/settings/symptomAction'); //routing start from root level
+  onClick(id) {
+    let settingURLArray = ['/tabs/settings/symptomAction', '/tabs/settings/tutorial', '/tabs/settings/about'];
+    this.router.navigateByUrl(settingURLArray[id]); //routing start from root level
   }
 
 }

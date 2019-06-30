@@ -61,7 +61,14 @@ const routes: Routes = [
                                 loadChildren: '../settings/edit-settings/edit-settings.module#EditSettingsPageModule'
                             }
                         ]
-
+                    },
+                    {
+                        path: 'tutorial',
+                        loadChildren: '../settings/tutorial/tutorial.module#TutorialPageModule' 
+                    },
+                    { 
+                        path: 'about', 
+                        loadChildren: '../settings/about/about.module#AboutPageModule' 
                     }
                 ]
             }
