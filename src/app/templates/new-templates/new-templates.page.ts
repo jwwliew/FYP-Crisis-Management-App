@@ -63,6 +63,7 @@ export class NewTemplatesPage implements OnInit {
 
   deleteArray() {
     this.templateService.deleteArray();
+    this.templateService.presentToastWithOptions("Deleted items!");
   }
 
 //https://stackoverflow.com/questions/48133216/custom-icons-on-ionic-select-with-actionsheet-interface-ionic2
@@ -149,6 +150,7 @@ export class NewTemplatesPage implements OnInit {
       (typeOfAction == "Create Crisis Plan") ? "Enter Crisis Plan name" : "Enter template name"
     let alert = await this.alertCtrl.create({
       header: templateName,
+      message: '',
       inputs: [
         {
           name: 'nameInput',
@@ -167,8 +169,14 @@ export class NewTemplatesPage implements OnInit {
         {
           text: 'Ok',
           handler: (alertData => {
+            console.warn(alertData);
             console.log("ok name1 = " + alertData.nameInput);
             //if (templateName == "Enter template name") {
+            if (alertData.nameInput === "") {
+              alert.message = "Name is required!"
+              this.templateService.presentToastWithOptions("Name is required!");
+              return false;
+            }
             if (typeOfAction == "rename") {
               this.templateService.renameTemplate(alertData.nameInput, this.templateID).then((val) => {
                 console.warn("rename val = " + JSON.stringify(val, null, 2));
@@ -273,6 +281,7 @@ export class NewTemplatesPage implements OnInit {
           text: 'Delete',
           handler: () => {
             this.templateService.deleteTemplate(this.templateID).then(() => {
+              this.templateService.presentToastWithOptions("Deleted template!");
               this.router.navigate(["/tabs/templates"], {replaceUrl: true});
             })
           }

@@ -453,7 +453,7 @@ export class TemplateService {
     // if (this.criticalArray.every(a => a.symptom.text == "Symptom")) {
     // if (thisArr.every(a => a.symptom.text == "Symptom")) {
     if (thisArr.every(a => this.globalSymptom.includes(a))) {
-      this.presentToastWithOptions();
+      this.presentToastWithOptions("global symptom");
     }
     else {
       this.alertCtrl.create({
@@ -475,7 +475,7 @@ export class TemplateService {
               // let x = this.criticalArray.find(x => x.symptom.text == alertData);
               console.warn("this arr = " + JSON.stringify(thisArr, null, 2))
               if (alertData === undefined) {
-                this.presentToastWithOptions();
+                this.presentToastWithOptions("Please select a symptom!");
                 return false; //https://stackoverflow.com/questions/45969821/alert-controller-input-box-validation
               }
               else {
@@ -520,28 +520,25 @@ export class TemplateService {
     return radioBtns;
   }
 
-  async presentToastWithOptions() {
+  async presentToastWithOptions(text) {
     const toast = await this.toastCtrl.create({
-      header: 'Toast header',
-      message: 'Click to Close',
-      duration: 2000,
+      header: text,
+      // message: 'Click to Close',
+      duration: 3000,
       position: 'bottom',
       buttons: [
-        {
-          side: 'start',
-          icon: 'star',
-          text: 'Favorite',
-          handler: () => {
-            console.log('Favorite clicked');
-          }
-        }, {
-          text: 'Done',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
-        }
-      ]
+        // {
+        //   side: 'start',
+        //   icon: 'star',
+        //   text: 'Favorite',
+        //   handler: () => {
+        //     console.log('Favorite clicked');
+        //   }
+        // }, 
+      {
+        text: 'Close',
+        role: 'cancel'
+      }]
     });
     toast.present();
   }

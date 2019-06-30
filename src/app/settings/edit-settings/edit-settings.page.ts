@@ -59,7 +59,7 @@ export class EditSettingsPage implements OnInit {
   save(value) {
     console.log("clicked save " + JSON.stringify(value));
     if (value.english == "") {
-      this.templateService.presentToastWithOptions();
+      this.templateService.presentToastWithOptions("English name is required!");
       return false;
     }
     console.error("content detail obj before saving = " + JSON.stringify(this.contentDetails, null, 2));
