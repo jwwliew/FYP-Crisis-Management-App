@@ -4,7 +4,7 @@ export interface Setting {
     chName?: string;
     myName?: string;
     tmName?: string;
-    icon?: string;
+    icon?: any;
 }
 
 export interface SettingAction {
@@ -13,5 +13,5 @@ export interface SettingAction {
     chName?: string;
     myName?: string;
     tmName?: string;
-    icon?: string;
+    icon?: any;
 }

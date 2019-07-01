@@ -1,10 +1,20 @@
 <ion-header>
+
   <ion-toolbar color="primary" *ngIf="checked.length == 0">
+
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/templates/new" (click)="goBackToTemplate()"></ion-back-button>
+    </ion-buttons>
+
     <ion-title style="position:inherit;">
       {{planName}}
     </ion-title>
     <ion-buttons slot="end" (click)="PlanDetails()"  (click)="getTime()"><ion-button>SAVE</ion-button></ion-buttons>
       </ion-toolbar>
+
+    <ion-buttons slot="end" (click)="PlanDetails()"><ion-button><ion-icon name="save"></ion-icon></ion-button></ion-buttons>
+
+  </ion-toolbar>
 
   <ion-toolbar color="greenCard" *ngIf="checked.length > 0">
     <ion-buttons slot="start">

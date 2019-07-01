@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Plan } from '../models/plan';
-import { ValueAccessor } from '@ionic/angular/dist/directives/control-value-accessors/value-accessor';
-import { stringify } from 'querystring';
-import { ReactiveFormsModule } from '@angular/forms';
+import { v4 as uuid } from 'uuid';
 
 const key = "plan";
 
@@ -11,18 +9,19 @@ const key = "plan";
   providedIn: 'root'
 })
 export class PlanService {
-  public items = [];
-  constructor(private storage: Storage) {
 
+  public items = [];
+
+  constructor(private storage: Storage) {
   }
+
   getEditDetails(id) {
     return this.storage.get(key).then(result => {
-      return result.find(item => item.name == id);
-    }
-    )
-
+      return result.find(item => item.id == id);
+    })
   }
-  //SEARCH
+
+  //search
   filterItems(items) {
     return this.items.filter(item => {
       return item.title.toLowerCase().indexOf(items.toLowerCase()) > -1;
@@ -44,18 +43,20 @@ export class PlanService {
 
   //insert
   //newitem= pname, Details--->
-  addPlanDetails(indexL, date1, planName, pname, pnric, tcsname, tcscontact) {
+  addPlanDetails(indexL, date1, planName, pname, pnric, tcsname, tcscontact, maparr) {
     return this.storage.get(key).then((items) => {
       let details = {
+        id: uuid(),
         planName: planName,
         name: pname,
         nric: pnric,
         cname: tcsname,
         ccontact: tcscontact,
         createdDate: date1,
-        language: indexL
+        language: indexL,
+        template: maparr
       }
-      console.log(details)
+      console.warn(details)
       if (items) {
         items.push(details);
         return this.storage.set(key, items);

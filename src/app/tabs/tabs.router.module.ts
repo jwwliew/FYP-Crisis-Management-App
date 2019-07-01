@@ -19,7 +19,7 @@ const routes: Routes = [
                         loadChildren: '../plans/new-plan/new-plan.module#NewPlanPageModule'
                     },
                     {
-                        path: 'details/:language/:id',
+                        path: 'details/:languageID/:planName',
                         loadChildren: '../plans/plan-details/plan-details.module#PlanDetailsPageModule'
                     },
                     {
@@ -61,7 +61,14 @@ const routes: Routes = [
                                 loadChildren: '../settings/edit-settings/edit-settings.module#EditSettingsPageModule'
                             }
                         ]
-
+                    },
+                    {
+                        path: 'tutorial',
+                        loadChildren: '../settings/tutorial/tutorial.module#TutorialPageModule' 
+                    },
+                    { 
+                        path: 'about', 
+                        loadChildren: '../settings/about/about.module#AboutPageModule' 
                     }
                 ]
             }

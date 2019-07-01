@@ -22,6 +22,9 @@ export class ViewPlansPage implements OnInit {
   public items: any;
 
   ngOnInit() {
+  }
+
+  ionViewWillEnter() {
     this.PlanService.getAllPlan().then(plandetails => {
       this.details = plandetails
     });

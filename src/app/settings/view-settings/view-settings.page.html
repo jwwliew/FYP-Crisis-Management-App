@@ -17,17 +17,17 @@
   <!-- List of Text Items -->
   <ion-list lines="full">
 
-    <ion-item (click)="onClick()" color="black">
+    <ion-item color="black" (click)="onClick(0)">
       <ion-icon name="md-medkit"></ion-icon>
       <ion-label>Symptom & Action</ion-label>
     </ion-item>
 
-    <ion-item color="black">
+    <ion-item color="black" (click)="onClick(1)">
         <ion-icon name="book"></ion-icon>
       <ion-label>Tutorial</ion-label>
     </ion-item>
 
-    <ion-item color="black">
+    <ion-item color="black" (click)="onClick(2)">
       <ion-icon name="ios-information-circle"></ion-icon>
       <ion-label>About</ion-label>
     </ion-item>

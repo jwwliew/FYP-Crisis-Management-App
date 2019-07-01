@@ -2,15 +2,16 @@
   <ion-toolbar color="primary" *ngIf="checked.length == 0">
 
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/templates" *ngIf="!editPage"></ion-back-button>
+      <ion-back-button defaultHref="/tabs/templates" *ngIf="viewPage && !editPage"></ion-back-button>
+      <ion-button [routerLink]="['/tabs/templates']" *ngIf="!viewPage && !editPage"> Cancel </ion-button>
       <ion-back-button defaultHref="/tabs/templates/new" (click)="goToViewPageFromEdit()" *ngIf="editPage"></ion-back-button>
     </ion-buttons>
     
     <ion-title> {{templateName}} </ion-title>
 
-    <ion-buttons slot="end" *ngIf="!viewPage && !editPage">
-      <ion-button (click)="askForName()">
-        Add
+    <ion-buttons slot="end" *ngIf="(!viewPage && !editPage) || editPage">
+      <ion-button (click)="editPage ? addTemplate('Update') : askForName()">
+        Save
       </ion-button>
     </ion-buttons>
 
@@ -20,11 +21,11 @@
       </ion-button>
     </ion-buttons>
     
-    <ion-buttons slot="end" *ngIf="editPage">
+    <!-- <ion-buttons slot="end" *ngIf="editPage">
       <ion-button (click)="addTemplate('Update')">
         Save
       </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
 
   </ion-toolbar>
 
@@ -139,7 +140,7 @@ ion-textarea{
 
 <ion-content padding>
 
-  <ion-card *ngIf="!viewPage || editPage">
+  <ion-card *ngIf="!viewPage || editPage" style="margin-bottom: 6%">
     <ion-card-header color="tertiary">
       <ion-card-title>
         Select Language
@@ -156,7 +157,7 @@ ion-textarea{
     </ion-list>
   </ion-card>
 
-  <ion-card class="welcome-card" *ngFor="let globalItem of frontViewData">
+  <ion-card class="welcome-card" *ngFor="let globalItem of frontViewData; let globalIndex = index;" [ngStyle]="globalIndex !== 0 && {'margin-top': '6%'}">
 
     <ion-card-header [color]="globalItem.colorCard">
       <ion-card-title>
@@ -190,6 +191,17 @@ ion-textarea{
       </ion-content>
 
     </ion-card-header>
+
+    <ion-row style="background-color: grey; color: white;">
+      <ion-col>
+        <span style="margin-left: 10%"> Symptom </span>
+      </ion-col>
+      <ion-col>
+        <span style="margin-left: 6%;"> What to do </span>
+      </ion-col>
+    </ion-row>
+      
+  
 
 
     <div class="gridReplace" *ngIf="!viewPage || editPage"> <!--https://forum.ionicframework.com/t/fab-button-backdrop/80019-->
@@ -303,7 +315,9 @@ ion-textarea{
 
       </ion-row>
       
-      <ion-row style="height:60px;" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!checkType(globalItem.id)"></ion-row>
+      <ion-row style="height:45px;" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!checkType(globalItem.id)">
+        <p text-center style="width:100%"> No symptoms and actions added </p>
+      </ion-row>
 
     </ion-grid>
   

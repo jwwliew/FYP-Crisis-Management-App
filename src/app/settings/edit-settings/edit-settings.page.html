@@ -7,7 +7,7 @@
       {{contentDetails.enName}}
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="save(thisForm.value)" [disabled]="!thisForm.valid"> {{editID == 'add' ? 'Add' : 'Save'}} </ion-button>
+      <ion-button (click)="save(thisForm.value)"> {{editID == 'add' ? 'Add' : 'Save'}} </ion-button>
       <!-- <ion-label padding="true" (click)="save(thisForm.value)"> {{editID == 'add' ? 'Add' : 'Save'}} </ion-label> -->
     </ion-buttons>
   </ion-toolbar>
@@ -32,19 +32,19 @@
 
 
   <!-- <ion-input type="text" [(ngModel)]="contentDetails.enName"></ion-input> -->
-  <form [formGroup]="thisForm" (ngSubmit)="save(thisForm.value)">
+  <form [formGroup]="thisForm" (ngSubmit)="save(thisForm.value);">
 
       <ion-item>
         <ion-label position="floating"> English </ion-label>
         <ion-input type="text" formControlName="english" required></ion-input>
         <ion-buttons class="change" slot="end">
-          <ion-button slot="end" *ngIf="!thisForm.valid">
-            <ion-icon name="information-circle" slot="end" color="danger" *ngIf="!thisForm.valid"></ion-icon>
+          <ion-button slot="end" *ngIf="englishEmpty">
+            <ion-icon name="information-circle" slot="end" color="danger"></ion-icon>
           </ion-button>
         </ion-buttons>
       </ion-item>
 
-      <ion-item no-padding margin-start lines="none" *ngIf="!thisForm.valid">
+      <ion-item no-padding margin-start lines="none" *ngIf="englishEmpty">
         <span style="color:red; margin-bottom:16px;">
           Please enter at least english name
         </span>
@@ -80,5 +80,6 @@
     </ion-item>
     <!-- <ion-button class="submit-btn" expand="block" type="submit" [disabled]="!thisForm.valid">Update</ion-button> --> 
     <!-- https://stackoverflow.com/questions/49336255/how-can-i-submit-my-form-when-clicking-on-go-button-in-ionic-3-framework -->
+    <ion-button expand="block" (click)="takePhoto(0)"> Take Photo </ion-button>
   </form>
 </ion-content>

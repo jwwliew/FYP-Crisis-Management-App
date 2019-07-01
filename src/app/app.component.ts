@@ -56,7 +56,23 @@ export class AppComponent {
       myName: "got breath malay",
       tmName: "got breath tamil",
       icon: "assets/pdfgotbreath.png"
-    }
+    },
+    {
+      id: uuid(),
+      enName: "Got cough",
+      chName: "咳嗽了",
+      myName: "mendapat batuk",
+      tmName: "இருமல் வந்தது",
+      icon: "assets/pdfredcough.png"
+    },
+    // {
+    //   id: uuid(),
+    //   enName: "High Blood Pressure",
+    //   chName: "高血压",
+    //   myName: "tekanan darah tinggi",
+    //   tmName: "உயர் இரத்த அழுத்தம்",
+    //   icon: "assets/pdfhighblood.png"
+    // }
   ]
   
   globalActionObj: SettingAction[] = [
@@ -83,6 +99,14 @@ export class AppComponent {
       myName: "maintain usual activities malay",
       tmName: "maintain usual activities tamil",
       icon: "assets/pdfmaintain.png"
+    },
+    {
+      id: uuid(),
+      enName: "Use rescue inhalers",
+      chName: "使用救援吸入器",
+      myName: "Gunakan inhaler penyelamat",
+      tmName: "மீட்பு இன்ஹேலரைப் பயன்படுத்தவும்",
+      icon: "assets/pdfrescue.png"
     }
   ]
   

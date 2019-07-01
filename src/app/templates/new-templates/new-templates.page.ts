@@ -63,6 +63,7 @@ export class NewTemplatesPage implements OnInit {
 
   deleteArray() {
     this.templateService.deleteArray();
+    this.templateService.presentToastWithOptions("Deleted items!");
   }
 
 //https://stackoverflow.com/questions/48133216/custom-icons-on-ionic-select-with-actionsheet-interface-ionic2
@@ -144,9 +145,12 @@ export class NewTemplatesPage implements OnInit {
 
   async askForName(typeOfAction) {
     //templateName = templateName ? "Rename " + templateName : "Enter template name";
-    let templateName = (typeOfAction == "rename") ? "Enter new name" : (typeOfAction == "duplicate") ? "Enter name of the duplicated template" : "Enter template name"
+    let templateName = (typeOfAction == "rename") ? "Enter new name" : 
+      (typeOfAction == "duplicate") ? "Enter name of the duplicated template" :
+      (typeOfAction == "Create Crisis Plan") ? "Enter Crisis Plan name" : "Enter template name"
     let alert = await this.alertCtrl.create({
       header: templateName,
+      message: '',
       inputs: [
         {
           name: 'nameInput',
@@ -165,8 +169,14 @@ export class NewTemplatesPage implements OnInit {
         {
           text: 'Ok',
           handler: (alertData => {
+            console.warn(alertData);
             console.log("ok name1 = " + alertData.nameInput);
             //if (templateName == "Enter template name") {
+            if (alertData.nameInput === "") {
+              alert.message = "Name is required!"
+              this.templateService.presentToastWithOptions("Name is required!");
+              return false;
+            }
             if (typeOfAction == "rename") {
               this.templateService.renameTemplate(alertData.nameInput, this.templateID).then((val) => {
                 console.warn("rename val = " + JSON.stringify(val, null, 2));
@@ -177,6 +187,9 @@ export class NewTemplatesPage implements OnInit {
               this.templateService.duplicateTemplate(alertData.nameInput, this.templateID).then(() => {
                 this.router.navigate(["/tabs/templates"], {replaceUrl: true});
               })
+            }
+            else if (typeOfAction == "Create Crisis Plan") {
+              this.router.navigateByUrl("/tabs/plans/details/" + this.defaultLanguage + "/" + alertData.nameInput);
             }
             else {
               this.addTemplate(alertData.nameInput, "add");
@@ -190,7 +203,7 @@ export class NewTemplatesPage implements OnInit {
 
   
   ionViewWillEnter() {
-    console.log("ng init + ");
+    console.log("ng init + " + JSON.stringify(this.templateService.getAllArray(),null,2));
     this.frontViewData = this.getFrontViewData();
   }
 
@@ -240,10 +253,10 @@ export class NewTemplatesPage implements OnInit {
       'Edit': () => this.callEdit(),
       'Rename': () => this.askForName('rename'),
       'Duplicate': () => this.askForName('duplicate'),
+      "Create Crisis Plan": () => this.askForName('Create Crisis Plan'),
       "Delete": () => this.delete(),
-      "": () => ""
     };
-    (call[type] || call[""])();
+    call[type]();
   }
 
   callEdit() {
@@ -268,6 +281,7 @@ export class NewTemplatesPage implements OnInit {
           text: 'Delete',
           handler: () => {
             this.templateService.deleteTemplate(this.templateID).then(() => {
+              this.templateService.presentToastWithOptions("Deleted template!");
               this.router.navigate(["/tabs/templates"], {replaceUrl: true});
             })
           }

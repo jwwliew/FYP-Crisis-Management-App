@@ -4,6 +4,7 @@ import { AlertController, Events } from '@ionic/angular';
 import { Router } from '@angular/router';
 
 import 'hammerjs'; //for gestures
+import { TemplateService } from 'src/app/services/template.service';
 
 @Component({
   selector: 'app-symptom-action',
@@ -46,6 +47,7 @@ export class SymptomActionPage implements OnInit {
     this.settingService.deleteSetting(this.selectedTab, this.checked).then((a) => {
       console.log("delete success");
       console.log(a)
+      this.templateService.presentToastWithOptions("Deleted " + this.checked.length + " " + this.selectedTab);
       this.checked.length = 0;
       this.loadItems();
     });
@@ -62,7 +64,8 @@ export class SymptomActionPage implements OnInit {
     this.checked.length = 0;
   }
 
-  constructor(private alertCtrl: AlertController, private settingService: SymptomActionService, private ngzone: NgZone, public event: Events, private router: Router) {
+  constructor(private alertCtrl: AlertController, private settingService: SymptomActionService, private ngzone: NgZone, public event: Events, private router: Router, 
+    private templateService: TemplateService) {
   }
 
   ngOnInit() {
@@ -74,8 +77,20 @@ export class SymptomActionPage implements OnInit {
   }
 
   loadItems() {
-    this.settingService.getType("Symptom").then(val => this.symptomList = val);
-    this.settingService.getType("Action").then(val => this.actionList = val);
+    let allPromise = [this.settingService.getType("Symptom"), this.settingService.getType("Action")];
+    Promise.all(allPromise).then(finalPromises => {
+      finalPromises.forEach(eachArr => {
+        eachArr && eachArr.forEach(element => {
+            if (element.icon instanceof Blob) {
+              this.settingService.readImage(element.icon).then(convertedBase64 => {
+                element.icon = convertedBase64;
+              })
+            }
+        });
+      })
+      this.symptomList = finalPromises[0];
+      this.actionList = finalPromises[1];
+    })
   }
 
   goToType(type) {
