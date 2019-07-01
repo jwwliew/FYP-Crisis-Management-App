@@ -17,7 +17,14 @@
 <ion-content>
 
   <!----THIS IS SEARCH BAR---->
-  <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="setFilteredItems()"></ion-searchbar>
+  <ion-searchbar
+    [(ngModel)]="searchTerm"
+    (ionChange)="setFilteredItems()"
+  ></ion-searchbar>
+  <ion-item *ngFor="let item of items">
+    {{ item.title }}
+  </ion-item>
+
   <!-----------cate---------------------->
   <div class="row">
     &nbsp;&nbsp;&nbsp;&nbsp; Name &nbsp;&nbsp;&nbsp;&nbsp;

@@ -28,6 +28,8 @@ export class NewPlanPage implements OnInit {
     this.router.navigateByUrl('tabs/plans/details/' + this.defaultLanguage+'/'+this.planName);
     //)
   }
-
+cancel(){
+  this.router.navigateByUrl('');
+}
 
 }

@@ -23,10 +23,9 @@ hr {
     border-width: 1px;
 }
 ion-input {
-    width: auto;
-    background: linear-gradient(to right, #000, #000) 5px calc(100% - 5px)/calc(100% - 10px) 2px no-repeat;
-    background-color: #fcfcfc;
-    padding: 10px;  
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid 	#D3D3D3;
 }
 button {
     float: center;
