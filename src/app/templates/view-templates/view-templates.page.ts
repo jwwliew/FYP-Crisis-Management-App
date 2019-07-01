@@ -66,13 +66,12 @@ export class ViewTemplatesPage implements OnInit {
       console.warn(JSON.stringify(this.allTemplate, null, 2));
       this.allTemplate.sort((a,b) => a.language - b.language); //sort template by language English > Chinese > Malay > Tamil
       console.error(JSON.stringify(this.allTemplate, null, 2));
-      this.allTemplate.forEach((x,index) => {
-        x.template.forEach(element => {
-          var i = this.allTemplate[index].template.findIndex(x => x.symptom.symptomID == element.symptom.symptomID);
-          if (i !== -1 ) { //https://stackoverflow.com/questions/45090629/angular2-remove-prevent-duplicate-records-in-array
-            this.allTemplate[index].template.splice(i, 1);
-          }
-        });
+      this.allTemplate.forEach(x => {
+        x.template = x.template.filter(function(element) {
+          console.error(this);
+          return !this.has(element.symptom.symptomID) && this.add(element.symptom.symptomID) // https://stackoverflow.com/questions/51517650/removing-duplicates-using-set-in-javascript
+        }, new Set);
+        // console.warn(JSON.stringify(x.template,null,2));       
       })
     });
 
@@ -99,7 +98,8 @@ export class ViewTemplatesPage implements OnInit {
     this.templateService.getOneTemplate(templateItem.id).then(modifiedTemplate => {
       modifiedTemplate["template"] = modifiedTemplate["templates"];
       delete modifiedTemplate["templates"];
-      modifiedTemplate.template = [].concat(...modifiedTemplate.template); //join the array of array of objects into one array of objects to call filterArray in template service
+      // modifiedTemplate.template = [].concat(...modifiedTemplate.template); //join the array of array of objects into one array of objects to call filterArray in template service
+      modifiedTemplate.template = modifiedTemplate.template.flat(Infinity);
       // this.router.navigateByUrl("/tabs/templates/new");
       console.error("MODIFIDE TEAMPLTE = " + JSON.stringify(modifiedTemplate,null,2));
       this.navCtrl.navigateRoot("/tabs/templates/new").then(() => { //https://stackoverflow.com/questions/38342171/ionic-2-events-publish-and-subscribe-not-working
