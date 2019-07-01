@@ -32,13 +32,14 @@ export class PlanService {
     return this.storage.get(key);
     console.log(this.items);
   }
-
-  getPlanFilter() {
-    return this.storage.get(key).then(result => {
-      return result.filter(item => item);
+  
+  getPlanFilter(searchTerm) {
+        return this.items.filter(item => {
+      return item.title.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
+      console.log(searchTerm)
     });
-
   }
+
 
   //insert
   //newitem= pname, Details--->

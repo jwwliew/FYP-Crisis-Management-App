@@ -12,9 +12,14 @@ import { PlanDetailsPage } from '../plan-details/plan-details.page';
 })
 export class ViewPlansPage implements OnInit {
 
-  constructor(private router: Router, private PlanService: PlanService, public actionSheetController: ActionSheetController) { }
+  constructor(private router: Router, private PlanService: PlanService, public actionSheetController: ActionSheetController) {
 
+  }
+  details: any;
   plan: any;
+
+  public searchTerm: string = "";
+  public items: any;
 
   ngOnInit() {
   }
@@ -23,14 +28,14 @@ export class ViewPlansPage implements OnInit {
     this.PlanService.getAllPlan().then(plandetails => {
       this.details = plandetails
     });
+    this.setFilteredItems();
   }
-
-  details: any;
-
-
   setFilteredItems() {
-    this.PlanService.getPlanFilter();
+    this.items = this.PlanService.filterItems(this.searchTerm);
+    console.log(this.searchTerm);
+    
   }
+
 
   //redirect
   onClick() {
@@ -43,7 +48,7 @@ export class ViewPlansPage implements OnInit {
   }
 
   goEdit(item) {
-    this.router.navigateByUrl('tabs/plans/editplan/'+item.id)
+    this.router.navigateByUrl('tabs/plans/editplan/' + item.name)
   }
 
   //Filter
