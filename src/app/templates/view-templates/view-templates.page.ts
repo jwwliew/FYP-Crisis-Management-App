@@ -63,7 +63,17 @@ export class ViewTemplatesPage implements OnInit {
       });
       // this.allTemplate = [{name: val[0].name, template: [].concat(...val[0].templates)}]; //https://stackoverflow.com/questions/10865025/merge-flatten-an-array-of-arrays
       // console.warn("array pushed = " + JSON.stringify(this.allTemplate, null, 2) + "\n array length = " + this.allTemplate[0].template.length);
-      console.warn(this.allTemplate);
+      console.warn(JSON.stringify(this.allTemplate, null, 2));
+      this.allTemplate.sort((a,b) => a.language - b.language); //sort template by language English > Chinese > Malay > Tamil
+      console.error(JSON.stringify(this.allTemplate, null, 2));
+      this.allTemplate.forEach((x,index) => {
+        x.template.forEach(element => {
+          var i = this.allTemplate[index].template.findIndex(x => x.symptom.symptomID == element.symptom.symptomID);
+          if (i !== -1 ) { //https://stackoverflow.com/questions/45090629/angular2-remove-prevent-duplicate-records-in-array
+            this.allTemplate[index].template.splice(i, 1);
+          }
+        });
+      })
     });
 
     // this.templateService.getAllTemplate("templateKey").then(val => {
@@ -74,9 +84,8 @@ export class ViewTemplatesPage implements OnInit {
 
   newTemplate() {
     console.log("clicked new template");
-    this.router.navigateByUrl('/tabs/templates/new').then(() => { //routing start from root level
-      this.event.publish("add");
-    }); 
+    this.templateService.resetArray(); //when continue creating 2nd template, contents of 1st template is still here, hence need to clean template
+    this.router.navigateByUrl('/tabs/templates/new') //routing start from root level
   }
 
   ionViewWillLeave() {
@@ -87,9 +96,16 @@ export class ViewTemplatesPage implements OnInit {
   goToDynamicAddPage(templateItem) {
     // this.event.publish("edit", templateItem);
     console.log("dynamic id = " + JSON.stringify(templateItem, null, 2))
-    // this.router.navigateByUrl("/tabs/templates/new");
-    this.navCtrl.navigateRoot("/tabs/templates/new").then(() => { //https://stackoverflow.com/questions/38342171/ionic-2-events-publish-and-subscribe-not-working
-      this.event.publish("view", templateItem);
+    this.templateService.getOneTemplate(templateItem.id).then(modifiedTemplate => {
+      modifiedTemplate["template"] = modifiedTemplate["templates"];
+      delete modifiedTemplate["templates"];
+      modifiedTemplate.template = [].concat(...modifiedTemplate.template); //join the array of array of objects into one array of objects to call filterArray in template service
+      // this.router.navigateByUrl("/tabs/templates/new");
+      console.error("MODIFIDE TEAMPLTE = " + JSON.stringify(modifiedTemplate,null,2));
+      this.navCtrl.navigateRoot("/tabs/templates/new").then(() => { //https://stackoverflow.com/questions/38342171/ionic-2-events-publish-and-subscribe-not-working
+        this.event.publish("view", modifiedTemplate);
+      })
     })
   }
+
 }

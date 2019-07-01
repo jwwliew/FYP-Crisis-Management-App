@@ -24,6 +24,7 @@ export class EditSettingsPage implements OnInit {
   //   english: new FormControl('', Validators.required),
   //   chinese: new FormControl('')
   // });
+  englishEmpty = false;
 
   thisForm = this.formBuilder.group({
     english: ['', Validators.required],
@@ -38,7 +39,7 @@ export class EditSettingsPage implements OnInit {
   ngOnInit() {
     this.editID = this.activatedRoute.snapshot.paramMap.get("id");
     console.log("hello this page params = " + this.editID);
-    this.selectedTab = this.activatedRoute.snapshot.paramMap.get("selectedTab");
+    this.selectedTab = this.activatedRoute.snapshot.paramMap.get("selectedTab");  
     console.log("this selected tab = " + this.selectedTab);
     if (this.editID == "add") {
       this.contentDetails.enName = "New " + this.selectedTab;
@@ -66,6 +67,7 @@ export class EditSettingsPage implements OnInit {
     console.log("clicked save " + JSON.stringify(value));
     if (value.english == "") {
       this.templateService.presentToastWithOptions("English name is required!");
+      this.englishEmpty = true;
       return false;
     }
     console.error("content detail obj before saving = " + JSON.stringify(this.contentDetails, null, 2));

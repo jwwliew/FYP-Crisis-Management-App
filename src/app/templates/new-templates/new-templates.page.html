@@ -2,15 +2,16 @@
   <ion-toolbar color="primary" *ngIf="checked.length == 0">
 
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/templates" *ngIf="!editPage"></ion-back-button>
+      <ion-back-button defaultHref="/tabs/templates" *ngIf="viewPage && !editPage"></ion-back-button>
+      <ion-button [routerLink]="['/tabs/templates']" *ngIf="!viewPage && !editPage"> Cancel </ion-button>
       <ion-back-button defaultHref="/tabs/templates/new" (click)="goToViewPageFromEdit()" *ngIf="editPage"></ion-back-button>
     </ion-buttons>
     
     <ion-title> {{templateName}} </ion-title>
 
-    <ion-buttons slot="end" *ngIf="!viewPage && !editPage">
-      <ion-button (click)="askForName()">
-        Add
+    <ion-buttons slot="end" *ngIf="(!viewPage && !editPage) || editPage">
+      <ion-button (click)="editPage ? addTemplate('Update') : askForName()">
+        Save
       </ion-button>
     </ion-buttons>
 
@@ -20,11 +21,11 @@
       </ion-button>
     </ion-buttons>
     
-    <ion-buttons slot="end" *ngIf="editPage">
+    <!-- <ion-buttons slot="end" *ngIf="editPage">
       <ion-button (click)="addTemplate('Update')">
         Save
       </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
 
   </ion-toolbar>
 
