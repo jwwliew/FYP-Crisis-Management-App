@@ -5,6 +5,9 @@ import { SymptomActionService } from 'src/app/services/symptomaction.service';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { TemplateService } from 'src/app/services/template.service';
 
+import {v4 as uuid} from 'uuid';
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+
 @Component({
   selector: 'app-edit-settings',
   templateUrl: './edit-settings.page.html',
@@ -30,7 +33,7 @@ export class EditSettingsPage implements OnInit {
   })
 
   constructor(private activatedRoute: ActivatedRoute, private settingService: SymptomActionService, public formBuilder: FormBuilder, private router:Router, 
-    private templateService: TemplateService) { }
+    private templateService: TemplateService, private camera: Camera) { }
 
   ngOnInit() {
     this.editID = this.activatedRoute.snapshot.paramMap.get("id");
@@ -42,9 +45,12 @@ export class EditSettingsPage implements OnInit {
     }
     else {
       this.settingService.getOneSetting(this.selectedTab, this.editID).then((obj) => {
-        console.error("OBJ --->> " + JSON.stringify(obj,null,2))
+        if (obj.icon instanceof Blob) {
+          this.settingService.readImage(obj.icon).then(convertedBase64 => {
+            obj.icon = convertedBase64;
+          })
+        }
         this.contentDetails = obj;
-        console.log("content = " + JSON.stringify(this.contentDetails));
         this.thisForm.controls['english'].setValue(obj.enName);
         this.thisForm.controls['chinese'].setValue(obj.chName);
         this.thisForm.controls['malay'].setValue(obj.myName);
@@ -69,7 +75,8 @@ export class EditSettingsPage implements OnInit {
       chName: value.chinese,
       myName: value.malay,
       tmName: value.tamil,
-      icon: this.contentDetails.icon
+      // icon: this.contentDetails.icon
+      icon: this.contentDetails.icon || "assets/empty.svg"
     }
     let functionToCall = this.editID == "add" ? this.settingService.addReusable(this.selectedTab, newValues) : this.settingService.updateOneSetting(this.selectedTab, newValues)
     functionToCall.then(() => {
@@ -81,4 +88,25 @@ export class EditSettingsPage implements OnInit {
     //this.router.navigate(['/tabs/settings/symptomAction'])
     this.router.navigateByUrl("/tabs/settings/symptomAction"); //https://stackoverflow.com/questions/41678356/router-navigate-does-not-call-ngoninit-when-same-page
   }
+
+  takePhoto(sourceType: number) {
+    const options: CameraOptions = {
+      quality: 50,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+      correctOrientation: true,
+      sourceType:sourceType,
+    }
+
+    this.camera.getPicture(options).then((imageData) => {
+      // console.error("application storage directory " + this.file.)
+      let base64Image = 'data:image/jpeg;base64,' + imageData;
+      this.contentDetails.icon = base64Image
+    }, (err) => {
+      // Handle error
+    });
+  }
+
+
 }

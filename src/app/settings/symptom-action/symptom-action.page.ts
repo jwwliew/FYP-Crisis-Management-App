@@ -77,8 +77,20 @@ export class SymptomActionPage implements OnInit {
   }
 
   loadItems() {
-    this.settingService.getType("Symptom").then(val => this.symptomList = val);
-    this.settingService.getType("Action").then(val => this.actionList = val);
+    let allPromise = [this.settingService.getType("Symptom"), this.settingService.getType("Action")];
+    Promise.all(allPromise).then(finalPromises => {
+      finalPromises.forEach(eachArr => {
+        eachArr && eachArr.forEach(element => {
+            if (element.icon instanceof Blob) {
+              this.settingService.readImage(element.icon).then(convertedBase64 => {
+                element.icon = convertedBase64;
+              })
+            }
+        });
+      })
+      this.symptomList = finalPromises[0];
+      this.actionList = finalPromises[1];
+    })
   }
 
   goToType(type) {

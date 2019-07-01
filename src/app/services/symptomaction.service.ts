@@ -24,7 +24,25 @@ export class SymptomActionService {
   
   iconArray = ["assets/cough.svg", "assets/ambulance.svg", "assets/medication.svg", "assets/noshortness.svg", "assets/temperature.svg"]
 
-  addReusable(type, item) {
+  readImage(icon) {
+    return new Promise(resolve => {
+      var reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.readAsDataURL(icon);
+    });
+  }
+  convertToBlob(base64Image) { 
+    return fetch(base64Image).then(res => res.blob()) //https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
+  }
+
+
+  async addReusable(type, item) {
+    if (item.icon !== "assets/empty.svg") {
+      await this.convertToBlob(item.icon).then((val) => {
+        item.icon = val;
+        console.warn(item.icon);
+      })
+    }
     if (type == "Symptom") {
       var settingObj: Setting = {
         id: uuid(),
@@ -32,7 +50,7 @@ export class SymptomActionService {
         chName: item.chName,
         myName: item.myName,
         tmName: item.tmName,
-        icon: this.iconArray[Math.floor(Math.random() * this.iconArray.length)]
+        icon: item.icon || this.iconArray[Math.floor(Math.random() * this.iconArray.length)]
       };
     }
     else {
@@ -42,10 +60,11 @@ export class SymptomActionService {
         chName: item.chName,
         myName: item.myName,
         tmName: item.tmName,
-        icon: this.iconArray[Math.floor(Math.random() * this.iconArray.length)]
+        icon: item.icon || this.iconArray[Math.floor(Math.random() * this.iconArray.length)]
       }
     }
     console.log("adding reusable item = " + JSON.stringify(item));
+    console.error(settingObj);
     return this.getType(type).then(result => {
       result = result || [];
       result.push(settingObj);
@@ -66,11 +85,16 @@ export class SymptomActionService {
   }
 
   updateOneSetting(type, newValues) {
-    return this.getType(type).then((items: Setting[]) => {
+    return this.getType(type).then(async (items: Setting[]) => {
       let itemIndex = items.findIndex(item => item.id === newValues.id);
       console.log("item index to update = " + itemIndex);
       console.log("this key in update = " + this.thisKey);
       console.log("this type to update = " + type);
+      if (newValues.icon !== "assets/empty.svg") {
+        await this.convertToBlob(newValues.icon).then((val) => {
+          newValues.icon = val;
+        })
+      }
       items[itemIndex] = newValues;
       return this.storage.set(this.thisKey, items);
     })

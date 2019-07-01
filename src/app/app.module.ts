@@ -12,6 +12,7 @@ import { AppRoutingModule } from './app-routing.module';
 import {IonicStorageModule} from '@ionic/storage';
 
 import {HammerGestureConfig, HAMMER_GESTURE_CONFIG} from '@angular/platform-browser';
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 
 export class CustomHammerConfig extends HammerGestureConfig {
   overrides = {
@@ -27,6 +28,7 @@ export class CustomHammerConfig extends HammerGestureConfig {
   providers: [
     StatusBar,
     SplashScreen,
+    Camera,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig }
   ],
