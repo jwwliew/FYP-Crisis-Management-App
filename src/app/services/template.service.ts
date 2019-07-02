@@ -186,6 +186,7 @@ export class TemplateService {
       // let index = thisArray.findIndex(x => x.combined.findIndex(y => y.id == element.id));
       let index;
       thisArray.map((x, keyIndex) => {
+        console.error("deleteArray x = " + JSON.stringify(x,null,2));
         var found = x.combined.some(y => y.id == element.id)
         if (found) index = keyIndex;
       });
@@ -359,6 +360,10 @@ export class TemplateService {
   //https://stackoverflow.com/questions/48133216/custom-icons-on-ionic-select-with-actionsheet-interface-ionic2
   async presentActionSheet(symptomOrAction, item, defaultLanguage) { //https://ionicframework.com/docs/api/action-sheet
     symptomOrAction = symptomOrAction == "updateAction" ? "action" : symptomOrAction
+    console.warn("symptomOrAction = " + symptomOrAction);
+    if (this.checkSymptomOrActionEmpty(symptomOrAction)) {
+      return false;
+    }
     const actionSheet = await this.actionSheetCtrl.create({
       header: "Select a " + symptomOrAction.toLowerCase() + " from below",
       cssClass: "wholeActionSheet",
@@ -463,10 +468,7 @@ export class TemplateService {
           {
             text: 'Cancel',
             role: 'cancel',
-            cssClass: 'secondary',
-            handler: () => {
-              console.log("confirm cancel");
-            }
+            cssClass: 'secondary'
           },
           {
             text: 'Ok',
@@ -568,6 +570,19 @@ export class TemplateService {
     return maparr;
   }
 
+  completedArray = [this.criticalArray, this.warningArray, this.goodArray];
+
+  checkAllArrayEmpty() {
+    return this.completedArray.some(x => x.some(y => !this.globalSymptom.includes(y.symptom.text))) // https://stackoverflow.com/a/50475787
+  }
+
+  checkSymptomOrActionEmpty(type) {
+    console.warn("type = " + type);
+    let thisList = type == "Action" ? this.settingAction : this.settingSymptom;
+    console.warn("this list length = " + thisList.length);
+    thisList.length == 0 && this.presentToastWithOptions(`No ${type} found. Please add ${type} in settings!`);
+    return thisList.length == 0
+  }
 
 } //end of class
 

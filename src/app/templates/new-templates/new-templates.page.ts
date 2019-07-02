@@ -144,6 +144,12 @@ export class NewTemplatesPage implements OnInit {
   }
 
   async askForName(typeOfAction) {
+    if (typeOfAction == "add") {
+      if (!this.templateService.checkAllArrayEmpty()) {
+        this.templateService.presentToastWithOptions("Please select at least one symptom");
+        return false;
+      }
+    }
     //templateName = templateName ? "Rename " + templateName : "Enter template name";
     let templateName = (typeOfAction == "rename") ? "Enter new name" : 
       (typeOfAction == "duplicate") ? "Enter name of the duplicated template" :
@@ -161,10 +167,7 @@ export class NewTemplatesPage implements OnInit {
         {
           text: 'Cancel',
           role: 'cancel',
-          cssClass: 'secondary',
-          handler: () => {
-            console.log("confirm cancel");
-          }
+          cssClass: 'secondary'
         },
         {
           text: 'Ok',
