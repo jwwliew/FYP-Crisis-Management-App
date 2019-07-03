@@ -49,9 +49,9 @@ export class PlanDetailsPage implements OnInit {
 
 
   //template codes 
-  globalLanguage = this.templateService.getGlobalLanguage();
+  globalLanguage = this.templateService.globalLanguage;
   defaultLanguage = 0;
-  frontViewData = this.templateService.getFrontViewData();
+  frontViewData = this.templateService.frontViewData;
   checked = this.templateService.getChecked();
 
   ionViewWillEnter() {

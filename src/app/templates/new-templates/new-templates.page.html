@@ -10,7 +10,7 @@
     <ion-title> {{templateName}} </ion-title>
 
     <ion-buttons slot="end" *ngIf="(!viewPage && !editPage) || editPage">
-      <ion-button (click)="editPage ? addTemplate('Update') : askForName('add')">
+      <ion-button (click)="editPage ? addTemplate() : askForName('add')">
         Save
       </ion-button>
     </ion-buttons>

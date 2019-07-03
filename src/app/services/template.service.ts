@@ -5,8 +5,6 @@ import { Setting } from '../models/symptomaction';
 import { SymptomActionService } from './symptomaction.service';
 import { ActionSheetController, ToastController, AlertController } from '@ionic/angular';
 
-const TEMPLATE_KEY = "templateKey";
-const WARNING_KEY = "warningKey";
 const ALL_KEY = "allKey";
 @Injectable({
   providedIn: 'root'
@@ -16,71 +14,19 @@ export class TemplateService {
   constructor(private storage: Storage, private settingStorage: SymptomActionService, private actionSheetCtrl: ActionSheetController, private zone: NgZone, 
     private toastCtrl: ToastController, private alertCtrl: AlertController) { }
 
-  createTemplate(finalArray, templateNameFromInput, addOrUpdate, templateID, templateNameUpdate, defaultLanguage) {
-    let arrKey = [TEMPLATE_KEY, WARNING_KEY];
+  createTemplate(finalArray, templateNameFromInput, templateID, templateNameUpdate, defaultLanguage) {
 
-    let promises = [this.getAllTemplate(TEMPLATE_KEY), this.getAllTemplate(WARNING_KEY)];
-    // return Promise.all(promises).then(data => { //https://forum.ionicframework.com/t/localstorage-best-practice-to-set-multiple-keys/130106
-    //   console.warn("data == " + JSON.stringify(data));
-    //   finalArray.forEach((element, index) => {
-    //     console.warn(JSON.stringify(element));
-    //     data[index] = data[index] || [];
-    //     if (element && element.length > 0) { //https://stackoverflow.com/questions/46022712/how-to-check-if-local-storage-key-does-not-exist
-    //       console.log(element[0].combined);
-    //       element[0].combined = element[0].combined.filter(item => item.text !== "Action");
-    //       // element[0].combined.slice().reverse().forEach((item,index,object) => {
-    //       //   if (item.text == "Action") {
-    //       //     element[0].combined.splice(object.length - 1 - index, 1) //https://stackoverflow.com/questions/24812930/how-to-remove-element-from-array-in-foreach-loop
-    //       //   }
-    //       // });
-    //       console.log("afetr filter error " + JSON.stringify(element));
-    //       data[index].push(element);
-    //       console.error("data index == " + JSON.stringify(data[index]));
-    //     }
-    //     return this.storage.set(arrKey[index], data[index]);
-    //   })
-    // }) 
     return this.getAllTemplate(ALL_KEY).then(data => {
-      console.log("get all key = " + JSON.stringify(data));
+
       data = data || [];
-      let arr = [];
-      console.log("final array === " + JSON.stringify(finalArray, null, 2));
-      finalArray.forEach((element, index) => {
-        // data[index] = data[index] || [];
-        // console.warn("data index ---- " + JSON.stringify(data[index]));
-        console.warn(`element index --> ${index}` + JSON.stringify(element, null, 2));
-        if (element && element.length > 0) {
-          console.log("filtered element [0]" + JSON.stringify(element[0], null, 2));
-          console.log("element lenggth --> " + element[0].combined.length);
-          element[0].combined = element[0].combined.filter(item => item.text !== "Action"); //https://stackoverflow.com/questions/9289/removing-elements-with-array-map-in-javascript need to dynamic
-          console.error(`filtered!!! ${index} ` + JSON.stringify(element[index], null, 2));
-          // data[index].push(element);
-          // arr.push(element);
-        }
-        element = element || [];
-        arr.push(element);
-      });
-      var result = {templates: [...arr], id: templateID || uuid(), name: templateNameFromInput, language: defaultLanguage}; //https://stackoverflow.com/questions/42120358/change-property-in-array-with-spread-operator-returns-object-instead-of-array
-      if (addOrUpdate == "add") {
-        data.push(result);
-      }
-      else {
-        result.name = templateNameUpdate;
-        console.warn("ELSE DATA FULL ID? === " + JSON.stringify(data, null, 2));
-        console.warn("tempalte ID = " + templateID);
-        let itemIndex = data.findIndex(item => item.id === templateID);
-        console.error("item index = " + itemIndex);
-        data[itemIndex] = result;
-      }
+      var result = {templates: finalArray, id: templateID || uuid(), name: templateNameFromInput || templateNameUpdate, language: defaultLanguage}; //https://stackoverflow.com/questions/42120358/change-property-in-array-with-spread-operator-returns-object-instead-of-array
+      templateNameFromInput ?
+        data.push(result) :
+        data[data.findIndex(item => item.id === templateID)] = result
       console.log("RESULT WATAR " + JSON.stringify(result, null, 2));
       console.warn("final data === " + JSON.stringify(data, null, 2))
       return this.storage.set(ALL_KEY, data)
     })
-    // return this.getAllTemplate(TEMPLATE_KEY).then(val => {
-    //   val = val || [];
-    //   val.push(finalArray);
-    //   return this.storage.set(TEMPLATE_KEY, finalArray)
-    // })
   } 
 
   getAllTemplate(type) {
@@ -95,8 +41,7 @@ export class TemplateService {
 
   renameTemplate(name, templateID) {
     return this.getAllTemplate(ALL_KEY).then(data => {
-      let itemIndex = data.findIndex(item => item.id === templateID);
-      data[itemIndex].name = name;
+      data.find(item => item.id === templateID).name = name;
       return this.storage.set(ALL_KEY, data);
     })
   }
@@ -104,10 +49,7 @@ export class TemplateService {
   duplicateTemplate(name, templateID) {
     return this.getAllTemplate(ALL_KEY).then(data => {
       let itemFound = data.find(item => item.id === templateID);
-      // itemFound.id = uuid();
-      // itemFound.name = name;
       let duplicatedItem = {...itemFound, id: uuid(), name: name}
-      console.error(duplicatedItem);
       data.push(duplicatedItem);
       return this.storage.set(ALL_KEY, data);
     })
@@ -124,10 +66,6 @@ export class TemplateService {
   warningArray = [];
   goodArray = [];
   checked = [];
-
-  getChecked() {
-    return this.checked;
-  }
 
   pressEvent(type, thisObject, arrayID) {
     if (this.checked.length == 0) {
@@ -146,33 +84,21 @@ export class TemplateService {
   }
 
   clickEvent(type, wholeItem, arrayID) {
-    console.log("pressed clicked" + JSON.stringify(wholeItem,null,2));
-    console.error("whole checked array before anything = " + JSON.stringify(this.checked, null, 2));
     let itemConverted = type == "Symptom" ? wholeItem.combined[0] : wholeItem
     itemConverted.whatsapp = !itemConverted.whatsapp;
-    console.warn("item index = " + itemConverted.id);
-    //let itemIndex = this.checked.indexOf(itemConverted.id);
     let itemIndex = this.checked.findIndex(x => x.id == itemConverted.id);
-
     if (itemIndex !== -1) {
       this.checked.splice(itemIndex, 1);
-      console.error("spliced!!!");
     }
     else {
-      // this.checked.push(itemConverted.id);
       itemConverted.arrayID = arrayID;
       this.checked.push(itemConverted);
-      console.error("pusheddd!!!");
     }
     console.error("spliced finish checked array = " + JSON.stringify(this.checked, null, 2));
   }
 
   clearArray() {
-    console.error("clicked clear");
-    this.checked.forEach(element => {
-      console.error("element == " + JSON.stringify(element, null, 2));
-      element.whatsapp = false;
-    });
+    this.checked.forEach(element => element.whatsapp = false);
     this.checked.length = 0;
   }
 
@@ -180,8 +106,6 @@ export class TemplateService {
     this.checked.forEach(element => {
       console.error("deleting this element === " + JSON.stringify(element,null,2));
       let thisArray = this.getArray(element.arrayID);
-      console.error("this array retrieved = " + JSON.stringify(thisArray,null,2));
-      console.warn(thisArray[0].combined[0]);
       // let index = thisArray[0].combined.findIndex(x => x.id == element.id);
       // let index = thisArray.findIndex(x => x.combined.findIndex(y => y.id == element.id));
       let index;
@@ -203,11 +127,11 @@ export class TemplateService {
     this.checked.length = 0;
   }
 
-  getArray(id) { //return array type
-    let completedArray = [this.criticalArray, this.warningArray, this.goodArray];
-    return completedArray[id];
-  }
-
+  // getArray(id) { //return array type
+  //   return [this.criticalArray, this.warningArray, this.goodArray][id];
+  // }
+  getArray = id => [this.criticalArray, this.warningArray, this.goodArray][id];
+  getCompletedArray = () => [this.criticalArray, this.warningArray, this.goodArray];
 
   frontViewData = [
     { 
@@ -236,39 +160,23 @@ export class TemplateService {
     }
   ]
 
-  getFrontViewData() {
-    return this.frontViewData;
-  }
-
   settingSymptom:Setting[] = [];
   settingAction = [];
 
   setGlobalSettings() {
     let promises = [this.settingStorage.getType("Symptom"), this.settingStorage.getType("Action")];
     Promise.all(promises).then(data => {
-      // console.error("data promises " + JSON.stringify(data,null,2));
       this.settingSymptom = data[0];
       this.settingAction = data[1];
-      // this.settingSymptom = data[0] ? [...this.settingObj, ...data[0]] : [...this.settingObj];
-      // this.settingAction = data[1] ? [...this.actionObj, ...data[1]] : [...this.actionObj];
-      console.error("setting symptom data[0] " + JSON.stringify(this.settingSymptom, null, 2));
     });
-  }
-
-  getGlobalSettings(type) {
-    return type == "Symptom" ? this.settingSymptom : this.settingAction
   }
 
   globalLanguage = [[0, "English"], [1, "中文"], [2, "Malay"], [3, "Tamil"]];
   globalSymptom = ["Symptom", "症状", "gejala", "அறிகுறி"];
   globalAction = ["Action", "行动", "tindakan", "நடவடிக்கை"];
-  
-  getGlobalLanguage() {
-    return this.globalLanguage;
-  }
 
   selectRadio(defaultLanguage) {
-    let completedArray = [this.criticalArray, this.warningArray, this.goodArray];
+    let completedArray = this.getAllArray();
     console.error("selected " + defaultLanguage);
     console.error("this setting symptom === " + JSON.stringify(this.settingSymptom, null, 2));
     console.error("completed array ===== " + JSON.stringify(completedArray, null, 2));
@@ -375,7 +283,7 @@ export class TemplateService {
 
   createButtons(itemToUpdate, type, defaultLanguage) {
     let buttons = [];
-    let typeToCall = this.getGlobalSettings(type);
+    let typeToCall = type == "Symptom" ? this.settingSymptom : this.settingAction
     typeToCall.forEach((element: Setting, index) => {
       let style = document.createElement('style'); //https://github.com/ionic-team/ionic/issues/6589
       style.type = "text/css";
@@ -423,7 +331,7 @@ export class TemplateService {
 
   addNewCriticalArray(type, id, defaultLanguage) {
     console.log("clicked " + type); //critical or caution or good
-    let thisArr = this.getArray(id);
+    let thisArray = this.getArray(id);
     let newPair = {
       // 'id': 1,
       symptom: {
@@ -447,18 +355,15 @@ export class TemplateService {
         }
       ]
     }
-    thisArr.push(newPair); //double push
-    console.log(thisArr);
+    thisArray.push(newPair); //double push
+    console.log(thisArray);
   }
 
   
   popUp(id, defaultLanguage) {
-    console.log("clicked added new");
-    let thisArr = this.getArray(id);
-    // if (this.criticalArray.every(a => a.symptom.text == "Symptom")) {
-    // if (thisArr.every(a => a.symptom.text == "Symptom")) {
-    if (thisArr.every(a => this.globalSymptom.includes(a))) {
-      this.presentToastWithOptions("global symptom");
+    let thisArray = this.getArray(id);
+    if (thisArray.every(a => this.globalSymptom.includes(a.symptom.text))) {
+      this.presentToastWithOptions("Actions are allowed only when symptoms have been selected!");
     }
     else {
       this.alertCtrl.create({
@@ -475,13 +380,13 @@ export class TemplateService {
             handler: (alertData => {
               console.log("ok name1 = " + alertData);
               // let x = this.criticalArray.find(x => x.symptom.text == alertData);
-              console.warn("this arr = " + JSON.stringify(thisArr, null, 2))
+              console.warn("this arr = " + JSON.stringify(thisArray, null, 2))
               if (alertData === undefined) {
                 this.presentToastWithOptions("Please select a symptom!");
                 return false; //https://stackoverflow.com/questions/45969821/alert-controller-input-box-validation
               }
               else {
-                let x = thisArr.find(x => x.symptom.id == alertData);
+                let x = thisArray.find(x => x.symptom.id == alertData);
                 console.error("X + " + JSON.stringify(x,null,2));
                 let newAction = {
                   id: uuid(),
@@ -495,7 +400,7 @@ export class TemplateService {
                 x.combined.push(newAction);
                 this.presentActionSheet("updateAction", newAction, defaultLanguage)
                 // console.error("pushed after " + JSON.stringify(this.criticalArray));
-                console.error("pushed after " + JSON.stringify(thisArr));
+                console.error("pushed after " + JSON.stringify(thisArray));
               }
             })
           }
@@ -507,10 +412,10 @@ export class TemplateService {
   }
 
   createRadios(id) {
-    let thisArr = this.getArray(id);
+    let thisArray = this.getArray(id);
     let radioBtns = [];
     // this.criticalArray.filter(word => word.symptom.text !== "Symptom").forEach(element => {
-    thisArr.filter(word => word.symptom.text !== "Symptom").forEach(element => {
+    thisArray.filter(word => !this.globalSymptom.includes(word.symptom.text)).forEach(element => {
       let radioBtn = {
         type: "radio",
         label: element.symptom.text,
@@ -546,7 +451,7 @@ export class TemplateService {
   }
 
   cleansedArray() {
-    let completedArray = [this.criticalArray, this.warningArray, this.goodArray];
+    let completedArray = this.getAllArray();
     let name = ["criticalArray", "warningArray", "goodArray"];
     console.log("critical array = " + JSON.stringify(this.criticalArray));
     console.log("warning array = " + JSON.stringify(this.warningArray));
@@ -570,10 +475,13 @@ export class TemplateService {
     return maparr;
   }
 
-  completedArray = [this.criticalArray, this.warningArray, this.goodArray];
-
-  checkAllArrayEmpty() {
-    return this.completedArray.some(x => x.some(y => !this.globalSymptom.includes(y.symptom.text))) // https://stackoverflow.com/a/50475787
+  checkAllArrayEmpty(type) {
+    let returnValue = false;
+    if (!this.getAllArray().some(x => x.some(y => !this.globalSymptom.includes(y.symptom.text)))) {
+      this.presentToastWithOptions("Please select at least one symptom before " + type + " template");
+      returnValue = true;
+    } // https://stackoverflow.com/a/50475787
+    return returnValue;
   }
 
   checkSymptomOrActionEmpty(type) {

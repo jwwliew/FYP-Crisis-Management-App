@@ -16,10 +16,10 @@ export class NewTemplatesPage implements OnInit {
   templateID: any;
   editPage = false;
 
-  globalLanguage = this.templateService.getGlobalLanguage();
+  globalLanguage = this.templateService.globalLanguage;
   defaultLanguage = 0;
 
-  checked = this.templateService.getChecked();
+  checked = this.templateService.checked;
 
   selectRadio() {
     this.templateService.selectRadio(this.defaultLanguage);
@@ -75,65 +75,20 @@ export class NewTemplatesPage implements OnInit {
     this.templateService.addNewCriticalArray(type, id, this.defaultLanguage);
   }
 
-  addTemplate(templateNameFromInput, addOrUpdate) {
-    // let completedArray = [this.criticalArray, this.warningArray, this.goodArray];
-    // let completedArray = this.templateService.getAllArray();
-    // let name = ["criticalArray", "warningArray", "goodArray"];
-    // // console.log("critical array = " + JSON.stringify(this.criticalArray));
-    // // console.log("warning array = " + JSON.stringify(this.warningArray));
-    // console.log("critical array = " + JSON.stringify(completedArray[0]));
-    // console.log("warning array = " + JSON.stringify(completedArray[1]));
-    // let maparr = completedArray.map((eachArr, index) => { //https://stackoverflow.com/questions/53817342/map-and-filter-mapped-array-in-javascript
-    //   eachArr = eachArr.filter(data => data.symptom.text !== "Symptom");
-    //   eachArr.map(x => {
-    //     x.combined = x.combined.filter(thisAction => thisAction.text !== "Action");
-    //     x.combined.forEach(element => {
-    //       delete element.whatsapp;
-    //       delete element.arrayID; 
-    //     });
-    //     x.id = uuid(); 
-    //     x.name = name[index];
-    //   });
-    //   return eachArr;
-      // eachArr.forEach((x,xIndex) => {
-      //   if (x.symptom.text == "Symptom") {
-      //     eachArr.splice(xIndex, 1);
-      //   }
-      //   else {
-      //     x.combined.forEach((element,elementIndex) => {
-      //       if (element.text == "Action") {
-      //         x.combined.splice(elementIndex, 1);
-      //       }
-      //       else {
-      //         delete element.whatsapp;
-      //         delete element.arrayID;
-      //       }
-      //       x.id = uuid();
-      //       x.name = name[index];
-      //     });
-      //   }
-      // })
-      // return eachArr;
-    // })
+  addTemplate(templateNameFromInput) {
+    if (!templateNameFromInput) {
+      if (this.templateService.checkAllArrayEmpty("updating")) {
+        return false;
+      }
+    }
     let maparr = this.templateService.cleansedArray();
-    // console.warn("in middle watar" + JSON.stringify(completedArray[0]))
     console.error(JSON.stringify(maparr, null, 2));
-    // this.criticalArray = this.criticalArray.filter(data => data.symptom.text !== "Symptom");
-    // this.criticalArray.forEach(x => x.id = uuid());
-    this.templateService.createTemplate(maparr, templateNameFromInput, addOrUpdate, this.templateID, this.templateName, this.defaultLanguage).then((val) => {
+    this.templateService.createTemplate(maparr, templateNameFromInput, this.templateID, this.templateName, this.defaultLanguage).then((val) => {
       // this.event.publish("created", this.criticalArray);
       console.error("VAL " + JSON.stringify(val,null,2))
-      if (addOrUpdate == "add") {
-        this.router.navigateByUrl('/tabs/templates'); //routing start from root level
-      }
-      else {
-        val.forEach(element => {
-          console.log("finally elmeent ?? " + JSON.stringify(element.id,null,2))
-        });
-        this.templateService.editPageUpdateArray(val, this.templateID);
-        this.editPage = false;
-        this.viewPage = true;
-      }
+      templateNameFromInput ?
+        this.router.navigateByUrl('/tabs/templates') :
+        this.templateService.editPageUpdateArray(val, this.templateID), this.editPage = false, this.viewPage = true
     })
   }
 
@@ -145,8 +100,7 @@ export class NewTemplatesPage implements OnInit {
 
   async askForName(typeOfAction) {
     if (typeOfAction == "add") {
-      if (!this.templateService.checkAllArrayEmpty()) {
-        this.templateService.presentToastWithOptions("Please select at least one symptom");
+      if (this.templateService.checkAllArrayEmpty("adding")) {
         return false;
       }
     }
@@ -195,7 +149,7 @@ export class NewTemplatesPage implements OnInit {
               this.router.navigateByUrl("/tabs/plans/details/" + this.defaultLanguage + "/" + alertData.nameInput);
             }
             else {
-              this.addTemplate(alertData.nameInput, "add");
+              this.addTemplate(alertData.nameInput);
             }
           })
         }
@@ -204,10 +158,12 @@ export class NewTemplatesPage implements OnInit {
     await alert.present();
   }
 
-  
+
+  frontViewData: any;
+
   ionViewWillEnter() {
     console.log("ng init + " + JSON.stringify(this.templateService.getAllArray(),null,2));
-    this.frontViewData = this.getFrontViewData();
+    this.frontViewData = this.templateService.frontViewData;
   }
 
   // verify() {
@@ -223,14 +179,8 @@ export class NewTemplatesPage implements OnInit {
     this.templateService.popUp(id, this.defaultLanguage);
   }
 
-  frontViewData: any;
-
-  getFrontViewData() {
-    return this.templateService.getFrontViewData();
-  }
-
   checkType(id) {
-    return this.templateService.getArray(id).length > 0 ? true : false
+    return this.templateService.getArray(id).length > 0
   }
 
   getArray(id) {
