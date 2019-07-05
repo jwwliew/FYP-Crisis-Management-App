@@ -1,8 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController, Events, PopoverController } from '@ionic/angular';
+import { AlertController, Events, PopoverController, Platform, LoadingController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { TemplateService } from 'src/app/services/template.service';
 import { TemplatePopComponent } from '../template-pop/template-pop.component';
+
+import * as jsPDF from 'jspdf';
+import domtoimage from 'dom-to-image';
+import { File, IWriteOptions } from '@ionic-native/file/ngx';
+import * as html2canvas from 'html2canvas';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import { FileOpener } from '@ionic-native/file-opener/ngx';
+
 
 @Component({
   selector: 'app-new-templates',
@@ -26,7 +36,7 @@ export class NewTemplatesPage implements OnInit {
   }
 
   constructor(private router: Router, private templateService: TemplateService, private alertCtrl: AlertController, 
-    private event: Events, private popoverCtrl: PopoverController) {
+    private event: Events, private popoverCtrl: PopoverController, private file: File, public plt: Platform, private loadingController: LoadingController, private fileOpener: FileOpener) {
 
       console.error("CONSTURCTOR CALLlED" + JSON.stringify(this.templateService.getAllArray(), null, 2));
       this.event.subscribe("view", item => { //or services https://stackoverflow.com/questions/54304481/ionic-4-angular-7-passing-object-data-to-another-page
@@ -196,7 +206,7 @@ export class NewTemplatesPage implements OnInit {
     popover.onDidDismiss().then((data) => { //method 2 ngOnInIt inside onDidDismiss()
       console.log("popup dismiss data = " + data.data);
       //Edit", "Rename", "Duplicate", "Create Crisis Plan", "Delete"];
-      this.callAction(data.data);
+      data.data && this.callAction(data.data);
     })
     return await popover.present();
   }
@@ -208,9 +218,81 @@ export class NewTemplatesPage implements OnInit {
       'Duplicate': () => this.askForName('duplicate'),
       "Create Crisis Plan": () => this.askForName('Create Crisis Plan'),
       "Delete": () => this.delete(),
+      "Export to PDF": () => this.exportToPDF()
     };
     call[type]();
   }
+
+  loading: any;
+  async presentLoading(msg) {
+    const loading = await this.loadingController.create({
+      message: msg
+    });
+    return await loading.present();
+  }
+
+  exportToPDF() {
+    // this.presentLoading('Creating PDF file...');
+    const div = document.getElementById('pdf'); //https://github.com/MarouaneSH/Ionic-jsPdf-Html2Canvas, https://stackoverflow.com/questions/43730612/opening-pdf-file-in-ionic-2-app
+    const options = { background: 'white', height: 845, width: 595 }; //https://stackoverflow.com/questions/24069124/how-to-save-a-image-in-multiple-pages-of-pdf-using-jspdf
+    domtoimage.toPng(div, options).then((dataUrl) => {
+        //Initialize JSPDF
+        const doc = new jsPDF('p', 'mm', 'a4');
+        //Add image Url to PDF
+        doc.addImage(dataUrl, 'PNG', 0, 0, 210, 340);
+        doc.save('pdfDocument.pdf');
+
+        let pdfOutput = doc.output();
+        // using ArrayBuffer will allow you to put image inside PDF
+        let buffer = new ArrayBuffer(pdfOutput.length);
+        let array = new Uint8Array(buffer);
+        for (var i = 0; i < pdfOutput.length; i++) {
+          array[i] = pdfOutput.charCodeAt(i);
+        }
+        //This is where the PDF file will stored , you can change it as you like
+        // for more information please visit https://ionicframework.com/docs/native/file/
+        const directory = this.file.externalApplicationStorageDirectory ;
+        //Name of pdf
+        const fileName = "exampleMultiple.pdf";
+        //Writing File to Device  
+        this.file.writeFile(directory,fileName,buffer).then((success)=> console.log("File created Succesfully" + JSON.stringify(success))).catch((error)=> console.log("Cannot Create File " +JSON.stringify(error)));
+    })
+    // doc.save('test.pdf');//fails to add image to pdf
+    
+  }
+    // const div = document.getElementById("contentID");
+    // const options = {background:"white",height :div.clientHeight , width : div.clientWidth  };
+    // html2canvas(div,options).then((canvas)=>{
+    //   //Initialize JSPDF
+    //   var doc = new jsPDF("p","mm","a4");
+    //   //Converting canvas to Image
+    //   let imgData = canvas.toDataURL("image/PNG");
+    //   //Add image Canvas to PDF
+    //   doc.addImage(imgData, 'PNG', 20,20 );
+      
+    //   let pdfOutput = doc.output();
+    //   // using ArrayBuffer will allow you to put image inside PDF
+    //   let buffer = new ArrayBuffer(pdfOutput.length);
+    //   let array = new Uint8Array(buffer);
+    //   for (var i = 0; i < pdfOutput.length; i++) {
+    //       array[i] = pdfOutput.charCodeAt(i);
+    //   }
+
+
+    //   //This is where the PDF file will stored , you can change it as you like
+    //   // for more information please visit https://ionicframework.com/docs/native/file/
+    //   const directory = this.file.externalApplicationStorageDirectory ;
+
+    //   //Name of pdf
+    //   const fileName = "example.pdf";
+      
+    //   //Writing File to Device
+    //   this.file.writeFile(directory,fileName,buffer)
+    //   .then((success)=> console.log("File created Succesfully" + JSON.stringify(success)))
+    //   .catch((error)=> console.log("Cannot Create File " +JSON.stringify(error)));
+  
+  
+    // });
 
   callEdit() {
     console.log("edit is called " + this.templateID);

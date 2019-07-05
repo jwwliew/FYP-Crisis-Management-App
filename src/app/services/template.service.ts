@@ -238,8 +238,8 @@ export class TemplateService {
     this.backUpGoodArray = [...this.goodArray];
 
     console.log("critical array === " + JSON.stringify(this.backUpCriticalArray, null, 2));
-    let totalArray = [this.criticalArray, this.warningArray, this.goodArray];
-    totalArray.forEach(element => {
+    let completedArray = this.getAllArray();
+    completedArray.forEach(element => {
       element.forEach(array => {
         if (array.combined.length == 0) {
           let newAction = {

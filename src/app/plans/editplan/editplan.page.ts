@@ -32,7 +32,7 @@ export class EditplanPage implements OnInit {
   }
 
 
-  frontViewData = this.templateService.getFrontViewData();
+  frontViewData = this.templateService.frontViewData;
 
   getArray(id) {
     return this.templateService.getArray(id);

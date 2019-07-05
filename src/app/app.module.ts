@@ -13,7 +13,8 @@ import {IonicStorageModule} from '@ionic/storage';
 
 import {HammerGestureConfig, HAMMER_GESTURE_CONFIG} from '@angular/platform-browser';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
-
+import { File } from '@ionic-native/file/ngx';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
 export class CustomHammerConfig extends HammerGestureConfig {
   overrides = {
       'press': { time: 666 }  //set press delay for 1 second, default is 300ms
@@ -29,6 +30,8 @@ export class CustomHammerConfig extends HammerGestureConfig {
     StatusBar,
     SplashScreen,
     Camera,
+    File,
+    FileOpener,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig }
   ],

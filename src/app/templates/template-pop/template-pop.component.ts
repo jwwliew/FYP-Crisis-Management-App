@@ -12,7 +12,7 @@ export class TemplatePopComponent implements OnInit {
 
   ngOnInit() {}
 
-  menuOptions = ["Edit", "Rename", "Duplicate", "Create Crisis Plan", "Delete"];
+  menuOptions = ["Edit", "Rename", "Duplicate", "Create Crisis Plan", "Delete", "Export to PDF"];
 
   close(thisOption) {
     console.warn(thisOption)

@@ -18,7 +18,7 @@ export class NewPlanPage implements OnInit {
   ngOnInit() {
   }
 
-  globalLanguage = this.templateService.getGlobalLanguage();
+  globalLanguage = this.templateService.globalLanguage;
   defaultLanguage = 0;
 
   nextPage() {
