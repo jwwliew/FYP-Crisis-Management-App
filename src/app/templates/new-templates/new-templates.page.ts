@@ -230,35 +230,160 @@ export class NewTemplatesPage implements OnInit {
     });
     return await loading.present();
   }
-
+  
   exportToPDF() {
     // this.presentLoading('Creating PDF file...');
-    const div = document.getElementById('pdf'); //https://github.com/MarouaneSH/Ionic-jsPdf-Html2Canvas, https://stackoverflow.com/questions/43730612/opening-pdf-file-in-ionic-2-app
-    const options = { background: 'white', height: 845, width: 595 }; //https://stackoverflow.com/questions/24069124/how-to-save-a-image-in-multiple-pages-of-pdf-using-jspdf
-    domtoimage.toPng(div, options).then((dataUrl) => {
-        //Initialize JSPDF
-        const doc = new jsPDF('p', 'mm', 'a4');
-        //Add image Url to PDF
-        doc.addImage(dataUrl, 'PNG', 0, 0, 210, 340);
-        doc.save('pdfDocument.pdf');
+      //This is where the PDF file will stored , you can change it as you like
+        // for more information please visit https://ionicframework.com/docs/native/file/, https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-file/#where-to-store-files
+        // const directory = this.file.externalRootDirectory + "Download";
+        // this.templateService.presentToastWithOptions(directory);
+        
+    const div = document.getElementById('Html2PDF'); //https://github.com/MarouaneSH/Ionic-jsPdf-Html2Canvas, https://stackoverflow.com/questions/43730612/opening-pdf-file-in-ionic-2-app
+    // const options = { background: 'grey', height: 845, width: 595 }; //https://stackoverflow.com/questions/24069124/how-to-save-a-image-in-multiple-pages-of-pdf-using-jspdf
+    // domtoimage.toPng(div, {height:2500, width: 360} ).then((dataUrl) => {
+      alert(div.clientHeight + " off "+ div.offsetWidth + " hei " + div.offsetHeight +" scro "+ div.scrollHeight);
+    html2canvas(div, {height:div.clientHeight, width: div.clientWidth}).then(canvas => {
+      this.templateService.presentToastWithOptions(canvas.height + " and " + canvas.width);
+      
+      // let imgWidth = 210;
+      // let pageHeight = 295;
+      // let imgHeight = canvas.height * imgWidth / canvas.width;
+      // let heightLeft = imgHeight;
+      // let position = 0;
 
-        let pdfOutput = doc.output();
-        // using ArrayBuffer will allow you to put image inside PDF
-        let buffer = new ArrayBuffer(pdfOutput.length);
-        let array = new Uint8Array(buffer);
-        for (var i = 0; i < pdfOutput.length; i++) {
-          array[i] = pdfOutput.charCodeAt(i);
-        }
-        //This is where the PDF file will stored , you can change it as you like
-        // for more information please visit https://ionicframework.com/docs/native/file/
-        const directory = this.file.externalApplicationStorageDirectory ;
+      // let HTML_WIDTH = div.clientWidth;
+      // let HTML_HEIGHT = div.clientHeight;
+      // let top_left_margin = 15;
+      // let PDF_WIDTH = HTML_WIDTH + (top_left_margin * 2);
+      // let PDF_HEIGHT = (PDF_WIDTH*1.5) + (top_left_margin*2);
+      // let canvas_image_width = HTML_WIDTH;
+      // let canvas_image_height = HTML_HEIGHT;
+      // let totalPDFPages = Math.ceil(HTML_HEIGHT/PDF_HEIGHT) - 1;
+      console.error(canvas);
+      let width = canvas.width;
+      let height = canvas.height;
+      let millimeters = {width,height};
+      millimeters.width = Math.floor(width*0.264583);
+      // millimeters.width = 360;
+      millimeters.height = Math.floor(height*0.264583);
+      console.error(millimeters);
+      console.warn(div.clientHeight, div.clientWidth);
+  
+      domtoimage.toPng(div, {height: div.clientHeight, width: div.clientWidth}).then(dataUrl => {
+      //   // console.warn("data url = ", dataUrl);
+      //   console.warn("image height = ", div.clientHeight);
+      //   console.warn("image width = ", div.clientWidth);
+      //   console.error("window height = ", div.offsetHeight);
+      //   console.error("window width = ", div.offsetHeight);
+      //   //Initialize JSPDF
+        const doc = new jsPDF('p', 'mm', 'a4');
+        doc.deletePage(1); //https://stackoverflow.com/questions/29578721/image-in-pdf-cut-off-how-to-make-a-canvas-fit-entirely-in-a-pdf-page/42295522#42295522
+        doc.addPage(millimeters.width, millimeters.height);
+        console.warn("internal page size width height", doc.internal.pageSize.width, doc.internal.pageSize.height);
+        const imgHeight = (canvas.height * doc.internal.pageSize.width) / canvas.width;
+        console.error("img height, milimetre height", imgHeight, millimeters.height);
+        console.error("internal width vs milimeter width", doc.internal.pageSize.width, millimeters.width);
+        doc.addImage(dataUrl, "PNG", 0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height);
+        // const doc = new jsPDF('p', 'pt', [PDF_WIDTH, PDF_HEIGHT]);
+
+        // doc.addImage(dataUrl, "PNG", top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+        // for (var i = 1; i <= totalPDFPages; i++) {
+        //   doc.addPage(PDF_WIDTH, PDF_HEIGHT);
+        //   doc.addImage(dataUrl, "PNG", top_left_margin, -(PDF_HEIGHT*i)+(top_left_margin*4), canvas_image_width, canvas_image_height);
+        // }
+  
+        // doc.addImage(dataUrl, "PNG", 0, position, imgWidth, imgHeight);
+        // heightLeft -= pageHeight;
+        // while (heightLeft >= 0) { //https://github.com/MrRio/jsPDF/issues/434
+        //   position = heightLeft - imgHeight;
+        //   doc.addPage();
+        //   doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, imgHeight);
+        //   heightLeft -= pageHeight;
+        // }
+
+        doc.save('pdfDocument.pdf'); //for website
+
+        // if (leftHeight < pageHeight) {
+        //   doc.addImage(dataUrl, "PNG", 0, 0, imgWidth, imgHeight);
+        // } else {
+        //   while (leftHeight > 0) {
+        //     doc.addImage(dataUrl, "PNG", 0, position, imgWidth, imgHeight);
+        //     leftHeight -= pageHeight;
+        //     position -= 841.89;
+        //     if (leftHeight > 0) {
+        //       doc.addPage();
+        //     }
+        //   }
+        
+        // let imgWidth = 180;
+        // let pageHeight = 360;
+        // let position = 0;
+
+        // // let imgHeight = div.clientHeight * imgWidth / div.clientWidth;
+        // let imgHeight = 845 * 180 / div.clientWidth;
+        // let heightLeft = imgHeight;
+        
+        // let contentH = div.clientHeight; //https://stackoverflow.com/questions/22991086/how-to-display-an-image-in-two-pages-in-pdf-using-jspdf
+        // let $w, $actw, $h, $acth, $maxw, $maxh, $count;
+        // $w = $actw = 360;
+        // $h = $acth = 845;
+        // $w = $actw = canvas.width;
+        // $h = $acth = canvas.height;
+        // let width = $maxw = doc.internal.pageSize.width;
+        // let height = $maxh = doc.internal.pageSize.height;
+        // if (!$maxh) $maxh = height;
+        // if (!$maxw) $maxw = width;
+        // if ($w > $maxw) {
+        //   $w = $maxw;
+        //   $h = Math.round($acth / $actw * $maxw);
+        // }
+        // doc.addImage(dataUrl, 'PNG', 0, 0, $w, $h);
+        // $count = Math.ceil($h / $maxh) - 1; 
+        // for (var i = 1; i <= $count; i++) {
+        //   position = - $maxh * i
+        //   alert(position);
+        //   // doc.addPage(dataUrl, 'JPEG', 0, 0, $w, $h);
+        //   doc.addPage();
+        //   doc.addImage(dataUrl, 'PNG', 0, position, $w, $h);
+        // }
+        // Add image Url to PDF
+        // doc.addImage(dataUrl, 'PNG', 0, 0, 210, 340);
+        // doc.addImage(dataUrl, "PNG", 15, 20, 180, 340); //https://rawgit.com/MrRio/jsPDF/master/docs/module-addImage.html
+        
+        // doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, imgHeight);
+  
+        // heightLeft -= pageHeight;
+        // while (heightLeft >=0) {
+        //   position = heightLeft - imgHeight;
+        //   doc.addPage();
+        //   doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, imgHeight);
+        //   heightLeft -= pageHeight;
+        // }
+        
+        // doc.save('pdfDocument.pdf'); //for website
+
+        // let pdfOutput = doc.output();
+        // // using ArrayBuffer will allow you to put image inside PDF
+        // let buffer = new ArrayBuffer(pdfOutput.length);
+        // let array = new Uint8Array(buffer);
+        // for (var i = 0; i < pdfOutput.length; i++) {
+        //   array[i] = pdfOutput.charCodeAt(i);
+        // }
+
         //Name of pdf
-        const fileName = "exampleMultiple.pdf";
-        //Writing File to Device  
-        this.file.writeFile(directory,fileName,buffer).then((success)=> console.log("File created Succesfully" + JSON.stringify(success))).catch((error)=> console.log("Cannot Create File " +JSON.stringify(error)));
-    })
+        // const fileName = "crisisOpener.pdf";
+        // //Writing File to Device  
+        // this.file.writeFile(directory,fileName, buffer, {replace: true}).then(success => {
+        //   console.log("File created Succesfully" + JSON.stringify(success));
+        //   // this.loading.dismiss();
+        //   this.templateService.presentToastWithOptions("File created successfully!!!");
+        //   this.fileOpener.open(success.nativeURL, "application/pdf");
+        // }).catch((error)=> console.log("Cannot Create File " +JSON.stringify(error)));
+          
+      }
     // doc.save('test.pdf');//fails to add image to pdf
-    
+      )})
+
   }
     // const div = document.getElementById("contentID");
     // const options = {background:"white",height :div.clientHeight , width : div.clientWidth  };

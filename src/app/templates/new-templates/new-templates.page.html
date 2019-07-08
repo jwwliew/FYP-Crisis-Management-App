@@ -135,11 +135,13 @@ ion-textarea{
   --padding-start: 0;
 }
 
-
+#Html2PDF {
+  padding-bottom: 20px;
+}
 </style>
 
 <ion-content padding id="pdf">
-
+  <div id="Html2PDF">
   <ion-card *ngIf="!viewPage || editPage" style="margin-bottom: 6%">
     <ion-card-header color="tertiary">
       <ion-card-title>
@@ -324,5 +326,5 @@ ion-textarea{
 
     
   </ion-card>
-
+</div>
 </ion-content>

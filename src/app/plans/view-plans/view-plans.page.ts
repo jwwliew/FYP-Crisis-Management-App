@@ -48,7 +48,7 @@ export class ViewPlansPage implements OnInit {
   }
 
   goEdit(item) {
-    this.router.navigateByUrl('tabs/plans/editplan/' + item.name)
+    this.router.navigateByUrl('tabs/plans/editplan/' + item.id)
   }
 
   //Filter
