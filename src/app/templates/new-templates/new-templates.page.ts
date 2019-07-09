@@ -235,55 +235,44 @@ export class NewTemplatesPage implements OnInit {
     // this.presentLoading('Creating PDF file...');
       //This is where the PDF file will stored , you can change it as you like
         // for more information please visit https://ionicframework.com/docs/native/file/, https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-file/#where-to-store-files
-        // const directory = this.file.externalRootDirectory + "Download";
+        const directory = this.file.externalRootDirectory + "Download";
         // this.templateService.presentToastWithOptions(directory);
-        
+      console.time();
     const div = document.getElementById('Html2PDF'); //https://github.com/MarouaneSH/Ionic-jsPdf-Html2Canvas, https://stackoverflow.com/questions/43730612/opening-pdf-file-in-ionic-2-app
     // const options = { background: 'grey', height: 845, width: 595 }; //https://stackoverflow.com/questions/24069124/how-to-save-a-image-in-multiple-pages-of-pdf-using-jspdf
     // domtoimage.toPng(div, {height:2500, width: 360} ).then((dataUrl) => {
-      alert(div.clientHeight + " off "+ div.offsetWidth + " hei " + div.offsetHeight +" scro "+ div.scrollHeight);
-    html2canvas(div, {height:div.clientHeight, width: div.clientWidth}).then(canvas => {
-      this.templateService.presentToastWithOptions(canvas.height + " and " + canvas.width);
-      
-      // let imgWidth = 210;
-      // let pageHeight = 295;
-      // let imgHeight = canvas.height * imgWidth / canvas.width;
-      // let heightLeft = imgHeight;
-      // let position = 0;
-
-      // let HTML_WIDTH = div.clientWidth;
-      // let HTML_HEIGHT = div.clientHeight;
-      // let top_left_margin = 15;
-      // let PDF_WIDTH = HTML_WIDTH + (top_left_margin * 2);
-      // let PDF_HEIGHT = (PDF_WIDTH*1.5) + (top_left_margin*2);
-      // let canvas_image_width = HTML_WIDTH;
-      // let canvas_image_height = HTML_HEIGHT;
-      // let totalPDFPages = Math.ceil(HTML_HEIGHT/PDF_HEIGHT) - 1;
-      console.error(canvas);
-      let width = canvas.width;
-      let height = canvas.height;
+    
+  
+      // let width = canvas.width;
+      // let height = canvas.height;
+      let width = div.clientWidth * 3;
+      let height = div.clientHeight * 3;
       let millimeters = {width,height};
       millimeters.width = Math.floor(width*0.264583);
       // millimeters.width = 360;
       millimeters.height = Math.floor(height*0.264583);
       console.error(millimeters);
-      console.warn(div.clientHeight, div.clientWidth);
-  
-      domtoimage.toPng(div, {height: div.clientHeight, width: div.clientWidth}).then(dataUrl => {
+      console.warn("div height width ", div.clientHeight, div.clientWidth);
+      console.error("canvas height width ", height, width);
+      let scale = 2; //https://github.com/tsayen/dom-to-image/issues/69
+      domtoimage.toPng(div, {height: div.offsetHeight * 2, width: div.offsetWidth * 2, style:{transform: `scale(${scale}) translate(${div.offsetWidth / 2 / scale}px, ${div.offsetHeight / 2 / scale}px)`}}).then(dataUrl => {
+      // domtoimage.toPng(div, {height:div.offsetHeight, width:div.offsetWidth}).then(dataUrl => {
       //   // console.warn("data url = ", dataUrl);
       //   console.warn("image height = ", div.clientHeight);
       //   console.warn("image width = ", div.clientWidth);
       //   console.error("window height = ", div.offsetHeight);
       //   console.error("window width = ", div.offsetHeight);
       //   //Initialize JSPDF
-        const doc = new jsPDF('p', 'mm', 'a4');
+        const doc = new jsPDF('p', 'mm', 'a4', true);
         doc.deletePage(1); //https://stackoverflow.com/questions/29578721/image-in-pdf-cut-off-how-to-make-a-canvas-fit-entirely-in-a-pdf-page/42295522#42295522
-        doc.addPage(millimeters.width, millimeters.height);
+        doc.addPage(millimeters.width * 2, millimeters.height * 1.95);
+        // doc.addPage(millimeters.width, millimeters.height);
         console.warn("internal page size width height", doc.internal.pageSize.width, doc.internal.pageSize.height);
-        const imgHeight = (canvas.height * doc.internal.pageSize.width) / canvas.width;
+        const imgHeight = (height * doc.internal.pageSize.width) / width;
         console.error("img height, milimetre height", imgHeight, millimeters.height);
         console.error("internal width vs milimeter width", doc.internal.pageSize.width, millimeters.width);
-        doc.addImage(dataUrl, "PNG", 0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height);
+        // doc.addImage(dataUrl, "PNG", 6, 15, '','','', 'FAST');
+        doc.addImage(dataUrl,'PNG', 0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST');
         // const doc = new jsPDF('p', 'pt', [PDF_WIDTH, PDF_HEIGHT]);
 
         // doc.addImage(dataUrl, "PNG", top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
@@ -302,7 +291,7 @@ export class NewTemplatesPage implements OnInit {
         // }
 
         doc.save('pdfDocument.pdf'); //for website
-
+        console.timeEnd();
         // if (leftHeight < pageHeight) {
         //   doc.addImage(dataUrl, "PNG", 0, 0, imgWidth, imgHeight);
         // } else {
@@ -362,27 +351,27 @@ export class NewTemplatesPage implements OnInit {
         
         // doc.save('pdfDocument.pdf'); //for website
 
-        // let pdfOutput = doc.output();
-        // // using ArrayBuffer will allow you to put image inside PDF
-        // let buffer = new ArrayBuffer(pdfOutput.length);
-        // let array = new Uint8Array(buffer);
-        // for (var i = 0; i < pdfOutput.length; i++) {
-        //   array[i] = pdfOutput.charCodeAt(i);
-        // }
+        let pdfOutput = doc.output();
+        // using ArrayBuffer will allow you to put image inside PDF
+        let buffer = new ArrayBuffer(pdfOutput.length);
+        let array = new Uint8Array(buffer);
+        for (var i = 0; i < pdfOutput.length; i++) {
+          array[i] = pdfOutput.charCodeAt(i);
+        }
 
-        //Name of pdf
-        // const fileName = "crisisOpener.pdf";
-        // //Writing File to Device  
-        // this.file.writeFile(directory,fileName, buffer, {replace: true}).then(success => {
-        //   console.log("File created Succesfully" + JSON.stringify(success));
-        //   // this.loading.dismiss();
-        //   this.templateService.presentToastWithOptions("File created successfully!!!");
-        //   this.fileOpener.open(success.nativeURL, "application/pdf");
-        // }).catch((error)=> console.log("Cannot Create File " +JSON.stringify(error)));
+        // Name of pdf
+        const fileName = "crisisOpener.pdf";
+        //Writing File to Device  
+        this.file.writeFile(directory,fileName, buffer, {replace: true}).then(success => { //https://ourcodeworld.com/articles/read/38/how-to-capture-an-image-from-a-dom-element-with-javascript
+          console.log("File created Succesfully" + JSON.stringify(success));
+          // this.loading.dismiss();
+          this.templateService.presentToastWithOptions("File created successfully!!!");
+          this.fileOpener.open(success.nativeURL, "application/pdf");
+        }).catch((error)=> console.log("Cannot Create File " +JSON.stringify(error)));
           
       }
     // doc.save('test.pdf');//fails to add image to pdf
-      )})
+      )
 
   }
     // const div = document.getElementById("contentID");
