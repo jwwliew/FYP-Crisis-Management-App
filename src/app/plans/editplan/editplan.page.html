@@ -8,9 +8,9 @@
     <ion-title>
       {{details.planName}}
     </ion-title>
-    <ion-buttons slot="end">
+    <ion-buttons slot="end" (click)="editPage()">
       <ion-button>
-        Edit
+       {{btn_txt}}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -28,24 +28,23 @@
           <table id="tblOne" style="width:50%; float:left">
             <tr>
               <td>Name:</td>
-              <ion-input>
-                {{details.name}}
-              </ion-input>
+              <ion-input [(ngModel)]="details.name" disabled="{{isDisabled}}"></ion-input>
             </tr>
             <p></p>
             <tr>
               <td>TCS Name:</td>
-              <ion-input>{{details.cname}}</ion-input>
+              <ion-input [(ngModel)]="details.cname" disabled="{{isDisabled}}"></ion-input>
             </tr>
           </table>
           <table id="tblTwo" style="width:50%; float:left">
             <tr>
               <td>NRIC:</td>
-              <ion-input>{{details.nric}}</ion-input>
+              <ion-input [(ngModel)]="details.nric" disabled="{{isDisabled}}"></ion-input>
             </tr>
             <tr>
               <td>TCS Contact:</td>
-              <ion-input>{{details.ccontact}}</ion-input>
+              <ion-input [(ngModel)]="details.ccontact" disabled="{{isDisabled}}"></ion-input>
+              <!-- <ion-input type="text">{{details.ccontact}}</ion-input> -->
             </tr>
           </table>
         </div>
@@ -224,7 +223,7 @@ ion-content{
   <ion-list lines="none">
     <ion-card class="welcome-card">
       <ion-card-header color="tertiary">
-        <ion-card-title>Appointment (OPTIONAL)</ion-card-title>
+        <ion-card-title>Appointment Optional)</ion-card-title>
       </ion-card-header>
 
       <ion-card-content>
@@ -233,17 +232,17 @@ ion-content{
             <tr>
               <td>Clinic Name:</td>
               <p></p>
-              <ion-input style="width: 250%"></ion-input>
+              <ion-input style="width: 250%" disabled="{{isDisabled}}"></ion-input>
             </tr>
           </table>
           <ion-item lines="full">
             <ion-label>Date:</ion-label>
             <ion-datetime placeholder="eg. 29 June 2019" [(ngModel)]="datedmy" (ionChange)="dateChanged($event)"
-              display-format="DD/MMM/YYYY"></ion-datetime>
+              display-format="DD/MMM/YYYY" disabled="{{isDisabled}}"></ion-datetime>
           </ion-item>
           <ion-item lines="full">
             <ion-label>Time:&nbsp;&nbsp; </ion-label>
-            <ion-datetime placeholder="eg. 13:30 am/pm" displayFormat="h:mm A"></ion-datetime>
+            <ion-datetime placeholder="eg. 13:30 am/pm" displayFormat="h:mm A" disabled="{{isDisabled}}"></ion-datetime>
           </ion-item>
         </div>
       </ion-card-content>

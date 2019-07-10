@@ -11,24 +11,32 @@ import { TemplateService } from 'src/app/services/template.service';
 export class EditplanPage implements OnInit {
 
   constructor(private router: Router, private PlanService: PlanService, private activatedRoute: ActivatedRoute, private templateService: TemplateService) { }
-
+  private isDisabled: boolean = true;
   details = {} as any;
 
   ngOnInit() {
-    
-  }
 
+  }
+  btn_txt='Edit';
+  editPage() {
+    this.btn_txt='Save';
+    this.isDisabled = false;
+    // this.PlanService.editPlan(item).then(() => {
+      
+    // });
+  }
+  
   ionViewWillEnter() {
     let id = this.activatedRoute.snapshot.paramMap.get('item');
     console.warn("id = " + id);
-    this.PlanService.getEditDetails(id).then(everything=>{
+    this.PlanService.getEditDetails(id).then(everything => {
       let obj = {
         template: [].concat(...everything.template)
       }
       this.templateService.filterArray(obj);
       this.details = everything;
     });
-  
+
   }
 
 

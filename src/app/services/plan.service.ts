@@ -21,23 +21,19 @@ export class PlanService {
     })
   }
 
-  //search
-  filterItems(items) {
-    return this.items.filter(item => {
-      return item.title.toLowerCase().indexOf(items.toLowerCase()) > -1;
-    });
-  }
-  //get all
+
   getAllPlan() {
     return this.storage.get(key);
     console.log(this.items);
   }
-  
+
+
+  //searchfunction
   getPlanFilter(searchTerm) {
-        return this.items.filter(item => {
-      return item.title.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
-      console.log(searchTerm)
-    });
+    return this.storage.get(key).then(item => {
+      console.log(item);
+      return item.filter(result => result.name === searchTerm);
+      });
   }
 
 
@@ -92,7 +88,7 @@ export class PlanService {
   }
 
   //edit
-  editPlan(item) {
+  editPlan(item:any) {
     return this.storage.get(key).then((items) => {
       if (!items || items.length === 0) {
         return null;

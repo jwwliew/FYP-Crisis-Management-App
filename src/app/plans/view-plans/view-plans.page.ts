@@ -19,7 +19,7 @@ export class ViewPlansPage implements OnInit {
   plan: any;
 
   public searchTerm: string = "";
-  public items: any;
+  public items: string[];
 
   ngOnInit() {
   }
@@ -28,14 +28,15 @@ export class ViewPlansPage implements OnInit {
     this.PlanService.getAllPlan().then(plandetails => {
       this.details = plandetails
     });
-    this.setFilteredItems();
   }
+  //search item(s)
   setFilteredItems() {
-    this.items = this.PlanService.filterItems(this.searchTerm);
-    console.log(this.searchTerm);
-    
+    this.PlanService.getPlanFilter(this.searchTerm).then(sname => {
+      this.details = sname;
+      console.log(sname);
+    })
+    console.log("check   " + this.searchTerm);
   }
-
 
   //redirect
   onClick() {
@@ -51,6 +52,11 @@ export class ViewPlansPage implements OnInit {
     this.router.navigateByUrl('tabs/plans/editplan/' + item.id)
   }
 
+  deleteItem(item) {
+    this.PlanService.deletePlanByID(item.id).then(item => {
+
+    });
+  }
   //Filter
   async presentActionSheet() {
     const actionSheet = await this.actionSheetController.create({
@@ -60,35 +66,48 @@ export class ViewPlansPage implements OnInit {
         role: 'destructive',
         icon: 'arrow-round-down',
         handler: () => {
+
           console.log('A to Z');
         }
       }, {
         text: 'Letters: Z to A',
         icon: 'arrow-round-up',
         handler: () => {
+
           console.log('Z to A');
         }
       }, {
         text: 'Date: New to Old',
         icon: 'Trending-down',
         handler: () => {
+
           console.log('N to O');
         }
-      }, {
-        text: 'Date: Old to New',
-        icon: 'Trending-up',
-        handler: () => {
-          console.log('O to N');
-        }
-      }, {
-        text: 'Cancel',
-        icon: 'close',
-        role: 'cancel',
-        handler: () => {
-          console.log('Cancel');
-        }
+        // }, {
+        //   text: 'Cancel',
+        //   icon: 'close',
+        //   role: 'cancel',
+        //   handler: () => {
+        //     console.log('Cancel');
+        //   }
+        // }]
       }]
     });
     await actionSheet.present();
   }
+  //sort by date
+
+
+  //sort by A-Z
+
+
+  //sort by Z-A
+
+
+
+
+
+
+
+
 }

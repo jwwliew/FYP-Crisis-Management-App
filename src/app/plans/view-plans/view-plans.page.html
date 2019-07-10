@@ -17,30 +17,18 @@
 <ion-content>
 
   <!----THIS IS SEARCH BAR---->
-  <ion-searchbar
-    [(ngModel)]="searchTerm"
-    (ionChange)="setFilteredItems()"
-  ></ion-searchbar>
-  <ion-item *ngFor="let item of items">
-    {{ item.title }}
-  </ion-item>
 
-  <!-----------cate---------------------->
-  <div class="row">
-    &nbsp;&nbsp;&nbsp;&nbsp; Name &nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;Contact&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Date
-  </div>
 
   <!-----------LIST---------------------->
   <ion-list lines="none">
-
+    <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="setFilteredItems()">
+    </ion-searchbar>
+    
     <ion-card class="welcome-card" lines="full" *ngFor="let item of details" (click)="goEdit(item)">
       <ion-card-header color="tertiary">
       </ion-card-header>
       <!-- LOOP HERE -->
       <ion-card-content>
-
         <ion-row>
           <ion-col>
             <h6>{{item.name}}</h6>
@@ -52,7 +40,6 @@
             <h6>{{item.createdDate}}</h6>
           </ion-col>
         </ion-row>
-
       </ion-card-content>
     </ion-card>
   </ion-list>
