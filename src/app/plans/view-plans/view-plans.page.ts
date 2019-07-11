@@ -60,28 +60,33 @@ export class ViewPlansPage implements OnInit {
   //Filter
   async presentActionSheet() {
     const actionSheet = await this.actionSheetController.create({
-      header: 'Filter by',
+      header: 'Sort by',
       buttons: [{
-        text: 'Letters: A to Z',
+        text: 'A to Z',
         role: 'destructive',
         icon: 'arrow-round-down',
         handler: () => {
-
-          console.log('A to Z');
+          this.PlanService.getAllPlan().then(wholeplan => {
+            wholeplan.sort((a, b) => a.name.localeCompare(b.name))
+            this.details = wholeplan;
+            console.log("A-Z sorted");
+          });
         }
       }, {
-        text: 'Letters: Z to A',
+        text: 'Z to A',
         icon: 'arrow-round-up',
         handler: () => {
-
-          console.log('Z to A');
+          this.PlanService.getAllPlan().then(wholeplan => {
+            wholeplan.sort((a, b) => b.name.localeCompare(a.name))
+            this.details = wholeplan;
+            console.log("Z-A sorted");
+          });
         }
       }, {
         text: 'Date: New to Old',
         icon: 'Trending-down',
         handler: () => {
-
-          console.log('N to O');
+          console.log("sort by date")
         }
         // }, {
         //   text: 'Cancel',

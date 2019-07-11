@@ -32,7 +32,9 @@ export class PlanService {
   getPlanFilter(searchTerm) {
     return this.storage.get(key).then(item => {
       console.log(item);
-      return item.filter(result => result.name === searchTerm);
+            console.log(searchTerm);
+      //return item.filter(result => result.name === searchTerm);
+      return item.filter(result =>result.planName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1);
       });
   }
 

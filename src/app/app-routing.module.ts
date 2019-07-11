@@ -6,7 +6,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
+  imports:[
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
   ],
   exports: [RouterModule]
