@@ -17,15 +17,15 @@ export class EditplanPage implements OnInit {
   ngOnInit() {
 
   }
-  btn_txt='Edit';
+  btn_txt = 'Edit';
   editPage() {
-    this.btn_txt='Save';
+    this.btn_txt = 'Save';
     this.isDisabled = false;
     // this.PlanService.editPlan(item).then(() => {
-      
+
     // });
   }
-  
+
   ionViewWillEnter() {
     let id = this.activatedRoute.snapshot.paramMap.get('item');
     console.warn("id = " + id);
@@ -38,16 +38,19 @@ export class EditplanPage implements OnInit {
     });
 
   }
-
-
   frontViewData = this.templateService.frontViewData;
-
   getArray(id) {
     return this.templateService.getArray(id);
   }
-
   checkType(id) {
     return this.templateService.getArray(id).length > 0 ? true : false
   }
+
+  newPlan() {
+    //create new plan
+    console.log("button pressed");
+  }
+
+
 
 }

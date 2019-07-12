@@ -10,7 +10,7 @@
     </ion-title>
     <ion-buttons slot="end" (click)="editPage()">
       <ion-button>
-       {{btn_txt}}
+        {{btn_txt}}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -51,37 +51,6 @@
       </ion-card-content>
     </ion-card>
   </ion-list>
-  <!-- <ion-list lines="none">
-    <ion-card class="welcome-card">
-      <ion-card-header color="tertiary">
-        <ion-card-title>Appointment (OPTIONAL)</ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        <div>
-          <table id="tblOne" style="width:50%; float:left">
-            <tr>
-              <td>Clinic Name:</td>
-              <p></p>
-              <ion-input style="width: 250%"></ion-input>
-            </tr>
-          </table>
-          <ion-item lines="full">
-            <ion-label>Date:</ion-label>
-            <ion-datetime placeholder="eg. 29 June 2019" [(ngModel)]="datedmy" (ionChange)="dateChanged($event)"
-              display-format="DD/MMM/YYYY"></ion-datetime>
-          </ion-item>
-          <ion-item lines="full">
-            <ion-label>Time:&nbsp;&nbsp; </ion-label>
-            <ion-datetime placeholder="eg. 13:30 am/pm" displayFormat="h:mm A"></ion-datetime>
-          </ion-item>
-        </div>
-      </ion-card-content>
-    </ion-card>
-  </ion-list> -->
-
-
-
 
 
   <!-- Test my data yong rui -->
@@ -223,7 +192,12 @@ ion-content{
   <ion-list lines="none">
     <ion-card class="welcome-card">
       <ion-card-header color="tertiary">
-        <ion-card-title>Appointment Optional)</ion-card-title>
+        <ion-card-title>
+          <ion-buttons style="float:right;">
+            <ion-icon name="add-circle-outline" (onClick)="newPlan()"></ion-icon>
+          </ion-buttons>Appointment (Optional)
+        </ion-card-title>
+
       </ion-card-header>
 
       <ion-card-content>
@@ -238,7 +212,7 @@ ion-content{
           <ion-item lines="full">
             <ion-label>Date:</ion-label>
             <ion-datetime placeholder="eg. 29 June 2019" [(ngModel)]="datedmy" (ionChange)="dateChanged($event)"
-              display-format="DD/MMM/YYYY" disabled="{{isDisabled}}"></ion-datetime>
+              display-format="DD/MMM/YYYY" min="2017" max="2022" disabled="{{isDisabled}}"></ion-datetime>
           </ion-item>
           <ion-item lines="full">
             <ion-label>Time:&nbsp;&nbsp; </ion-label>

@@ -41,7 +41,7 @@ export class PlanService {
 
   //insert
   //newitem= pname, Details--->
-  addPlanDetails(indexL, date1, planName, pname, pnric, tcsname, tcscontact, maparr) {
+  addPlanDetails(indexL, date1, planName, pname, pnric, tcsname, tcscontact, maparr,appointment) {
     return this.storage.get(key).then((items) => {
       let details = {
         id: uuid(),
@@ -52,7 +52,9 @@ export class PlanService {
         ccontact: tcscontact,
         createdDate: date1,
         language: indexL,
-        template: maparr
+        template: maparr,
+        datemy:appointment
+
       }
       console.warn(details)
       if (items) {
@@ -90,47 +92,20 @@ export class PlanService {
   }
 
   //edit
-  editPlan(item:any) {
-    return this.storage.get(key).then((items) => {
-      if (!items || items.length === 0) {
-        return null;
-      }
+  editPlan(id:string) {
+   return this.storage.get(key).then(store=>{
+     store.push(store.findIndex(x=>x.id=id),1)
+     return this.storage.set(key,this.items);
 
-      // tslint:disable-next-line:prefer-const
-      let newItems = [];
-
-      // tslint:disable-next-line:prefer-const
-      for (let indexitem of items) {
-        if (indexitem.id === item.id) {
-          newItems.push(item);
-        } else {
-          newItems.push(indexitem);
-        }
-
-      }
-      return this.storage.set(key, newItems);
-    });
+   })
   }
 
-  //delete
+  //delete by ID
   deletePlanByID(id: string) {
     return this.storage.get(key).then((items) => {
-      if (!items || items.length === 0) {
-        return null;
-      }
-
-      // tslint:disable-next-line:prefer-const
-      let toKeepItems = [];
-
-      // tslint:disable-next-line:prefer-const
-      for (let indexitem of items) {
-        if (indexitem.id !== id) {
-          toKeepItems.push(indexitem);
-        }
-      }
-      return this.storage.set(key, toKeepItems);
-    });
+      items.splice(items.findIndex(x=>x.id==id),1)
+      return this.storage.set(key,items);
+      })
+    
   }
-
-
 }

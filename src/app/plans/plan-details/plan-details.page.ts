@@ -21,7 +21,7 @@ export class PlanDetailsPage implements OnInit {
   tcsContact: any;
   planName: any;
   date1: string; // PLAN CREATED @ date
-
+  datemy: any;
   ngOnInit() {
 
     // this.planName = this.activatedRoute.snapshot.paramMap.get('id');
@@ -34,18 +34,23 @@ export class PlanDetailsPage implements OnInit {
   // console.log(this.datedmy);
   // }
   // datedmy: any;
-
+  dateChanged(my) {
+    console.log(my);
+   
+  }
   PlanDetails() {
     let date = new Date();
     let date1 = date.getDate().toString() + '/' + (date.getMonth() + 1).toString() + '/' + date.getFullYear().toString();
     let maparr = this.templateService.cleansedArray();
-    console.log(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact);
-    this.PlanService.addPlanDetails(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact, maparr).then(() => {
+    console.log(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact, this.datemy);
+    this.PlanService.addPlanDetails(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact, maparr, this.datemy).then(() => {
       this.router.navigateByUrl('/tabs/plans');
 
     });
   }
-
+  newPlan() {
+    console.log("button presseed");
+  }
 
 
   //template codes 
@@ -67,7 +72,7 @@ export class PlanDetailsPage implements OnInit {
   goBackToTemplate() {
     this.templateService.goToViewPageFromEdit();
   }
-  
+
   getArray(id) {
     return this.templateService.getArray(id);
   }

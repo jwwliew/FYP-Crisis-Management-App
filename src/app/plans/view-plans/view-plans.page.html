@@ -24,7 +24,7 @@
     <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="setFilteredItems()">
     </ion-searchbar>
     <!----content-->
-    <ion-card class="welcome-card" lines="full" *ngFor="let item of details " (click)="goEdit(item)">
+    <ion-card class="welcome-card" lines="full" *ngFor="let item of details " (click)="goEdit(item)" (swipe)="swipeEvent()">
       <ion-card-header color="tertiary">
         <ion-card-title>{{item.planName}}</ion-card-title>
       </ion-card-header>

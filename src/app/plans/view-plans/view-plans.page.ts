@@ -52,11 +52,14 @@ export class ViewPlansPage implements OnInit {
     this.router.navigateByUrl('tabs/plans/editplan/' + item.id)
   }
 
-  deleteItem(item) {
-    this.PlanService.deletePlanByID(item.id).then(item => {
-
+  swipeEvent(id) {
+    this.PlanService.deletePlanByID(id).then(result => {
+      console.log(result);
+      //delete array
     });
   }
+
+
   //Filter
   async presentActionSheet() {
     const actionSheet = await this.actionSheetController.create({
@@ -86,32 +89,17 @@ export class ViewPlansPage implements OnInit {
         text: 'Date: New to Old',
         icon: 'Trending-down',
         handler: () => {
-          console.log("sort by date")
+          this.PlanService.getAllPlan().then(wholeplan => {
+            wholeplan.sort((a, b) => b.createdDate.localeCompare(a.createdDate))
+            this.details = wholeplan;
+            console.log("date sorted")
+          });
+
         }
-        // }, {
-        //   text: 'Cancel',
-        //   icon: 'close',
-        //   role: 'cancel',
-        //   handler: () => {
-        //     console.log('Cancel');
-        //   }
-        // }]
       }]
     });
     await actionSheet.present();
   }
-  //sort by date
-
-
-  //sort by A-Z
-
-
-  //sort by Z-A
-
-
-
-
-
 
 
 
