@@ -194,7 +194,7 @@ ion-content{
       <ion-card-header color="tertiary">
         <ion-card-title>
           <ion-buttons style="float:right;">
-            <ion-icon name="add-circle-outline" (onClick)="newPlan()"></ion-icon>
+            <ion-icon name="trash" (onClick)="deleteAppoint()"></ion-icon>
           </ion-buttons>Appointment (Optional)
         </ion-card-title>
 
@@ -202,26 +202,25 @@ ion-content{
 
       <ion-card-content>
         <div>
-          <table id="tblOne" style="width:50%; float:left">
+          <table id="tblOne" style="width:40%; float:left;position:inherit">
             <tr>
               <td>Clinic Name:</td>
               <p></p>
-              <ion-input style="width: 250%" disabled="{{isDisabled}}"></ion-input>
+              <ion-input style="width: 200%" disabled="{{isDisabled}}" [(ngModel)]="details.clinicName"></ion-input>
             </tr>
           </table>
-          <ion-item lines="full">
-            <ion-label>Date:</ion-label>
-            <ion-datetime placeholder="eg. 29 June 2019" [(ngModel)]="datedmy" (ionChange)="dateChanged($event)"
-              display-format="DD/MMM/YYYY" min="2017" max="2022" disabled="{{isDisabled}}"></ion-datetime>
-          </ion-item>
-          <ion-item lines="full">
-            <ion-label>Time:&nbsp;&nbsp; </ion-label>
-            <ion-datetime placeholder="eg. 13:30 am/pm" displayFormat="h:mm A" disabled="{{isDisabled}}"></ion-datetime>
-          </ion-item>
-        </div>
+          <table id="tblTwo" style="width:60%; float:left">
+              <tr>
+                <td>Date:</td>
+                <p></p>
+                <ion-input style="width: 250%" disabled="{{isDisabled}}" [(ngModel)]="details.datemy"></ion-input>
+              </tr>
+            </table>
+                 </div>
       </ion-card-content>
     </ion-card>
   </ion-list>
 
 
 </ion-content>
+<!-- <ion-datetime placeholder="" [(ngModel)]="details.datedmy.toString()" (ionChange)="dateChanged($event)" -->

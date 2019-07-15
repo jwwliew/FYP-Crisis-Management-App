@@ -32,16 +32,16 @@ export class PlanService {
   getPlanFilter(searchTerm) {
     return this.storage.get(key).then(item => {
       console.log(item);
-            console.log(searchTerm);
+      console.log(searchTerm);
       //return item.filter(result => result.name === searchTerm);
-      return item.filter(result =>result.planName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1);
-      });
+      return item.filter(result => result.planName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1);
+    });
   }
 
 
   //insert
   //newitem= pname, Details--->
-  addPlanDetails(indexL, date1, planName, pname, pnric, tcsname, tcscontact, maparr,appointment) {
+  addPlanDetails(indexL, date1, planName, pname, pnric, tcsname, tcscontact, maparr, appointment, clinicname) {
     return this.storage.get(key).then((items) => {
       let details = {
         id: uuid(),
@@ -53,8 +53,8 @@ export class PlanService {
         createdDate: date1,
         language: indexL,
         template: maparr,
-        datemy:appointment
-
+        datemy: appointment,
+        clinicName: clinicname
       }
       console.warn(details)
       if (items) {
@@ -92,20 +92,20 @@ export class PlanService {
   }
 
   //edit
-  editPlan(id:string) {
-   return this.storage.get(key).then(store=>{
-     store.push(store.findIndex(x=>x.id=id),1)
-     return this.storage.set(key,this.items);
+  editPlan(id: string) {
+    return this.storage.get(key).then(store => {
+      store.push(store.findIndex(x => x.id = id), 1)
+      return this.storage.set(key, this.items);
 
-   })
+    })
   }
 
   //delete by ID
   deletePlanByID(id: string) {
     return this.storage.get(key).then((items) => {
-      items.splice(items.findIndex(x=>x.id==id),1)
-      return this.storage.set(key,items);
-      })
-    
+      items.splice(items.findIndex(x => x.id == id), 1)
+      return this.storage.set(key, items);
+    })
+
   }
 }

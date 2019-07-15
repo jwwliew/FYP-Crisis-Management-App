@@ -5,6 +5,8 @@ import { ToastController, Events } from '@ionic/angular';
 import { TemplateService } from 'src/app/services/template.service';
 import { v4 as uuid } from 'uuid';
 
+import * as moment from 'moment';
+
 @Component({
   selector: 'app-plan-details',
   templateUrl: './plan-details.page.html',
@@ -14,14 +16,15 @@ export class PlanDetailsPage implements OnInit {
 
   constructor(private router: Router, private PlanService: PlanService, public toastController: ToastController, private activatedRoute: ActivatedRoute,
     private templateService: TemplateService, private event: Events) { }
-
+  clinicName: any;
   pNric: any;
   pName: any;
   tcsName: any;
   tcsContact: any;
   planName: any;
   date1: string; // PLAN CREATED @ date
-  datemy: any;
+  datemy: string;
+
   ngOnInit() {
 
     // this.planName = this.activatedRoute.snapshot.paramMap.get('id');
@@ -35,15 +38,19 @@ export class PlanDetailsPage implements OnInit {
   // }
   // datedmy: any;
   dateChanged(my) {
-    console.log(my);
-   
+    //this.datemy = my;
+    this.datemy = moment(my).format('YYYY-MM-DD hh:mmA');
+    //install -npm i moment===>to use moment().format
+    console.log(this.datemy);
   }
+
   PlanDetails() {
+    //created Date**
     let date = new Date();
     let date1 = date.getDate().toString() + '/' + (date.getMonth() + 1).toString() + '/' + date.getFullYear().toString();
     let maparr = this.templateService.cleansedArray();
-    console.log(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact, this.datemy);
-    this.PlanService.addPlanDetails(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact, maparr, this.datemy).then(() => {
+    console.log(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact, this.datemy, this.clinicName);
+    this.PlanService.addPlanDetails(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact, maparr, this.datemy, this.clinicName).then(() => {
       this.router.navigateByUrl('/tabs/plans');
 
     });

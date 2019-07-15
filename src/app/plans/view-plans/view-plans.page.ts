@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PlanService } from './../../services/plan.service';
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, IonItemSliding } from '@ionic/angular';
 import { PlanDetailsPage } from '../plan-details/plan-details.page';
+import { ToastController } from '@ionic/angular';
 
 
 @Component({
@@ -12,12 +13,11 @@ import { PlanDetailsPage } from '../plan-details/plan-details.page';
 })
 export class ViewPlansPage implements OnInit {
 
-  constructor(private router: Router, private PlanService: PlanService, public actionSheetController: ActionSheetController) {
+  constructor(private router: Router, private PlanService: PlanService, public actionSheetController: ActionSheetController, public toastController: ToastController) {
 
   }
   details: any;
   plan: any;
-
   public searchTerm: string = "";
   public items: string[];
 
@@ -52,13 +52,13 @@ export class ViewPlansPage implements OnInit {
     this.router.navigateByUrl('tabs/plans/editplan/' + item.id)
   }
 
+
   swipeEvent(id) {
     this.PlanService.deletePlanByID(id).then(result => {
-      console.log(result);
-      //delete array
+      console.log('delete!')
+     this.details=result;
     });
   }
-
 
   //Filter
   async presentActionSheet() {

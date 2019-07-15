@@ -22,7 +22,12 @@ export class EditplanPage implements OnInit {
     this.btn_txt = 'Save';
     this.isDisabled = false;
     // this.PlanService.editPlan(item).then(() => {
+    if(this.isDisabled=false)
+    {
+      // return this.PlanService.editPlan().then(()=>{
 
+      // })
+    }
     // });
   }
 
@@ -46,10 +51,9 @@ export class EditplanPage implements OnInit {
     return this.templateService.getArray(id).length > 0 ? true : false
   }
 
-  newPlan() {
-    //create new plan
-    console.log("button pressed");
-  }
+ deleteAppoint(){
+   
+ }
 
 
 
