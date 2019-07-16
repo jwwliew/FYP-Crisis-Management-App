@@ -37,12 +37,6 @@ export class SymptomActionService {
 
 
   async addReusable(type, item) {
-    if (item.icon !== "assets/empty.svg") {
-      await this.convertToBlob(item.icon).then((val) => {
-        item.icon = val;
-        console.warn(item.icon);
-      })
-    }
     if (type == "Symptom") {
       var settingObj: Setting = {
         id: uuid(),
@@ -50,7 +44,7 @@ export class SymptomActionService {
         chName: item.chName,
         myName: item.myName,
         tmName: item.tmName,
-        icon: item.icon || this.iconArray[Math.floor(Math.random() * this.iconArray.length)]
+        icon: item.icon
       };
     }
     else {
@@ -60,7 +54,7 @@ export class SymptomActionService {
         chName: item.chName,
         myName: item.myName,
         tmName: item.tmName,
-        icon: item.icon || this.iconArray[Math.floor(Math.random() * this.iconArray.length)]
+        icon: item.icon
       }
     }
     console.log("adding reusable item = " + JSON.stringify(item));
@@ -90,11 +84,6 @@ export class SymptomActionService {
       console.log("item index to update = " + itemIndex);
       console.log("this key in update = " + this.thisKey);
       console.log("this type to update = " + type);
-      if (newValues.icon !== "assets/empty.svg") {
-        await this.convertToBlob(newValues.icon).then((val) => {
-          newValues.icon = val;
-        })
-      }
       items[itemIndex] = newValues;
       return this.storage.set(this.thisKey, items);
     })
@@ -109,4 +98,19 @@ export class SymptomActionService {
       return this.storage.set(this.thisKey, items);
     })
   }
+  
+  deleteIOS(type, thisItem) {
+    return this.getType(type).then((items: Setting[]) => {
+      items.splice(items.findIndex(item => item.id === thisItem.id), 1);
+      return this.storage.set(this.thisKey, items);
+    })
+  }
+
+  getOneImage(type, id) {
+    return this.getType(type).then((items: Setting[]) => {
+      let img = items.find(item => item.id === id).icon;
+      return img;
+    })
+  }
+
 }

@@ -27,50 +27,40 @@
   img {
     border-radius: 50%;
   }
+
+  /* ion-segment {
+    margin-bottom: 12px;
+  } */
 </style>
+
 <ion-content>
-  <ion-grid style="border-bottom: 1px solid green">
-    <ion-row> 
-      <!-- 0000cd -->
-      <ion-col text-center (click)="goToType('Symptom')" style="font-weight:bold;"
-        [ngStyle]="{'color': (selectedTab == 'Symptom') ? '#0000cd' : '#C0C0C0'}">
-        Symptom
-      </ion-col>
+  <!-- Segment with default selection -->
+  <ion-segment (ionChange)="segmentChanged()" [(ngModel)]="selectedTab" value="Symptom" color="originalPrimary">
+    <ion-segment-button value="Symptom">
+      <ion-label>Symptom</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="Action">
+      <ion-label>Action</ion-label>
+    </ion-segment-button>
+  </ion-segment>
 
-      <ion-col text-center (click)="goToType('Action')" style="font-weight:bold;"
-        [ngStyle]="{'color': (selectedTab == 'Action') ? '#0000cd' : '#C0C0C0'}">
-        Action
-      </ion-col>
 
-    </ion-row>
-  </ion-grid>
+  <ion-list lines="full" #mylist>
 
-  <ion-list *ngIf="selectedTab == 'Symptom'" lines="full">
-    <ion-item *ngFor="let item of symptomList" (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)" [color]="item.checked && 'lightBlue'">
-      <ion-thumbnail slot="start">
-        <img [src]="item.icon"/>
-      </ion-thumbnail>
-      {{item.enName}}
-      <ion-checkbox mode="ios" slot="end" *ngIf="checked.length > 0" [(ngModel)]="item.checked" (ionChange)="check(item)" color="success"></ion-checkbox>
-    </ion-item>
+    <ion-item-sliding *ngFor="let item of selectedTab == 'Symptom' ? symptomList : actionList" (ionSwipe)="deleteIOS(item)">
+      <ion-item (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)" [color]="item.checked && 'lightBlue'">
+        <ion-thumbnail slot="start">
+          <img [src]="item.icon"/>
+        </ion-thumbnail>
+        {{item.enName}}
+        <ion-checkbox mode="ios" slot="end" *ngIf="checked.length > 0" [(ngModel)]="item.checked" (ionChange)="check(item)" color="success"></ion-checkbox>
+      </ion-item>
+
+      <ion-item-options side="end">
+        <!-- <ion-item-option color="secondary" side="right">Update</ion-item-option> -->
+        <ion-item-option color="danger" side="left" expandable (click)="deleteIOS(item)">Delete</ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
-
-  <ion-list *ngIf="selectedTab == 'Action'" lines="full">
-    <ion-item *ngFor="let item of actionList" (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)" [color]="item.checked && 'lightBlue'">
-      <ion-thumbnail slot="start">
-        <img [src]="item.icon"/>
-      </ion-thumbnail>
-      {{item.enName}}
-      <ion-checkbox mode="ios" slot="end" *ngIf="checked.length > 0" [(ngModel)]="item.checked" (ionChange)="check(item)" color="success"></ion-checkbox>
-    </ion-item>
-  </ion-list>
-
-  <!-- fab placed to the top end -->
-  <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="goToAddPage()">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab> 
-  -->
   
 </ion-content>

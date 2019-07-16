@@ -418,27 +418,12 @@ export class NewTemplatesPage implements OnInit {
   }
 
   delete() {
-    this.alertCtrl.create({
-      header: 'Are you sure you want to delete this template?',
-      message: 'Once deleted, there is no retrieving back!',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-        },
-        {
-          text: 'Delete',
-          handler: () => {
-            this.templateService.deleteTemplate(this.templateID).then(() => {
-              this.templateService.presentToastWithOptions("Deleted template!");
-              this.router.navigate(["/tabs/templates"], {replaceUrl: true});
-            })
-          }
-        }
-      ]
-    }).then(alert => {
-      alert.present();
-    });
+    this.templateService.delete("Are you sure you want to delete this template?").then(() => {
+      this.templateService.deleteTemplate(this.templateID).then(() => {
+        this.templateService.presentToastWithOptions("Deleted template!");
+        this.router.navigate(["/tabs/templates"], {replaceUrl: true});
+      });
+    }).catch(() => {})
   }
 
 }

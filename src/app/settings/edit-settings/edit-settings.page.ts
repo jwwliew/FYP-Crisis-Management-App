@@ -46,11 +46,6 @@ export class EditSettingsPage implements OnInit {
     }
     else {
       this.settingService.getOneSetting(this.selectedTab, this.editID).then((obj) => {
-        if (obj.icon instanceof Blob) {
-          this.settingService.readImage(obj.icon).then(convertedBase64 => {
-            obj.icon = convertedBase64;
-          })
-        }
         this.contentDetails = obj;
         this.thisForm.controls['english'].setValue(obj.enName);
         this.thisForm.controls['chinese'].setValue(obj.chName);
@@ -77,7 +72,6 @@ export class EditSettingsPage implements OnInit {
       chName: value.chinese,
       myName: value.malay,
       tmName: value.tamil,
-      // icon: this.contentDetails.icon
       icon: this.contentDetails.icon || "assets/empty.svg"
     }
     let functionToCall = this.editID == "add" ? this.settingService.addReusable(this.selectedTab, newValues) : this.settingService.updateOneSetting(this.selectedTab, newValues)
@@ -98,13 +92,13 @@ export class EditSettingsPage implements OnInit {
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE,
       correctOrientation: true,
-      sourceType:sourceType,
+      sourceType: sourceType
     }
 
     this.camera.getPicture(options).then((imageData) => {
       // console.error("application storage directory " + this.file.)
       let base64Image = 'data:image/jpeg;base64,' + imageData;
-      this.contentDetails.icon = base64Image
+      this.contentDetails.icon = base64Image;
     }, (err) => {
       // Handle error
     });

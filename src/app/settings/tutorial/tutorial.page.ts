@@ -21,4 +21,7 @@ export class TutorialPage implements OnInit {
     slides.startAutoplay();
   }
 
+  segmentChanged($event) {
+    console.warn($event);
+  }
 }

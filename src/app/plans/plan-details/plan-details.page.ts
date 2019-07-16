@@ -41,7 +41,19 @@ export class PlanDetailsPage implements OnInit {
     //this.datemy = my;
     this.datemy = moment(my).format('YYYY-MM-DD hh:mmA');
     //install -npm i moment===>to use moment().format
-    console.log(this.datemy);
+    console.log("orgginal my = " + my);
+    console.warn(this.datemy);
+    console.error(new Date(my).getMinutes());
+    console.warn(new Date(my).toLocaleString());
+    console.warn(new Date(my).toLocaleString('en-US', {hour12: false, hour:"numeric",minute:"numeric"}));
+    let x = new Date(my);
+    console.error("X === " + x);
+    // this.datemy = x.toLocaleString();
+    let monthConverted = x.getMonth() + 1;
+    // let final = x.getFullYear() + "-" + (monthConverted >= 10 ? monthConverted : "0" + monthConverted) + "-" + x.getDate() + " " + x.toLocaleTimeString('en-US', {hour: "numeric", minute: "numeric"});
+    let final = my.split("T")[0] + " " + x.toLocaleTimeString('en-US', {hour: "numeric", minute: "numeric"});
+    console.warn("final = " + final);
+    console.warn(x.getDate());
   }
 
   PlanDetails() {

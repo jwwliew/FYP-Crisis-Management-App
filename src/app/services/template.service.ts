@@ -4,6 +4,7 @@ import {v4 as uuid} from 'uuid';
 import { Setting } from '../models/symptomaction';
 import { SymptomActionService } from './symptomaction.service';
 import { ActionSheetController, ToastController, AlertController } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 const ALL_KEY = "allKey";
 @Injectable({
@@ -12,7 +13,7 @@ const ALL_KEY = "allKey";
 export class TemplateService {
 
   constructor(private storage: Storage, private settingStorage: SymptomActionService, private actionSheetCtrl: ActionSheetController, private zone: NgZone, 
-    private toastCtrl: ToastController, private alertCtrl: AlertController) { }
+    private toastCtrl: ToastController, private alertCtrl: AlertController, private router: Router) { }
 
   createTemplate(finalArray, templateNameFromInput, templateID, templateNameUpdate, defaultLanguage) {
 
@@ -218,6 +219,19 @@ export class TemplateService {
     this.criticalArray = val.find(x => x.id == templateID).templates[0];
     this.warningArray = val.find(x => x.id == templateID).templates[1];
     this.goodArray = val.find(x => x.id == templateID).templates[2];
+    [this.criticalArray, this.warningArray, this.goodArray].forEach(eachArray => {
+      console.warn("each array + " + JSON.stringify(eachArray, null, 2));
+      eachArray.forEach(element => {
+        this.settingStorage.getOneImage("Symptom", element.symptom.symptomID).then(oneImg => {
+          element.symptom.img = oneImg;
+        });
+        element.combined.forEach(oneCombined => {
+          this.settingStorage.getOneImage("Action", oneCombined.actionID).then(actionImg => {
+            oneCombined.img = actionImg;
+          })
+        })
+      })
+    })
     console.warn("after filter " + JSON.stringify(this.criticalArray,null,2))
   }
 
@@ -461,11 +475,15 @@ export class TemplateService {
       //  eachArr = eachArr.filter(data => data.symptom.text !== "Symptom");
       eachArr = eachArr.filter(data => !this.globalSymptom.includes(data.symptom.text));
       eachArr.map(x => {
+        console.error("x == " + JSON.stringify(x,null,2));
+        x.symptom.img = null;
         //  x.combined = x.combined.filter(thisAction => thisAction.text !== "Action");
         x.combined = x.combined.filter(thisAction => !this.globalAction.includes(thisAction.text));
         x.combined.forEach(element => {
+          console.warn("inside each combined element " + JSON.stringify(element,null,2));
           delete element.whatsapp;
-          delete element.arrayID; 
+          delete element.arrayID;
+          element.img = null;
         });
         x.id = uuid(); 
         x.name = name[index];
@@ -490,6 +508,28 @@ export class TemplateService {
     console.warn("this list length = " + thisList.length);
     thisList.length == 0 && this.presentToastWithOptions(`No ${type} found. Please add ${type} in settings!`);
     return thisList.length == 0
+  }
+
+  delete(headerMsg) {
+    return new Promise((resolve, reject) => {
+      this.alertCtrl.create({
+        header: headerMsg,
+        message: 'Once deleted, there is no retrieving back!',
+        buttons: [
+          {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => reject(false)
+        },
+        {
+          text: 'Delete',
+          handler: () => resolve(true)
+        }
+        ]
+      }).then(alert => {
+        alert.present();
+      })
+    })
   }
 
 } //end of class

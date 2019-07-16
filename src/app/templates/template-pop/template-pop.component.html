@@ -1,4 +1,4 @@
-<ion-list>
+<ion-list mode="md">
   <ion-item *ngFor="let item of menuOptions; let i = index;" (click)="close(item)" [lines]="i == 5 ? 'none' : 'full'" button>
     <ion-label>
       {{item}}
@@ -6,3 +6,10 @@
     <ion-ripple-effect></ion-ripple-effect>
   </ion-item>
 </ion-list>
+
+<style>
+.list-md {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+</style>

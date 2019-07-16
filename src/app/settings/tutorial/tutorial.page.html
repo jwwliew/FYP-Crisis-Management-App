@@ -9,7 +9,7 @@
 
 <style>
   ion-slide {
-    height: 80vh;
+    height: 74.5vh;
     /* https://angularfirebase.com/lessons/ionic4-intro-slides-tutorial-to-educate-app-users/ 
   https://etenbo.com/ionic-4-build-a-slider-with-ionic-slides/  */
     flex-direction: column;
@@ -17,7 +17,7 @@
 
   img {
     max-width: 100vw;
-    max-height: 90vh;
+    max-height: 68vh;
     overflow: hidden;
   }
   p {
@@ -29,15 +29,29 @@
     /* --bullet-background-active: #0F0F10; */
   }
   
+  /* ion-segment-button {
+    min-height: 20px;
+  }
+  ion-segment {
+    height: 20px;
+  } */
 </style>
 
 <ion-content>
 
+  <ion-segment (ionChange)="segmentChanged($event)" color="originalPrimary" value="templates">
+    <ion-segment-button value="templates">
+      <ion-label>Templates</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="plans">
+      <ion-label>Plans</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
   <ion-slides pager="true" [options]="slideOpts">
-    
+
     <ion-slide>
       <img src="assets/tutorial1.png"/>
-      <p>This page will be shown when there is no new template, click "New" to view how to add template</p>
     </ion-slide>
 
     <ion-slide>
@@ -57,7 +71,7 @@
 
     <ion-slide>
       <img src="assets/tutorial5.png"/>
-   
+  
       <p>When clicking on add action, you have to select the symptom you would like to add the action to</p> 
     </ion-slide>
 

@@ -2,6 +2,7 @@ import { TemplateService } from 'src/app/services/template.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Events, NavController } from '@ionic/angular';
+import { SymptomActionService } from 'src/app/services/symptomaction.service';
 
 @Component({
   selector: 'app-view-templates',
@@ -12,7 +13,7 @@ export class ViewTemplatesPage implements OnInit {
 
   allTemplate = [];
 
-  constructor(private router: Router, private templateService: TemplateService, private event: Events, private navCtrl: NavController) { }
+  constructor(private router: Router, private templateService: TemplateService, private event: Events, private navCtrl: NavController, private settingService: SymptomActionService) { }
 
   ngOnInit() {
     console.error("ngOnInit view template.page.ts called");
@@ -52,7 +53,13 @@ export class ViewTemplatesPage implements OnInit {
       val = val || []; //prevent null if val empty at start no storage
       this.allTemplate = val.map((element, index) => {
         console.log("ele,ent --- " + JSON.stringify(element, null, 2))
-        console.log([].concat(...element.templates))
+        console.warn("concat templates" + JSON.stringify([].concat(...element.templates), null, 2));
+        element.templates.forEach((x,oneIndex) => {
+          x.length && this.settingService.getOneImage("Symptom", x[oneIndex].symptom.symptomID).then(oneImg => {
+            x[oneIndex].symptom.img = oneImg;
+          });
+        })
+        console.warn("obj finally end----")
         let obj = {
           id: val[index].id,
           name: val[index].name,
@@ -100,6 +107,16 @@ export class ViewTemplatesPage implements OnInit {
       delete modifiedTemplate["templates"];
       // modifiedTemplate.template = [].concat(...modifiedTemplate.template); //join the array of array of objects into one array of objects to call filterArray in template service
       modifiedTemplate.template = modifiedTemplate.template.flat(Infinity);
+      modifiedTemplate.template.forEach(element => {
+        this.settingService.getOneImage("Symptom", element.symptom.symptomID).then(oneImg => {
+          element.symptom.img = oneImg;
+        });
+        element.combined.forEach(oneCombined => {
+          this.settingService.getOneImage("Action", oneCombined.actionID).then(actionImg => {
+            oneCombined.img = actionImg;
+          });
+        });
+    });
       // this.router.navigateByUrl("/tabs/templates/new");
       console.error("MODIFIDE TEAMPLTE = " + JSON.stringify(modifiedTemplate,null,2));
       this.navCtrl.navigateRoot("/tabs/templates/new").then(() => { //https://stackoverflow.com/questions/38342171/ionic-2-events-publish-and-subscribe-not-working

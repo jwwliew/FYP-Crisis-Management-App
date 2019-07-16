@@ -1,6 +1,6 @@
 import { SymptomActionService } from '../../services/symptomaction.service';
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
-import { AlertController, Events } from '@ionic/angular';
+import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
+import { AlertController, Events, IonList } from '@ionic/angular';
 import { Router } from '@angular/router';
 
 import 'hammerjs'; //for gestures
@@ -20,6 +20,19 @@ export class SymptomActionPage implements OnInit {
   actionList = [];
 
   checked = []
+  
+  @ViewChild('mylist')mylist: IonList;
+
+  deleteIOS(thisItem) {
+    this.templateService.delete(`Are you sure you want to delete this ${this.selectedTab.toLowerCase()}?`).then(() => {
+      console.error("delete one item", thisItem);
+      this.settingService.deleteIOS(this.selectedTab, thisItem).then(() => {
+        this.templateService.presentToastWithOptions(`Deleted one ${this.selectedTab.toLowerCase()}!`);
+        this.mylist.closeSlidingItems();
+        this.loadItems();
+      })
+    }).catch(() => {});
+  }
 
   pressEvent(x) {
     console.log("pressed " + JSON.stringify(x));
@@ -43,14 +56,16 @@ export class SymptomActionPage implements OnInit {
   }
   
   deleteSelected() {
-    console.log("deleting -- " + this.checked);
-    this.settingService.deleteSetting(this.selectedTab, this.checked).then((a) => {
-      console.log("delete success");
-      console.log(a)
-      this.templateService.presentToastWithOptions("Deleted " + this.checked.length + " " + this.selectedTab);
-      this.checked.length = 0;
-      this.loadItems();
-    });
+    this.templateService.delete(`Are you sure you want to delete these ${this.selectedTab.toLowerCase()}?`).then(() => {
+      console.log("deleting -- " + this.checked);
+      this.settingService.deleteSetting(this.selectedTab, this.checked).then((a) => {
+        console.log("delete success");
+        console.log(a)
+        this.templateService.presentToastWithOptions(`Deleted ${this.checked.length} ${this.selectedTab.toLowerCase()}`);
+        this.checked.length = 0;
+        this.loadItems();
+      });
+    }).catch(() => {});
   }
 
   clearArray() {
@@ -64,9 +79,7 @@ export class SymptomActionPage implements OnInit {
     this.checked.length = 0;
   }
 
-  constructor(private alertCtrl: AlertController, private settingService: SymptomActionService, private ngzone: NgZone, public event: Events, private router: Router, 
-    private templateService: TemplateService) {
-  }
+  constructor(private settingService: SymptomActionService, public event: Events, private router: Router, private templateService: TemplateService) {}
 
   ngOnInit() {
     console.log("ngOnInIt() called");
@@ -99,6 +112,10 @@ export class SymptomActionPage implements OnInit {
     this.clearArray();
   }
 
+  segmentChanged() {
+    this.clearArray();
+  }
+
   selectedSymptom(id) {
     console.log(`this selected ${this.selectedTab} id = ${id}`);
     if (this.checked.length == 0) {
@@ -108,50 +125,6 @@ export class SymptomActionPage implements OnInit {
   
   goToAddPage() {
     this.router.navigateByUrl('/tabs/settings/symptomAction/edit/' + this.selectedTab + "/" + "add"); //routing start from root level
-  }
-
-  //pop up center input for add new symtpom/action
-  async addNew() {
-    console.log("clicked added new");
-    let alert = await this.alertCtrl.create({
-      header: "Add a " + this.selectedTab,
-      inputs: [
-        {
-          name: 'nameInput',
-          type: 'text'
-        }
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: () => {
-            console.log("confirm cancel");
-          }
-        },
-        {
-          text: 'Ok',
-          handler: (alertData => {
-            console.log("ok name1 = " + alertData.nameInput);
-            this.ngzone.run(() => { //method 1 ngZone() https://stackoverflow.com/questions/43871690/ionic-2-popup-handler-function-not-updating-variable
-              this.settingService.addReusable(alertData, this.selectedTab).then(() => {
-                this.loadItems();
-              })
-            })
-          })
-        }
-      ]
-    });
-    // alert.onDidDismiss().then((data) => { //method 2 ngOnInIt inside onDidDismiss()
-    //   console.log(data);
-    //   if (data.role !== "cancel") {
-    //     this.settingService.addReusable(data.data.values.name1, this.selectedTab).then(() => {
-    //       this.ngOnInit();
-    //     })
-    //   }
-    // })
-    await alert.present();
   }
 
 }
