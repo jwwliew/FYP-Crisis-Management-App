@@ -92,13 +92,16 @@ export class PlanService {
   }
 
   //edit
-  editPlan(id: string) {
-    return this.storage.get(key).then(store => {
-      store.push(store.findIndex(x => x.id = id), 1)
-      return this.storage.set(key, this.items);
+  editPlan(iteamid, details) {
+    return this.storage.get(key).then((items) => {
+      let y = items.findIndex(item => item.id == iteamid)
+      items[y] = details;
+      console.log(details)
+      return this.storage.set(key, items)
 
     })
   }
+
 
   //delete by ID
   deletePlanByID(id: string) {

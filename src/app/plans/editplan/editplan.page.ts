@@ -17,18 +17,14 @@ export class EditplanPage implements OnInit {
   ngOnInit() {
 
   }
+
   btn_txt = 'Edit';
-  editPage() {
+
+  editPage(item) {
     this.btn_txt = 'Save';
     this.isDisabled = false;
-    // this.PlanService.editPlan(item).then(() => {
-    if(this.isDisabled=false)
-    {
-      // return this.PlanService.editPlan().then(()=>{
+    return this.PlanService.editPlan(item, this.details)
 
-      // })
-    }
-    // });
   }
 
   ionViewWillEnter() {
@@ -51,9 +47,9 @@ export class EditplanPage implements OnInit {
     return this.templateService.getArray(id).length > 0 ? true : false
   }
 
- deleteAppoint(){
-   
- }
+  deleteAppoint() {
+
+  }
 
 
 

@@ -8,7 +8,7 @@
     <ion-title>
       {{details.planName}}
     </ion-title>
-    <ion-buttons slot="end" (click)="editPage()">
+    <ion-buttons slot="end" (click)="editPage(details.id)">
       <ion-button>
         {{btn_txt}}
       </ion-button>
@@ -16,6 +16,7 @@
   </ion-toolbar>
 </ion-header>
 
+<!--ADD LONG PRESS https://forum.ionicframework.com/t/how-to-select-multiple-item-on-long-press/67456/2 -->
 <ion-content>
   <ion-list lines="none">
     <ion-card class="welcome-card">
@@ -223,4 +224,3 @@ ion-content{
 
 
 </ion-content>
-<!-- <ion-datetime placeholder="" [(ngModel)]="details.datedmy.toString()" (ionChange)="dateChanged($event)" -->
