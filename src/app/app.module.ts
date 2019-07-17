@@ -12,12 +12,17 @@ import { AppRoutingModule } from './app-routing.module';
 import {IonicStorageModule} from '@ionic/storage';
 
 import {HammerGestureConfig, HAMMER_GESTURE_CONFIG} from '@angular/platform-browser';
-import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+import { Camera } from '@ionic-native/camera/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
+import * as Hammer from 'hammerjs';
+
 export class CustomHammerConfig extends HammerGestureConfig {
   overrides = {
-      'press': { time: 666 }  //set press delay for 1 second, default is 300ms
+      'press': { time: 666 },  //set press delay for 1 second, default is 300ms
+      'swipe': {
+        direction: Hammer.DIRECTION_ALL
+      }
   }
 }
 

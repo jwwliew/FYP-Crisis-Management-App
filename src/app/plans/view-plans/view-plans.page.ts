@@ -53,10 +53,10 @@ export class ViewPlansPage implements OnInit {
   }
 
 
-  swipeEvent(id) {
+  swipeEvent(id, thisEvent) {
+    thisEvent.stopPropagation();
     this.PlanService.deletePlanByID(id).then(result => {
-      console.log('delete!')
-     this.details=result;
+      this.details=result;
     });
   }
 

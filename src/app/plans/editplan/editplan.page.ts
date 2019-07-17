@@ -23,9 +23,15 @@ export class EditplanPage implements OnInit {
 
   editPage(id) {
     this.isDisabled = !this.isDisabled;
-    this.isDisabled ? 
-      this.PlanService.editPlan(id, this.details).then(allPlan => this.templateService.editPageUpdateArray(allPlan, id))
-    : this.templateService.callEdit(this.defaultLanguage)
+    if (this.isDisabled) {
+      this.PlanService.editPlan(id, this.details).then(allPlan => {
+        this.templateService.editPageUpdateArray(allPlan, id);
+        this.templateService.presentToastWithOptions("Saved plan successfully!");
+      })
+    }
+    else {
+      this.templateService.callEdit(this.defaultLanguage)
+    }
   }
 
   ionViewWillEnter() {

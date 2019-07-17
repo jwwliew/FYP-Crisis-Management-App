@@ -23,7 +23,7 @@
   <ion-list>
 
     <ion-card *ngFor="let item of details " (click)="goEdit(item)">
-      <ion-item-sliding (ionSwipe)="swipeEvent()">
+      <ion-item-sliding (ionSwipe)="swipeEvent(item.id)">
         <ion-card-header color="tertiary">
           <ion-card-title>{{item.planName}}</ion-card-title>
         </ion-card-header>
@@ -42,7 +42,7 @@
         </ion-card-content>
 
         <ion-item-options>
-          <ion-item-option color="primary">
+          <ion-item-option color="primary" (click)="swipeEvent(item.id, $event)">
             <ion-icon slot="start" name="trash">
               <ion-item></ion-item>
             </ion-icon>
@@ -53,6 +53,6 @@
       </ion-item-sliding>
 
     </ion-card>
- </ion-list>
+</ion-list>
 
 </ion-content>

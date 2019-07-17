@@ -128,6 +128,24 @@ export class TemplateService {
     this.checked.length = 0;
   }
 
+  deleteIOS(thisItem, arrayID, mainID, combinedID) {
+    console.warn("ARRAY ID", arrayID);
+    let thisArray = this.getArray(arrayID);
+    this.criticalArray === thisArray ? console.warn("equaal") : console.error("not eq");
+    console.error("this array before ", JSON.stringify(thisArray,null,2));
+    console.warn("criticla rray beforez", JSON.stringify(this.criticalArray,null,2));
+    thisArray[mainID].combined.splice(combinedID, 1);
+    thisArray.forEach((x,index) => x.combined.length === 0 && thisArray.splice(index, 1));
+    console.warn("this critical array" + JSON.stringify(this.criticalArray,null,2));
+    console.warn("this array after " + JSON.stringify(thisArray, null, 2));
+    this.criticalArray === thisArray ? console.warn("equal") : console.error("not eq");
+    console.error("this item", thisItem);
+    let index;
+    // thisArray.some((x, mainIndex) => x.combined.some((y, combinedIndex) => y.id == thisItem.id && (index = [mainIndex, combinedIndex])))
+    // console.warn("index =", index)
+    console.warn("main ID %s", mainID, "combined ID = ", combinedID);
+  }
+  
   // getArray(id) { //return array type
   //   return [this.criticalArray, this.warningArray, this.goodArray][id];
   // }

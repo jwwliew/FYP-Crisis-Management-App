@@ -35,34 +35,34 @@ export class AppComponent {
   globalSettingObj: Setting[] = [
     {
       id: uuid(),
-      enName: "Fever from pdf",
+      enName: "Fever",
       chName: "发烧",
-      myName: "fever malay",
-      tmName: "fever tamil",
+      myName: "demam",
+      tmName: "காய்ச்சல்",
       icon: "assets/pdfcough.png",
     },
     {
       id: uuid(),
-      enName: "No breath from pdf",
-      chName: "没有气息",
-      myName: "no breadth malay",
-      tmName: "no breadth tamil",
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
       icon: "assets/pdfnobreath.png"
     },
     {
       id: uuid(),
-      enName: "Got breath",
-      chName: "有呼吸",
-      myName: "got breath malay",
-      tmName: "got breath tamil",
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
       icon: "assets/pdfgotbreath.png"
     },
     {
       id: uuid(),
-      enName: "Got cough",
-      chName: "咳嗽了",
-      myName: "mendapat batuk",
-      tmName: "இருமல் வந்தது",
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
       icon: "assets/pdfredcough.png"
     },
     // {
@@ -79,25 +79,25 @@ export class AppComponent {
     {
       id: uuid(),
       enName: "Call 995",
-      chName: "呼叫995",
-      myName: "call 995 malay",
-      tmName: "call 995 tamil",
+      chName: "拨打995",
+      myName: "Panggil 995",
+      tmName: "995 ஐ அழைக்கவும்",
       icon: "assets/pdfcall995.png",
     },
     {
       id: uuid(),
       enName: "Continue regular medications",
       chName: "继续定期服用中药",
-      myName: "continue regular med malay",
-      tmName: "continue regular med tamil",
+      myName: "Teruskan ubat biasa",
+      tmName: "வழக்கமான மருந்துகளைத் தொடரவும்",
       icon: "assets/pdfcontinuemed.png"
     },
     {
       id: uuid(),
-      enName: "Maintain usual activities/exercise levels",
+      enName: "Maintain usual activities",
       chName: "保持通常的活动/运动水平",
-      myName: "maintain usual activities malay",
-      tmName: "maintain usual activities tamil",
+      myName: "Mengekalkan aktiviti biasa/tahap senaman",
+      tmName: "வழக்கமான நடவடிக்கைகள்",
       icon: "assets/pdfmaintain.png"
     },
     {

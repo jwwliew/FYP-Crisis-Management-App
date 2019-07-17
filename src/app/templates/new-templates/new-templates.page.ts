@@ -225,14 +225,14 @@ export class NewTemplatesPage implements OnInit {
 
   loading: any;
   async presentLoading(msg) {
-    const loading = await this.loadingController.create({
+    this.loading = await this.loadingController.create({
       message: msg
     });
-    return await loading.present();
+    return await this.loading.present();
   }
   
   exportToPDF() {
-    // this.presentLoading('Creating PDF file...');
+    this.presentLoading('Creating PDF file...');
       //This is where the PDF file will stored , you can change it as you like
         // for more information please visit https://ionicframework.com/docs/native/file/, https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-file/#where-to-store-files
         const directory = this.file.externalRootDirectory + "Download";
@@ -364,9 +364,10 @@ export class NewTemplatesPage implements OnInit {
         //Writing File to Device  
         this.file.writeFile(directory,fileName, buffer, {replace: true}).then(success => { //https://ourcodeworld.com/articles/read/38/how-to-capture-an-image-from-a-dom-element-with-javascript
           console.log("File created Succesfully" + JSON.stringify(success));
-          // this.loading.dismiss();
+          this.loading.dismiss();
+          // this.loadingController.dismiss();
           this.templateService.presentToastWithOptions("File created successfully!!!");
-          this.fileOpener.open(success.nativeURL, "application/pdf");
+          this.fileOpener.open(success.nativeURL, "application/pdf").catch(() => this.templateService.presentToastWithOptions("Please install a PDF Viewer such as Acrobat!"));
         }).catch((error)=> console.log("Cannot Create File " +JSON.stringify(error)));
           
       }

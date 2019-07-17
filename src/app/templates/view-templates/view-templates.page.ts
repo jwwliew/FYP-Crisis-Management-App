@@ -54,9 +54,14 @@ export class ViewTemplatesPage implements OnInit {
       this.allTemplate = val.map((element, index) => {
         console.log("ele,ent --- " + JSON.stringify(element, null, 2))
         console.warn("concat templates" + JSON.stringify([].concat(...element.templates), null, 2));
-        element.templates.forEach((x,oneIndex) => {
-          x.length && this.settingService.getOneImage("Symptom", x[oneIndex].symptom.symptomID).then(oneImg => {
-            x[oneIndex].symptom.img = oneImg;
+        element.templates.forEach(x => {
+          console.warn("X === " + JSON.stringify(x,null,2));
+          // x.length && this.settingService.getOneImage("Symptom", x[oneIndex].symptom.symptomID).then(oneImg => {
+          x.length && x.forEach(y => {
+            this.settingService.getOneImage("Symptom", y.symptom.symptomID).then(oneImg => {
+              y.symptom.img = oneImg;
+            })
+            // x[oneIndex].symptom.img = oneImg;
           });
         })
         console.warn("obj finally end----")
