@@ -56,7 +56,7 @@ export class ViewPlansPage implements OnInit {
   swipeEvent(id, thisEvent) {
     thisEvent.stopPropagation();
     this.PlanService.deletePlanByID(id).then(result => {
-      this.details=result;
+      this.details = result;
     });
   }
 
@@ -65,22 +65,22 @@ export class ViewPlansPage implements OnInit {
     const actionSheet = await this.actionSheetController.create({
       header: 'Sort by',
       buttons: [{
-        text: 'Z to A',
+        text: 'A to Z',
         role: 'destructive',
         icon: 'arrow-round-down',
         handler: () => {
           this.PlanService.getAllPlan().then(wholeplan => {
-            wholeplan.sort((a, b) => a.name.localeCompare(b.name))
+            wholeplan.sort((a, b) => a.planName.localeCompare(b.planName))
             this.details = wholeplan;
             console.log("A-Z sorted");
           });
         }
       }, {
-        text: 'A to Z',
+        text: 'Z to A',
         icon: 'arrow-round-up',
         handler: () => {
           this.PlanService.getAllPlan().then(wholeplan => {
-            wholeplan.sort((a, b) => b.name.localeCompare(a.name))
+            wholeplan.sort((a, b) => b.planName.localeCompare(a.planName))
             this.details = wholeplan;
             console.log("Z-A sorted");
           });
