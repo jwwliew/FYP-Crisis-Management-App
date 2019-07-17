@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { Plan } from '../models/plan';
 import { v4 as uuid } from 'uuid';
+import { TemplateService } from './template.service';
 
 const key = "plan";
 
@@ -10,9 +10,7 @@ const key = "plan";
 })
 export class PlanService {
 
-  public items = [];
-
-  constructor(private storage: Storage) {
+  constructor(private storage: Storage, private templateService: TemplateService) {
   }
 
   getEditDetails(id) {
@@ -24,7 +22,6 @@ export class PlanService {
 
   getAllPlan() {
     return this.storage.get(key);
-    console.log(this.items);
   }
 
 
@@ -52,7 +49,7 @@ export class PlanService {
         ccontact: tcscontact,
         createdDate: date1,
         language: indexL,
-        template: maparr,
+        templates: maparr,
         datemy: appointment,
         clinicName: clinicname
       }
@@ -92,13 +89,15 @@ export class PlanService {
   }
 
   //edit
-  editPlan(iteamid, details) {
+  editPlan(id, details) {
     return this.storage.get(key).then((items) => {
-      let y = items.findIndex(item => item.id == iteamid)
+      let y = items.findIndex(item => item.id == id);
+      let maparr = this.templateService.cleansedArray();
+      console.warn(maparr);
+      details.templates = maparr;
       items[y] = details;
       console.log(details)
-      return this.storage.set(key, items)
-
+      return this.storage.set(key, items);
     })
   }
 

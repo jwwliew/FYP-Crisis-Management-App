@@ -5,17 +5,19 @@
     </ion-title>
     <!-- <ion-button slot="start" href="/tabs/tab1" routerDirection="back">Back</ion-button> -->
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/settings/symptomAction" (click)="clearArray()"></ion-back-button>
+      <ion-back-button *ngIf="checked.length > 0" defaultHref="/tabs/settings/symptomAction" (tap)="clearArray()"></ion-back-button>
       <span *ngIf="checked.length > 0"> {{checked.length}} </span>
+      <ion-back-button *ngIf="checked.length == 0" defaultHref="/tabs/settings"></ion-back-button>
     </ion-buttons>
-    <ion-buttons slot="end" *ngIf="checked.length > 0" (click)="deleteSelected()">
+
+    <ion-buttons slot="end" *ngIf="checked.length > 0" (tap)="deleteSelected()">
         <ion-icon name="trash" style="font-size: 24px; margin-right:18px;"></ion-icon>
     </ion-buttons>
+
     <ion-buttons slot="end" *ngIf="checked.length == 0">
-      <ion-button (click)="goToAddPage()">
-        New
-      </ion-button>
+      <ion-button (click)="goToAddPage()"> New </ion-button>
     </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
@@ -48,7 +50,7 @@
   <ion-list lines="full" #mylist>
 
     <ion-item-sliding *ngFor="let item of selectedTab == 'Symptom' ? symptomList : actionList" (ionSwipe)="deleteIOS(item)">
-      <ion-item (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)" [color]="item.checked && 'lightBlue'">
+      <ion-item (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)" (swipedown)="pressEvent(item)" (swipeup)="pressEvent(item)" [color]="item.checked && 'lightBlue'">
         <ion-thumbnail slot="start">
           <img [src]="item.icon"/>
         </ion-thumbnail>
@@ -56,10 +58,17 @@
         <ion-checkbox mode="ios" slot="end" *ngIf="checked.length > 0" [(ngModel)]="item.checked" (ionChange)="check(item)" color="success"></ion-checkbox>
       </ion-item>
 
-      <ion-item-options side="end">
-        <!-- <ion-item-option color="secondary" side="right">Update</ion-item-option> -->
-        <ion-item-option color="danger" side="left" expandable (click)="deleteIOS(item)">Delete</ion-item-option>
+      <ion-item-options side="end"> 
+        <ion-item-option color="danger" expandable (click)="deleteIOS(item)">
+          <ion-icon name="trash" slot="top" style="zoom:2.0"></ion-icon> Delete
+        </ion-item-option>
       </ion-item-options>
+      <ion-item-options side="start">
+        <ion-item-option color="danger" expandable (click)="deleteIOS(item)">
+          <ion-icon name="trash" slot="top" style="zoom:2.0"></ion-icon> Delete
+        </ion-item-option>
+      </ion-item-options>
+      
     </ion-item-sliding>
   </ion-list>
   
