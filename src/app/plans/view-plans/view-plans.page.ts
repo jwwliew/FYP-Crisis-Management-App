@@ -65,7 +65,7 @@ export class ViewPlansPage implements OnInit {
     const actionSheet = await this.actionSheetController.create({
       header: 'Sort by',
       buttons: [{
-        text: 'A to Z',
+        text: 'Z to A',
         role: 'destructive',
         icon: 'arrow-round-down',
         handler: () => {
@@ -76,7 +76,7 @@ export class ViewPlansPage implements OnInit {
           });
         }
       }, {
-        text: 'Z to A',
+        text: 'A to Z',
         icon: 'arrow-round-up',
         handler: () => {
           this.PlanService.getAllPlan().then(wholeplan => {
