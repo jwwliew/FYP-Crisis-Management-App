@@ -1,8 +1,8 @@
 <ion-header>
   <ion-toolbar color="primary" *ngIf="checked.length == 0">
     <ion-buttons slot="start">
-      <ion-button>
-        PDF
+      <ion-button (click)="backViewPlan()">
+        <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title>
@@ -30,38 +30,38 @@
 <!--ADD LONG PRESS https://forum.ionicframework.com/t/how-to-select-multiple-item-on-long-press/67456/2 -->
 <ion-content>
 
-    <ion-card class="welcome-card">
-      <ion-card-header color="tertiary">
-        <ion-card-title>Plan Details</ion-card-title>
-      </ion-card-header>
+  <ion-card class="welcome-card">
+    <ion-card-header color="tertiary">
+      <ion-card-title>Plan Details</ion-card-title>
+    </ion-card-header>
 
-      <ion-card-content>
-        <div>
-          <table id="tblOne" style="width:50%; float:left">
-            <tr>
-              <td>Name:</td>
-              <ion-input [(ngModel)]="details.name" disabled="{{isDisabled}}"></ion-input>
-            </tr>
-            <p></p>
-            <tr>
-              <td>TCS Name:</td>
-              <ion-input [(ngModel)]="details.cname" disabled="{{isDisabled}}"></ion-input>
-            </tr>
-          </table>
-          <table id="tblTwo" style="width:50%; float:left">
-            <tr>
-              <td>NRIC:</td>
-              <ion-input [(ngModel)]="details.nric" disabled="{{isDisabled}}"></ion-input>
-            </tr>
-            <tr>
-              <td>TCS Contact:</td>
-              <ion-input [(ngModel)]="details.ccontact" disabled="{{isDisabled}}"></ion-input>
-              <!-- <ion-input type="text">{{details.ccontact}}</ion-input> -->
-            </tr>
-          </table>
-        </div>
-      </ion-card-content>
-    </ion-card>
+    <ion-card-content>
+      <div>
+        <table id="tblOne" style="width:50%; float:left">
+          <tr>
+            <td>Name:</td>
+            <ion-input [(ngModel)]="details.name" disabled="{{isDisabled}}"></ion-input>
+          </tr>
+          <p></p>
+          <tr>
+            <td>TCS Name:</td>
+            <ion-input [(ngModel)]="details.cname" disabled="{{isDisabled}}"></ion-input>
+          </tr>
+        </table>
+        <table id="tblTwo" style="width:50%; float:left">
+          <tr>
+            <td>NRIC:</td>
+            <ion-input [(ngModel)]="details.nric" disabled="{{isDisabled}}"></ion-input>
+          </tr>
+          <tr>
+            <td>TCS Contact:</td>
+            <ion-input [(ngModel)]="details.ccontact" disabled="{{isDisabled}}"></ion-input>
+            <!-- <ion-input type="text">{{details.ccontact}}</ion-input> -->
+          </tr>
+        </table>
+      </div>
+    </ion-card-content>
+  </ion-card>
 
 
 
@@ -175,11 +175,12 @@ ion-content{
       <ion-card-title>
         {{globalItem.textCard}}
       </ion-card-title>
-      
+
       <ion-content>
         <ion-fab vertical="top" horizontal="end" edge slot="fixed" *ngIf="!isDisabled">
           <!-- <ion-fab-button size="small" (click)="addNewCriticalArray('Critical')" class="btnAdd" color="redCard"> -->
-          <ion-fab-button size="small" class="btnAdd" (click)="globalItem.toggle=!globalItem.toggle" [disabled]="checked.length > 0">
+          <ion-fab-button size="small" class="btnAdd" (click)="globalItem.toggle=!globalItem.toggle"
+            [disabled]="checked.length > 0">
             <ion-icon name="{{!globalItem.toggle ? 'md-add' : 'md-close'}}"></ion-icon>
           </ion-fab-button>
         </ion-fab>
@@ -215,70 +216,72 @@ ion-content{
       </ion-row>
 
     </ion-grid>
-  
+
 
     <div class="gridReplace" *ngIf="!isDisabled">
-    
-      <ion-row *ngFor="let item of getArray(globalItem.id); let i = index;" style="border-bottom: 2px solid #A9A9A9" [ngClass]="{'blur': globalItem.toggle}">
 
-      <!-- first column aka symptom -->
-      <ion-col [size]="checked.length > 0 ? 5.25 : 6"
-        [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}"
-        (press)="pressEvent('Symptom', item, globalItem.id);" (swipe)="pressEvent('Symptom', item, globalItem.id);"
-        (click)="checked.length > 0 && clickEvent('Symptom', item, globalItem.id)">
-        <ion-card (click)="checked.length == 0 && presentActionSheet('Symptom', item, globalItem.id)"
-          [ngClass]="{'highlight' : item.combined[0]?.whatsapp && checked.length > 0}">
-          <img class="imgCircle" [src]="item.symptom.img" />
-          <!-- https://stackoverflow.com/questions/45263542/ngmodel-value-in-img-src-ionic-3 -->
-          <p class="imgCircleText"> {{item.symptom.text}} </p>
-        </ion-card>
-        <ion-card>
-          <ion-item no-padding class="yellowItem">
-            <ion-textarea rows="4" placeholder="Describe the symptom in more details."
-              [readonly]="item.combined[0]?.whatsapp" [(ngModel)]="item.symptom.description"
-              [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}"></ion-textarea>
-          </ion-item>
-        </ion-card>
-      </ion-col>
+      <ion-row *ngFor="let item of getArray(globalItem.id); let i = index;" style="border-bottom: 2px solid #A9A9A9"
+        [ngClass]="{'blur': globalItem.toggle}">
 
-      <!-- for each second column aka action -->
-      <ng-container *ngFor="let x of item.combined; let actIndex = index;">
-
-        <ion-col [size]="checked.length > 0 ? 5.25 : 6" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}"
-          (press)="pressEvent('Action', x, globalItem.id)" (swipe)="pressEvent('Action', x, globalItem.id)"
-          (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id)" *ngIf="actIndex != 0"></ion-col>
-
-        <ion-col [size]="checked.length > 0 ? 5.25 : 6" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}"
-          (press)="actIndex == 0 ? pressEvent('Symptom', item, globalItem.id) : pressEvent('Action', x, globalItem.id);"
-          (swipe)="actIndex == 0 ? pressEvent('Symptom', item, globalItem.id) : pressEvent('Action', x, globalItem.id);"
-          (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id)">
-
-          <ion-card (click)="checked.length == 0 && presentActionSheet('Action', x)"
-            [ngClass]="{'highlight': x.whatsapp && checked.length > 0}">
-            <img class="imgCircle" [src]="x.img" />
-            <p class="imgCircleText"> {{x.text}}</p>
+        <!-- first column aka symptom -->
+        <ion-col [size]="checked.length > 0 ? 5.25 : 6"
+          [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}"
+          (press)="pressEvent('Symptom', item, globalItem.id);" (swipe)="pressEvent('Symptom', item, globalItem.id);"
+          (click)="checked.length > 0 && clickEvent('Symptom', item, globalItem.id)">
+          <ion-card (click)="checked.length == 0 && presentActionSheet('Symptom', item, globalItem.id)"
+            [ngClass]="{'highlight' : item.combined[0]?.whatsapp && checked.length > 0}">
+            <img class="imgCircle" [src]="item.symptom.img" />
+            <!-- https://stackoverflow.com/questions/45263542/ngmodel-value-in-img-src-ionic-3 -->
+            <p class="imgCircleText"> {{item.symptom.text}} </p>
           </ion-card>
-
           <ion-card>
             <ion-item no-padding class="yellowItem">
-              <ion-textarea rows="4" placeholder="Describe the required action in your own words."
-                [readonly]="x.whatsapp" [(ngModel)]="x.description"
-                [ngClass]="{'highlight': x.whatsapp && checked.length > 0}"></ion-textarea>
+              <ion-textarea rows="4" placeholder="Describe the symptom in more details."
+                [readonly]="item.combined[0]?.whatsapp" [(ngModel)]="item.symptom.description"
+                [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}"></ion-textarea>
             </ion-item>
           </ion-card>
-
         </ion-col>
 
-        <ion-col size="1.5" *ngIf="checked.length > 0" [ngClass]="{'highlight': x.whatsapp}"
-          (click)="clickEvent('Action', x, globalItem.id)">
-          <ion-checkbox [checked]="x.whatsapp" mode="ios" color="success"></ion-checkbox>
-        </ion-col>
+        <!-- for each second column aka action -->
+        <ng-container *ngFor="let x of item.combined; let actIndex = index;">
 
-      </ng-container>
+          <ion-col [size]="checked.length > 0 ? 5.25 : 6" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}"
+            (press)="pressEvent('Action', x, globalItem.id)" (swipe)="pressEvent('Action', x, globalItem.id)"
+            (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id)" *ngIf="actIndex != 0"></ion-col>
+
+          <ion-col [size]="checked.length > 0 ? 5.25 : 6" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}"
+            (press)="actIndex == 0 ? pressEvent('Symptom', item, globalItem.id) : pressEvent('Action', x, globalItem.id);"
+            (swipe)="actIndex == 0 ? pressEvent('Symptom', item, globalItem.id) : pressEvent('Action', x, globalItem.id);"
+            (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id)">
+
+            <ion-card (click)="checked.length == 0 && presentActionSheet('Action', x)"
+              [ngClass]="{'highlight': x.whatsapp && checked.length > 0}">
+              <img class="imgCircle" [src]="x.img" />
+              <p class="imgCircleText"> {{x.text}}</p>
+            </ion-card>
+
+            <ion-card>
+              <ion-item no-padding class="yellowItem">
+                <ion-textarea rows="4" placeholder="Describe the required action in your own words."
+                  [readonly]="x.whatsapp" [(ngModel)]="x.description"
+                  [ngClass]="{'highlight': x.whatsapp && checked.length > 0}"></ion-textarea>
+              </ion-item>
+            </ion-card>
+
+          </ion-col>
+
+          <ion-col size="1.5" *ngIf="checked.length > 0" [ngClass]="{'highlight': x.whatsapp}"
+            (click)="clickEvent('Action', x, globalItem.id)">
+            <ion-checkbox [checked]="x.whatsapp" mode="ios" color="success"></ion-checkbox>
+          </ion-col>
+
+        </ng-container>
 
       </ion-row>
 
-      <ion-row style="height:150px;" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!checkType(globalItem.id)"></ion-row>
+      <ion-row style="height:150px;" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!checkType(globalItem.id)">
+      </ion-row>
 
 
       <ng-container *ngIf="globalItem.toggle">
@@ -314,19 +317,19 @@ ion-content{
 
 
 
-    <ion-card class="welcome-card" style="margin-bottom: 6%">
-      <ion-card-header color="tertiary">
-        <ion-card-title>
-          <ion-buttons style="float:right;">
-            <ion-icon name="trash" (onClick)="deleteAppoint()"></ion-icon>
-          </ion-buttons>Appointment (Optional)
-        </ion-card-title>
+  <ion-card class="welcome-card" style="margin-bottom: 6%">
+    <ion-card-header color="tertiary">
+      <ion-card-title>
+        <ion-buttons style="float:right;">
+          <ion-icon name="trash" (onClick)="deleteAppoint()"></ion-icon>
+        </ion-buttons>Appointment (Optional)
+      </ion-card-title>
 
-      </ion-card-header>
+    </ion-card-header>
 
-      <ion-card-content>
-        <div>
-          <!-- <table id="tblOne" style="width:40%; float:left;position:inherit">
+    <ion-card-content>
+      <div>
+        <!-- <table id="tblOne" style="width:40%; float:left;position:inherit">
             <tr>
               <td>Clinic Name:</td>
               <p></p>
@@ -340,24 +343,25 @@ ion-content{
                 <ion-input style="width: 250%" disabled="{{isDisabled}}" [(ngModel)]="details.datemy"></ion-input>
                 <!-- <ion-datetime placeholder="day/month/year hour:min" #mypicker (ionChange)="dateChanged(mypicker.value)"
                 display-format="DD/MMM/YY h:mm A"  min="2017" max="2022"></ion-datetime> -->
-              <!-- </tr> -->
-            <!-- </table> --> 
+        <!-- </tr> -->
+        <!-- </table> -->
 
-            <table id="tblOne" style="width:50%; float:left">
-              <tr>
-                <td>Clinic Name:</td>
-                <p></p>
-                <ion-input style="width: 250%" [disabled]="isDisabled" [(ngModel)]="details.clinicName"></ion-input>
-              </tr>
-            </table>
-            <ion-item lines="full">
-              <ion-label>Date:</ion-label>
-              <ion-datetime placeholder="day/month/year hour:min" #mypicker (ionChange)="dateChanged(mypicker.value)"
-                display-format="DD/MMM/YY h:mm A" [(ngModel)]="details.datemy" min="2017" max="2022" [disabled]="isDisabled"></ion-datetime>
-            </ion-item> 
-                </div>
-      </ion-card-content>
-    </ion-card>
+        <table id="tblOne" style="width:50%; float:left">
+          <tr>
+            <td>Clinic Name:</td>
+            <p></p>
+            <ion-input style="width: 250%" [disabled]="isDisabled" [(ngModel)]="details.clinicName"></ion-input>
+          </tr>
+        </table>
+        <ion-item lines="full">
+          <ion-label>Date:</ion-label>
+          <ion-datetime placeholder="day/month/year hour:min" #mypicker (ionChange)="dateChanged(mypicker.value)"
+            display-format="DD/MMM/YY h:mm A" [(ngModel)]="details.datemy" min="2017" max="2022"
+            [disabled]="isDisabled"></ion-datetime>
+        </ion-item>
+      </div>
+    </ion-card-content>
+  </ion-card>
 
 
 

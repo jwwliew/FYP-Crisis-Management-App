@@ -6,6 +6,7 @@ import { TemplateService } from 'src/app/services/template.service';
 import { v4 as uuid } from 'uuid';
 
 import * as moment from 'moment';
+import { stringify } from '@angular/core/src/render3/util';
 
 @Component({
   selector: 'app-plan-details',
@@ -37,11 +38,13 @@ export class PlanDetailsPage implements OnInit {
   // console.log(this.datedmy);
   // }
   // datedmy: any;
-  dateChanged(my) {
+  dateChanged(my, time) {
     //this.datemy = my;
     // this.datemy = moment(my).format('YYYY-MM-DD hh:mmA');
     //install -npm i moment===>to use moment().format
-    this.datemy = new Date(my).toLocaleString();
+    console.log("bf"+time,this.appointment)
+    time = new Date(my).toLocaleString();
+    console.log("aft"+time,this.appointment)
   }
 
   PlanDetails() {
@@ -55,8 +58,17 @@ export class PlanDetailsPage implements OnInit {
 
     });
   }
+
+  appointment = []
+
   newPlan() {
-    console.log("button presseed");
+    let something = {
+      clinicName: "",
+      appTime: "",
+    }
+
+    this.appointment.push(something);
+    console.log(this.appointment);
   }
 
 

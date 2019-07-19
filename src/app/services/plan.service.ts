@@ -50,6 +50,7 @@ export class PlanService {
         createdDate: date1,
         language: indexL,
         templates: maparr,
+        
         datemy: appointment,
         clinicName: clinicname
       }

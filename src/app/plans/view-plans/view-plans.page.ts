@@ -52,7 +52,8 @@ export class ViewPlansPage implements OnInit {
     this.router.navigateByUrl('tabs/plans/editplan/' + item.id)
   }
 
-
+  //https://ionicframework.com/docs/api/alert
+  //delete ADD alert
   swipeEvent(id, thisEvent) {
     thisEvent.stopPropagation();
     this.PlanService.deletePlanByID(id).then(result => {

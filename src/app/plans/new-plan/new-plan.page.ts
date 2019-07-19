@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PlanService } from './../../services/plan.service';
 
+
 @Component({
   selector: 'app-new-plan',
   templateUrl: './new-plan.page.html',
@@ -13,7 +14,7 @@ export class NewPlanPage implements OnInit {
   constructor(private router: Router, private PlanService: PlanService, private templateService: TemplateService) { }
 
   planName: any;
-  
+
 
   ngOnInit() {
   }
@@ -22,14 +23,16 @@ export class NewPlanPage implements OnInit {
   defaultLanguage = 0;
 
   nextPage() {
-    console.log(this.planName,this.defaultLanguage)
-    // this.router.navigate (
-    //  ['/tabs/plans/details',this.planName]
-    this.router.navigateByUrl('tabs/plans/details/' + this.defaultLanguage+'/'+this.planName);
-    //)
+
+      console.log(this.planName, this.defaultLanguage)
+      // this.router.navigate (
+      //  ['/tabs/plans/details',this.planName]
+      this.router.navigateByUrl('tabs/plans/details/' + this.defaultLanguage + '/' + this.planName);
+      //)
+    }
+  
+  cancel() {
+    this.router.navigateByUrl('');
   }
-cancel(){
-  this.router.navigateByUrl('');
-}
 
 }

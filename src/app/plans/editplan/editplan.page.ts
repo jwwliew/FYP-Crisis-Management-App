@@ -21,6 +21,11 @@ export class EditplanPage implements OnInit {
 
   }
 
+  backViewPlan(){
+    this.router.navigateByUrl('/tabs/plans');
+  }
+
+
   editPage(id) {
     this.isDisabled = !this.isDisabled;
     if (this.isDisabled) {

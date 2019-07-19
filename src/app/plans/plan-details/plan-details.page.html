@@ -63,7 +63,7 @@
     </ion-card>
   </ion-list>
 
-<style>
+  <style>
     .imgCircle {
       float: left;
       border-radius: 50%;
@@ -282,23 +282,31 @@ ion-content{
   <ion-list lines="none">
     <ion-card class="welcome-card">
       <ion-card-header color="tertiary">
-        <ion-card-title><ion-buttons style="float:right;" (onClick)="newPlan()"><ion-icon name="add-circle-outline"></ion-icon></ion-buttons>Appointment (OPTIONAL)</ion-card-title>
+        <ion-card-title>
+            <ion-col size="4">
+          <ion-fab-button style="float:right" (click)="newPlan()">
+            <ion-icon name="add"></ion-icon>
+          </ion-fab-button></ion-col>
+          Appointment (OPTIONAL)
+        </ion-card-title>
+
+
       </ion-card-header>
 
-      <ion-card-content>
+      <ion-card-content *ngFor="let info of appointment">
         <div>
           <table id="tblOne" style="width:50%; float:left">
             <tr>
               <td>Clinic Name:</td>
               <p></p>
-              <ion-input style="width: 250%" [(ngModel)]="clinicName"></ion-input>
+              <ion-input style="width: 250%" [(ngModel)]="info.clinicName"></ion-input>
             </tr>
           </table>
           <ion-item lines="full">
             <ion-label>Date:</ion-label>
-            <ion-datetime placeholder="day/month/year hour:min" #mypicker (ionChange)="dateChanged(mypicker.value)"
-              display-format="DD/MMM/YY h:mm A"  min="2017" max="2022"></ion-datetime>
-          </ion-item> 
+            <ion-datetime placeholder="day/month/year hour:min" #mypicker  (ionChange)="dateChanged(mypicker.value,info.appTime)"
+              display-format="DD/MMM/YY h:mm A" min="2017" max="2022"></ion-datetime>
+          </ion-item>
           <!-- <ion-item lines="full">
             <ion-label>Time:&nbsp;&nbsp; </ion-label>
             <ion-datetime placeholder="eg. 13:30 am/pm" #mpicker (ionChange)="minuteChanged(mpicker.value)" 
