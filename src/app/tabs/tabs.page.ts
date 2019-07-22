@@ -11,8 +11,9 @@ export class TabsPage implements OnInit {
 
   constructor(private navCtrl: NavController, private templateService: TemplateService) { }
 
-  ngOnInit() {
-  }
+  styles = ['color: green', 'background: yellow'].join(";");
+
+  ngOnInit() {}
 
   goToRoot(location) {
     let rootLocations = ["/tabs/plans", "/tabs/templates", "/tabs/settings"];
@@ -21,5 +22,9 @@ export class TabsPage implements OnInit {
 
   resetGlobalArray() {
     this.templateService.resetArray();
+  }
+
+  ionViewWillEnter() {
+    console.error("%cION VIEW WILL ENTER TABS PAGE ", this.styles);
   }
 }

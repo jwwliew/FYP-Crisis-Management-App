@@ -50,7 +50,7 @@
   <ion-list lines="full" #mylist>
 
     <ion-item-sliding *ngFor="let item of selectedTab == 'Symptom' ? symptomList : actionList" (ionSwipe)="deleteIOS(item)">
-      <ion-item (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)" (swipedown)="pressEvent(item)" (swipeup)="pressEvent(item)" [color]="item.checked && 'lightBlue'">
+      <ion-item (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)" [color]="item.checked && 'lightBlue'">
         <ion-thumbnail slot="start">
           <img [src]="item.icon"/>
         </ion-thumbnail>

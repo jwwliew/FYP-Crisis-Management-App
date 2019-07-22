@@ -17,20 +17,25 @@ import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import * as Hammer from 'hammerjs';
 
+
 export class CustomHammerConfig extends HammerGestureConfig {
-  overrides = {
-      'press': { time: 666 },  //set press delay for 1 second, default is 300ms
-      'swipe': {
-        direction: Hammer.DIRECTION_ALL
-      }
+  // overrides = {
+  //     'press': { time: 1000 },  //set press delay for 1 second, default is 300ms
+  //     'swipe': {
+  //       direction: Hammer.DIRECTION_ALL
+  //     },
+  // }
+  buildHammer(element: HTMLElement) {
+    let mc = new Hammer(element, {touchAction: "pan-y"});
+    mc.get("press").set({time:666});
+    return mc;
   }
 }
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,
-            IonicStorageModule.forRoot({name:'mydb', driverOrder: ['indexeddb', 'sqlite', 'websql']})],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, IonicStorageModule.forRoot()],
   providers: [
     StatusBar,
     SplashScreen,

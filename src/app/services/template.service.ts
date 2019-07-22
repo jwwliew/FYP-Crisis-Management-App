@@ -299,7 +299,7 @@ export class TemplateService {
 
   //https://stackoverflow.com/questions/48133216/custom-icons-on-ionic-select-with-actionsheet-interface-ionic2
   async presentActionSheet(symptomOrAction, item, defaultLanguage) { //https://ionicframework.com/docs/api/action-sheet
-    symptomOrAction = symptomOrAction == "updateAction" ? "action" : symptomOrAction
+    symptomOrAction = symptomOrAction == "updateAction" ? "Action" : symptomOrAction
     console.warn("symptomOrAction = " + symptomOrAction);
     if (this.checkSymptomOrActionEmpty(symptomOrAction)) {
       return false;

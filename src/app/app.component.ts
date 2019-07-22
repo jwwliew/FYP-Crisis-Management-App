@@ -25,7 +25,12 @@ export class AppComponent {
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
+      // setTimeout(() => {
+      //     this.splashScreen.hide();
+      // }, 666); //https://stackoverflow.com/questions/54620514/why-white-screen-stuck-after-splash-screen-in-ionic-4
       this.splashScreen.hide();
+      //https://forum.ionicframework.com/t/after-splash-screen-display-white-screen-long-time/80162/20
+      //https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-splashscreen/#preferences
       this.storage.length().then(length => {
         length == 0 && (this.storage.set("settingStorageKey", this.globalSettingObj), this.storage.set("actionKey", this.globalActionObj))
       })
