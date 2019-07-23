@@ -48,11 +48,21 @@ export class SymptomActionPage implements OnInit {
   } 
 
   check(item) { //https://forum.ionicframework.com/t/determining-if-checkbox-is-checked/68628/5, https://forum.ionicframework.com/t/how-to-check-if-checkboxes-is-checked-or-unchecked/68799/7
-    console.log(item);
+    console.log("item before", item);
     // let itemID = this.checked.indexOf(item.id);
+    console.warn("CHEKED BEFORE " + JSON.stringify(this.checked,null,2));
     let itemID = this.checked.findIndex(x => x.id == item.id);
-    itemID !== -1 ? this.checked.splice(itemID, 1) : this.checked.push({id: item.id, selectedType: this.selectedTab})
-    console.log("Checked == " + this.checked);
+    console.warn("ITEM ID FOUND " + itemID);
+    if (itemID !== -1) {
+      this.checked.splice(itemID, 1);
+      delete item.checked;
+    }
+    else {
+      this.checked.push({id: item.id, selectedType: this.selectedTab})
+    }
+    // itemID !== -1 ? this.checked.splice(itemID, 1) : this.checked.push({id: item.id, selectedType: this.selectedTab})
+    console.log("Checked == " , this.checked);
+    console.warn("ITEM AFTER " , item);
   }
   
   deleteSelected() {
@@ -92,15 +102,15 @@ export class SymptomActionPage implements OnInit {
   loadItems() {
     let allPromise = [this.settingService.getType("Symptom"), this.settingService.getType("Action")];
     Promise.all(allPromise).then(finalPromises => {
-      finalPromises.forEach(eachArr => {
-        eachArr && eachArr.forEach(element => {
-            if (element.icon instanceof Blob) {
-              this.settingService.readImage(element.icon).then(convertedBase64 => {
-                element.icon = convertedBase64;
-              })
-            }
-        });
-      })
+      // finalPromises.forEach(eachArr => {
+      //   eachArr && eachArr.forEach(element => {
+      //       if (element.icon instanceof Blob) {
+      //         this.settingService.readImage(element.icon).then(convertedBase64 => {
+      //           element.icon = convertedBase64;
+      //         })
+      //       }
+      //   });
+      // })
       this.symptomList = finalPromises[0];
       this.actionList = finalPromises[1];
     })

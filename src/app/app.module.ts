@@ -16,6 +16,7 @@ import { Camera } from '@ionic-native/camera/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import * as Hammer from 'hammerjs';
+import { TemplatePopComponent } from './templates/template-pop/template-pop.component';
 
 
 export class CustomHammerConfig extends HammerGestureConfig {
@@ -33,8 +34,8 @@ export class CustomHammerConfig extends HammerGestureConfig {
 }
 
 @NgModule({
-  declarations: [AppComponent],
-  entryComponents: [],
+  declarations: [AppComponent, TemplatePopComponent],
+  entryComponents: [TemplatePopComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, IonicStorageModule.forRoot()],
   providers: [
     StatusBar,

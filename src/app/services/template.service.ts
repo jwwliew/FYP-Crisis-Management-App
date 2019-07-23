@@ -3,8 +3,8 @@ import { Storage } from '@ionic/storage';
 import {v4 as uuid} from 'uuid';
 import { Setting } from '../models/symptomaction';
 import { SymptomActionService } from './symptomaction.service';
-import { ActionSheetController, ToastController, AlertController } from '@ionic/angular';
-import { Router } from '@angular/router';
+import { ActionSheetController, ToastController, AlertController, PopoverController } from '@ionic/angular';
+import { TemplatePopComponent } from './../templates/template-pop/template-pop.component';
 
 const ALL_KEY = "allKey";
 @Injectable({
@@ -13,7 +13,7 @@ const ALL_KEY = "allKey";
 export class TemplateService {
 
   constructor(private storage: Storage, private settingStorage: SymptomActionService, private actionSheetCtrl: ActionSheetController, private zone: NgZone, 
-    private toastCtrl: ToastController, private alertCtrl: AlertController, private router: Router) { }
+    private toastCtrl: ToastController, private alertCtrl: AlertController, private popoverCtrl: PopoverController ) { }
 
   createTemplate(finalArray, templateNameFromInput, templateID, templateNameUpdate, defaultLanguage) {
 
@@ -550,6 +550,14 @@ export class TemplateService {
     })
   }
 
+  popOverController(x, menuOptions) { 
+    return this.popoverCtrl.create({
+      component: TemplatePopComponent,
+      event: x, //https://www.youtube.com/watch?v=wMpGiniuZNc,
+      componentProps: {menuOptions}
+    });
+  }
+  
 } //end of class
 
 

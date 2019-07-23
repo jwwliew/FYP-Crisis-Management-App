@@ -82,6 +82,7 @@ export class EditSettingsPage implements OnInit {
 
   goBack() {
     //this.router.navigate(['/tabs/settings/symptomAction'])
+    this.thisForm.reset();
     this.router.navigateByUrl("/tabs/settings/symptomAction"); //https://stackoverflow.com/questions/41678356/router-navigate-does-not-call-ngoninit-when-same-page
   }
 

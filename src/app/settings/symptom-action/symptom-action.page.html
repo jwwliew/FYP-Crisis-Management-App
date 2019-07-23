@@ -50,12 +50,13 @@
   <ion-list lines="full" #mylist>
 
     <ion-item-sliding *ngFor="let item of selectedTab == 'Symptom' ? symptomList : actionList" (ionSwipe)="deleteIOS(item)">
-      <ion-item (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)" [color]="item.checked && 'lightBlue'">
+      <ion-item (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)" [color]="item.checked && 'lightBlue'" button>
         <ion-thumbnail slot="start">
           <img [src]="item.icon"/>
         </ion-thumbnail>
         {{item.enName}}
         <ion-checkbox mode="ios" slot="end" *ngIf="checked.length > 0" [(ngModel)]="item.checked" (ionChange)="check(item)" color="success"></ion-checkbox>
+        <ion-ripple-effect></ion-ripple-effect>
       </ion-item>
 
       <ion-item-options side="end"> 

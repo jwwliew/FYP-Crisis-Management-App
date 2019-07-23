@@ -2,15 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController, Events, PopoverController, Platform, LoadingController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { TemplateService } from 'src/app/services/template.service';
-import { TemplatePopComponent } from '../template-pop/template-pop.component';
 
 import * as jsPDF from 'jspdf';
 import domtoimage from 'dom-to-image';
-import { File, IWriteOptions } from '@ionic-native/file/ngx';
-import * as html2canvas from 'html2canvas';
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 
 
@@ -36,7 +31,7 @@ export class NewTemplatesPage implements OnInit {
   }
 
   constructor(private router: Router, private templateService: TemplateService, private alertCtrl: AlertController, 
-    private event: Events, private popoverCtrl: PopoverController, private file: File, public plt: Platform, private loadingController: LoadingController, private fileOpener: FileOpener) {
+    private event: Events, private file: File, private loadingController: LoadingController, private fileOpener: FileOpener) {
 
       console.error("CONSTURCTOR CALLlED" + JSON.stringify(this.templateService.getAllArray(), null, 2));
       this.event.subscribe("view", item => { //or services https://stackoverflow.com/questions/54304481/ionic-4-angular-7-passing-object-data-to-another-page
@@ -198,17 +193,15 @@ export class NewTemplatesPage implements OnInit {
   }
 
 
-  async popOverController(x) { 
-    const popover = await this.popoverCtrl.create({
-      component: TemplatePopComponent,
-      event: x, //https://www.youtube.com/watch?v=wMpGiniuZNc
-    });
-    popover.onDidDismiss().then((data) => { //method 2 ngOnInIt inside onDidDismiss()
-      console.log("popup dismiss data = " + data.data);
-      //Edit", "Rename", "Duplicate", "Create Crisis Plan", "Delete"];
-      data.data && this.callAction(data.data);
+  popOverController(x) { 
+    let menuOptions = ["Edit", "Rename", "Duplicate", "Create Crisis Plan", "Delete", "Export to PDF"];
+    this.templateService.popOverController(x, menuOptions).then(popover => {
+      popover.present();
+      popover.onDidDismiss().then((data) => { //method 2 ngOnInIt inside onDidDismiss()
+        console.log("popup dismiss data = " + data.data);
+        data.data && this.callAction(data.data);
+      });
     })
-    return await popover.present();
   }
 
   callAction(type) { //https://ultimatecourses.com/blog/deprecating-the-switch-statement-for-object-literals
@@ -272,7 +265,7 @@ export class NewTemplatesPage implements OnInit {
         console.error("img height, milimetre height", imgHeight, millimeters.height);
         console.error("internal width vs milimeter width", doc.internal.pageSize.width, millimeters.width);
         // doc.addImage(dataUrl, "PNG", 6, 15, '','','', 'FAST');
-        doc.addImage(dataUrl,'PNG', 0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST');
+        doc.addImage(dataUrl,'PNG', 0, 6, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST');
         // const doc = new jsPDF('p', 'pt', [PDF_WIDTH, PDF_HEIGHT]);
 
         // doc.addImage(dataUrl, "PNG", top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);

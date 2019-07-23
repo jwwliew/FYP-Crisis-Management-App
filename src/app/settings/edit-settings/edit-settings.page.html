@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/settings/symptomAction"></ion-back-button>
+      <ion-back-button defaultHref="/tabs/settings/symptomAction" (click)="goBack()"></ion-back-button>
     </ion-buttons>
     <ion-title style="position:inherit;">
       {{contentDetails.enName}}
@@ -38,13 +38,13 @@
         <ion-label position="floating"> English </ion-label>
         <ion-input type="text" formControlName="english" required></ion-input>
         <ion-buttons class="change" slot="end">
-          <ion-button slot="end" *ngIf="englishEmpty && thisForm.controls.english.invalid">
+          <ion-button slot="end" *ngIf="englishEmpty || (thisForm.controls['english'].invalid && (thisForm.controls['english'].dirty || thisForm.controls['english'].touched))">
             <ion-icon name="information-circle" slot="end" color="danger"></ion-icon>
           </ion-button>
         </ion-buttons>
       </ion-item>
 
-      <ion-item no-padding margin-start lines="none" *ngIf="englishEmpty && thisForm.controls.english.invalid">
+      <ion-item no-padding margin-start lines="none" *ngIf="englishEmpty || (thisForm.controls['english'].invalid && (thisForm.controls['english'].dirty || thisForm.controls['english'].touched))">
         <span style="color:red; margin-bottom:16px;">
           Please enter at least english name
         </span>

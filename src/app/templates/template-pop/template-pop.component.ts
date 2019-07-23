@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PopoverController } from '@ionic/angular';
+import { PopoverController, NavParams } from '@ionic/angular';
 
 @Component({
   selector: 'app-template-pop',
@@ -8,11 +8,14 @@ import { PopoverController } from '@ionic/angular';
 })
 export class TemplatePopComponent implements OnInit {
 
-  constructor(public popoverController: PopoverController) { }
+  constructor(public popoverController: PopoverController, public navParams: NavParams) { 
+    this.menuOptions = navParams.data.menuOptions; // this.menuOptions = navParams.get("keyOptions");
+  }
 
   ngOnInit() {}
 
-  menuOptions = ["Edit", "Rename", "Duplicate", "Create Crisis Plan", "Delete", "Export to PDF"];
+  // menuOptions = ["Edit", "Rename", "Duplicate", "Create Crisis Plan", "Delete", "Export to PDF"];
+  menuOptions = [];
 
   close(thisOption) {
     console.warn(thisOption)

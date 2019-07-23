@@ -1,5 +1,5 @@
 <ion-list mode="md">
-  <ion-item *ngFor="let item of menuOptions; let i = index;" (click)="close(item)" [lines]="i == 5 ? 'none' : 'full'" button>
+  <ion-item *ngFor="let item of menuOptions; let last = last;" (click)="close(item)" [lines]="last ? 'none' : 'full'" button>
     <ion-label>
       {{item}}
     </ion-label>
