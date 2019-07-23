@@ -13,14 +13,13 @@ export class NewPlanPage implements OnInit {
   @ViewChild('signupSlider') signupSlider;
   public slideOneForm: FormGroup;
 
-  public submitAttempt: boolean = false;
-
+  
   constructor(private router: Router, private PlanService: PlanService, private templateService: TemplateService, public formBuilder: FormBuilder) {
 
     this.slideOneForm = formBuilder.group({
       firstName: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
     })
-    console.log(this.submitAttempt);
+   
 
   }
 
@@ -32,8 +31,9 @@ export class NewPlanPage implements OnInit {
   defaultLanguage = 0;
 
   nextPage() {
-    if (this.planName == undefined) {
-      return false;
+    console.log(this.planName)
+    if (!this.planName) {
+           return false;
     }
     else {
       console.log(this.planName, this.defaultLanguage)
