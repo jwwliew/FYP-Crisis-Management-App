@@ -1,10 +1,17 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-buttons (click)="cancel()" slot="start"><ion-button>cancel</ion-button></ion-buttons><ion-title>
+    <ion-buttons (click)="cancel()" slot="start">
+      <ion-button>cancel</ion-button>
+    </ion-buttons>
+    <ion-title>
       New Crisis Plan
     </ion-title>
-    
-    <ion-buttons (click)="nextPage()" slot="end"><ion-button><ion-icon name="arrow-forward" ></ion-icon></ion-button></ion-buttons>
+
+    <ion-buttons (click)="nextPage()" slot="end">
+      <ion-button>
+        <ion-icon name="arrow-forward"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -19,7 +26,8 @@
       <ion-card-content>
         <ion-list>
           <ion-radio-group [(ngModel)]="defaultLanguage">
-            <ion-item *ngFor="let thisLanguage of globalLanguage; let i = index" [lines]="i == 3 ? 'none' : 'full'" [ngStyle]="thisLanguage[0] == defaultLanguage && {'font-weight': 'bold'}" button>
+            <ion-item *ngFor="let thisLanguage of globalLanguage; let i = index" [lines]="i == 3 ? 'none' : 'full'"
+              [ngStyle]="thisLanguage[0] == defaultLanguage && {'font-weight': 'bold'}" button>
               <ion-label>{{thisLanguage[1]}}</ion-label>
               <ion-radio [value]="thisLanguage[0]" color="originalPrimary" mode="md"></ion-radio>
               <ion-ripple-effect></ion-ripple-effect>
@@ -36,8 +44,21 @@
       </ion-card-header>
 
       <ion-card-content>
-        <!---CONTENT-->
-        <ion-input type="text" [(ngModel)]="planName"></ion-input>
+        <form [formGroup]="slideOneForm">
+
+          <ion-item>
+            <ion-input formControlName="firstName" type="text" [(ngModel)]="planName"
+              [class.invalid]="!slideOneForm.controls.firstName.valid && (slideOneForm.controls.firstName.dirty || submitAttempt)">
+            </ion-input>
+          </ion-item>
+
+          <ion-item
+            *ngIf="!slideOneForm.controls.firstName.valid  && (slideOneForm.controls.firstName.dirty || submitAttempt)">
+            <p>Please enter plan name!!</p>
+          </ion-item>
+
+        </form>
+
       </ion-card-content>
     </ion-card>
   </ion-list>
