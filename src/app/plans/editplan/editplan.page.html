@@ -155,18 +155,18 @@
           <table id="tblOne" style="width:50%; float:left">
             <tr>
               <td>Name:</td>
-              <ion-input [(ngModel)]="details.name" disabled="{{isDisabled}}"></ion-input>
+              <ion-input [(ngModel)]="details.name" readonly="{{isDisabled}}"></ion-input>
             </tr>
             <p></p>
             <tr>
               <td>TCS Name:</td>
-              <ion-input [(ngModel)]="details.cname" disabled="{{isDisabled}}"></ion-input>
+              <ion-input [(ngModel)]="details.cname" readonly="{{isDisabled}}"></ion-input>
             </tr>
           </table>
           <table id="tblTwo" style="width:50%; float:left">
             <tr>
               <td>NRIC:</td>
-              <ion-input [(ngModel)]="details.nric" disabled="{{isDisabled}}"></ion-input>
+              <ion-input [(ngModel)]="details.nric" readonly="{{isDisabled}}"></ion-input>
             </tr>
             <tr>
               <td>TCS Contact:</td>
@@ -249,7 +249,8 @@
               <ion-item no-padding class="yellowItem">
                 <ion-textarea rows="4" placeholder="Describe the symptom in more details."
                   [readonly]="item.combined[0]?.whatsapp" [(ngModel)]="item.symptom.description"
-                  [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}" (ionFocus)="inputFocus()"></ion-textarea>
+                  [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}" (ionFocus)="inputFocus()">
+                </ion-textarea>
               </ion-item>
             </ion-card>
           </ion-col>
@@ -275,7 +276,8 @@
                 <ion-item no-padding class="yellowItem">
                   <ion-textarea rows="4" placeholder="Describe the required action in your own words."
                     [readonly]="x.whatsapp" [(ngModel)]="x.description"
-                    [ngClass]="{'highlight': x.whatsapp && checked.length > 0}" (ionFocus)="inputFocus()"></ion-textarea>
+                    [ngClass]="{'highlight': x.whatsapp && checked.length > 0}" (ionFocus)="inputFocus()">
+                  </ion-textarea>
                 </ion-item>
               </ion-card>
 
@@ -331,49 +333,32 @@
     <ion-card class="welcome-card" style="margin-bottom: 6%">
       <ion-card-header color="tertiary">
         <ion-card-title>
-          <ion-buttons style="float:right;">
-            <ion-icon name="trash" (onClick)="deleteAppoint()"></ion-icon>
-          </ion-buttons>Appointment (Optional)
+          Appointment (Optional)
         </ion-card-title>
 
       </ion-card-header>
 
       <ion-card-content>
         <div>
-          <!-- <table id="tblOne" style="width:40%; float:left;position:inherit">
-            <tr>
-              <td>Clinic Name:</td>
-              <p></p>
-              <ion-input style="width: 200%" disabled="{{isDisabled}}" [(ngModel)]="details.clinicName"></ion-input>
-            </tr>
-          </table>
-          <table id="tblTwo" style="width:60%; float:left">
-              <tr>
-                <td>Date:</td>
-                <p></p>
-                <ion-input style="width: 250%" disabled="{{isDisabled}}" [(ngModel)]="details.datemy"></ion-input>
-                <!-- <ion-datetime placeholder="day/month/year hour:min" #mypicker (ionChange)="dateChanged(mypicker.value)"
-                display-format="DD/MMM/YY h:mm A"  min="2017" max="2022"></ion-datetime> -->
-          <!-- </tr> -->
-          <!-- </table> -->
 
-          <table id="tblOne" style="width:50%; float:left">
-            <tr>
-              <td>Clinic Name:</td>
-              <p></p>
-              <ion-input style="width: 250%" [disabled]="isDisabled" [(ngModel)]="details.clinicName"></ion-input>
-            </tr>
-          </table>
-          <ion-item lines="full">
-            <ion-label>Date:</ion-label>
-            <ion-datetime placeholder="day/month/year hour:min" #mypicker (ionChange)="dateChanged(mypicker.value)"
-              display-format="DD/MMM/YY h:mm A" [(ngModel)]="details.datemy" min="2017" max="2022"
-              [disabled]="isDisabled"></ion-datetime>
-          </ion-item>
+          <ion-row *ngFor="let item of details.appointment">
+            <ion-col>
+              <ion-label position="floating">Clinic Name</ion-label>
+                <ion-input style="width: 250%" [readonly]="isDisabled" [(ngModel)]="item.clinicName" style="position:inherit"></ion-input>
+              
+            </ion-col>
+            <ion-col >
+         
+                <ion-label>Date:</ion-label>
+                <ion-datetime placeholder="day/month/year hour:min" #mypicker (ionChange)="dateChanged(mypicker.value)"
+                  display-format="DD/MMM/YY h:mm A" [(ngModel)]="item.appTime" min="2017" max="2022"
+                  [readonly]="isDisabled"></ion-datetime>
+          
+            </ion-col>
+          </ion-row>
+        
         </div>
       </ion-card-content>
     </ion-card>
-
-
   </div>
 </ion-content>

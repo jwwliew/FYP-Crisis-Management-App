@@ -38,7 +38,7 @@ export class PlanService {
 
   //insert
   //newitem= pname, Details--->
-  addPlanDetails(indexL, date1, planName, pname, pnric, tcsname, tcscontact, maparr, appointment, clinicname) {
+  addPlanDetails(indexL, date1, planName, pname, pnric, tcsname, tcscontact, maparr, appointment) {
     return this.storage.get(key).then((items) => {
       let details = {
         id: uuid(),
@@ -51,8 +51,7 @@ export class PlanService {
         language: indexL,
         templates: maparr,
         
-        datemy: appointment,
-        clinicName: clinicname
+        appointment:appointment,
       }
       console.warn(details)
       if (items) {

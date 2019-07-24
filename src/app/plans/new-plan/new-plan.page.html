@@ -45,7 +45,6 @@
 
       <ion-card-content>
         <form [formGroup]="slideOneForm">
-
           <ion-item>
             <ion-input formControlName="firstName" type="text" [(ngModel)]="planName"
               [class.invalid]="!slideOneForm.controls.firstName.valid && (slideOneForm.controls.firstName.dirty)">
@@ -53,8 +52,8 @@
           </ion-item>
 
           <ion-item
-            *ngIf="!slideOneForm.controls.firstName.valid  && (slideOneForm.controls.firstName.dirty||slideOneForm.controls.firstName.touched)">
-            <p>Please enter plan name!!</p>
+            *ngIf="!slideOneForm.controls.firstName.valid && submitted">
+            <p style="color: red">***Please enter plan name***</p>
           </ion-item>
 
         </form>

@@ -4,16 +4,28 @@ import { PlanService } from './../../services/plan.service';
 import { ToastController, Events } from '@ionic/angular';
 import { TemplateService } from 'src/app/services/template.service';
 import { v4 as uuid } from 'uuid';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-plan-details',
   templateUrl: './plan-details.page.html',
   styleUrls: ['./plan-details.page.scss'],
 })
+
 export class PlanDetailsPage implements OnInit {
 
+  private thisgroup: FormGroup;
+
   constructor(private router: Router, private PlanService: PlanService, public toastController: ToastController, private activatedRoute: ActivatedRoute,
-    private templateService: TemplateService) { }
+    private templateService: TemplateService, public formBuilder: FormBuilder) {
+    this.thisgroup = formBuilder.group({
+      detailname: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+      detailnric: ['', Validators.compose([Validators.maxLength(9), Validators.minLength(9), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
+      detailtcs: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+      detailcontact: ['', Validators.compose([Validators.maxLength(8), Validators.minLength(8), Validators.pattern('[0-9]*'), Validators.required])],
+    });
+
+  }
 
   clinicName: any;
   pNric: any;
@@ -24,7 +36,7 @@ export class PlanDetailsPage implements OnInit {
   date1: string; // PLAN CREATED @ date
   datemy: string;
 
-  ngOnInit() {}
+  ngOnInit() { }
 
 
   // dateChanged(time) {
@@ -32,25 +44,40 @@ export class PlanDetailsPage implements OnInit {
   // console.log(this.datedmy);
   // }
   // datedmy: any;
-  dateChanged(my, time) {
+  dateChanged(my, appObj) {
     //this.datemy = my;
     // this.datemy = moment(my).format('YYYY-MM-DD hh:mmA');
     //install -npm i moment===>to use moment().format
-    console.log("bf"+time,this.appointment)
-    time = new Date(my).toLocaleString();
-    console.log("aft"+time,this.appointment)
+     let time = new Date(my).toLocaleString();
+    console.log("aft" + time, this.appointment)
+    console.log("my-->"+my)
+    console.log(appObj)
+    appObj.appTime=time;
+ 
   }
+  submitted = false;
 
   PlanDetails() {
-    //created Date**
-    let date = new Date();
-    let date1 = date.getDate().toString() + '/' + (date.getMonth() + 1).toString() + '/' + date.getFullYear().toString();
-    let maparr = this.templateService.cleansedArray();
-    console.log(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact, this.datemy, this.clinicName);
-    this.PlanService.addPlanDetails(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact, maparr, this.datemy, this.clinicName).then(() => {
-      this.router.navigateByUrl('/tabs/plans');
+    if (this.thisgroup.controls["detailcontact"].invalid || this.thisgroup.controls["detailname"].invalid ||
+      this.thisgroup.controls["detailtcs"].invalid ||
+      this.thisgroup.controls["detailnric"].invalid) {
+      this.submitted = true;
+      return false;
+    }
+    else {
 
-    });
+      //created Date**
+      let date = new Date();
+      let date1 = date.getDate().toString() + '/' + (date.getMonth() + 1).toString() + '/' + date.getFullYear().toString();
+      let maparr = this.templateService.cleansedArray();
+      console.log(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact, this.appointment);
+      this.PlanService.addPlanDetails(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact, maparr, this.appointment).then(() => {
+        this.router.navigateByUrl('/tabs/plans')
+
+      });
+    }
+
+
   }
 
   appointment = []
@@ -100,7 +127,7 @@ export class PlanDetailsPage implements OnInit {
     this.inputTriggered || this.templateService.pressEvent(type, thisObject, arrayID);
     this.inputTriggered = false;
   }
-  
+
   clickEvent(type, wholeItem, arrayID) {
     this.templateService.clickEvent(type, wholeItem, arrayID);
   }

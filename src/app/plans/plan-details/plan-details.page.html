@@ -35,17 +35,68 @@
       </ion-card-header>
 
       <ion-card-content>
-        <div>
-          <table id="tblOne" style="width:50%; float:left">
-            <tr>
-              <td>Name:</td>
-              <ion-input type="text" [(ngModel)]="pName"></ion-input>
-            </tr>
-            <p></p>
-            <tr>
-              <td>TCS Name:</td>
-              <ion-input type="text" [(ngModel)]="tcsName"></ion-input>
-            </tr>
+
+        <!-- <table id="tblOne" style="width:50%; float:left"> -->
+        <form [formGroup]="thisgroup">
+          <ion-row>
+            <ion-col>
+              <ion-item no-padding>
+                <ion-label position="floating"> Name </ion-label>
+                <ion-input formControlName="detailname" type="text" [(ngModel)]="pName"
+                  [class.invalid]="!thisgroup.controls.detailname.valid && (thisgroup.controls.detailname.dirty)">
+                </ion-input>
+              </ion-item>
+              <p *ngIf="!thisgroup.controls.detailname.valid &&submitted" style="color:red">Name required</p>
+            </ion-col>
+            <ion-col>
+              <ion-item no-padding>
+                <ion-label position="floating"> NRIC </ion-label>
+                <ion-input formControlName="detailnric" type="text" [(ngModel)]="pNric"
+                  [class.invalid]="!thisgroup.controls.detailnric.valid && (thisgroup.controls.detailnric.dirty)">
+                </ion-input>
+              </ion-item>
+              <p *ngIf="!thisgroup.controls.detailnric.valid  &&submitted" style="color:red">Valid NRIC</p>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-item no-padding>
+                <ion-label position="floating"> TCS Name </ion-label>
+                <ion-input formControlName="detailtcs" type="text" [(ngModel)]="tcsName"
+                  [class.invalid]="!thisgroup.controls.detailtcs.valid && (thisgroup.controls.detailtcs.dirty)">
+                </ion-input>
+              </ion-item>
+              <p *ngIf="!thisgroup.controls.detailtcs.valid &&submitted" style="color:red">TCS name required</p>
+            </ion-col>
+            <ion-col>
+              <ion-item no-padding>
+                <ion-label position="floating"> TCS Contact </ion-label>
+                <ion-input formControlName="detailcontact" type="text" [(ngModel)]="tcsContact"
+                  [class.invalid]="!thisgroup.controls.detailcontact.valid && (thisgroup.controls.detailcontact.dirty)">
+                </ion-input>
+              </ion-item>
+              <p *ngIf="!thisgroup.controls.detailcontact.valid &&submitted" style="color:red">Valid contact</p>
+            </ion-col>
+          </ion-row>
+
+        </form>
+
+        <!-- <td>Name:</td>
+          <tr>
+            <ion-item>
+              <form [formGroup]="thisgroup">
+                <ion-input formControlName="detailname" type="text" [(ngModel)]="pName"
+                  [class.invalid]="!thisgroup.controls.detailname.valid && (thisgroup.controls.detailname.dirty)">
+                </ion-input>
+              </form>
+            </ion-item>
+
+          </tr>
+
+          <tr>
+            <td>TCS Name:</td>
+            <ion-input type="text" [(ngModel)]="tcsName"></ion-input>
+          </tr>
           </table>
           <table id="tblTwo" style="width:50%; float:left">
             <tr>
@@ -56,8 +107,7 @@
               <td>TCS Contact:</td>
               <ion-input type="text" [(ngModel)]="tcsContact"></ion-input>
             </tr>
-          </table>
-        </div>
+          </table> -->
       </ion-card-content>
 
     </ion-card>
@@ -201,7 +251,8 @@ ion-content{
             <ion-item no-padding class="yellowItem">
               <ion-textarea rows="4" placeholder="Describe the symptom in more details."
                 [readonly]="item.combined[0]?.whatsapp" [(ngModel)]="item.symptom.description"
-                [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}" (ionFocus)="inputFocus()"></ion-textarea>
+                [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}" (ionFocus)="inputFocus()">
+              </ion-textarea>
             </ion-item>
           </ion-card>
         </ion-col>
@@ -282,10 +333,11 @@ ion-content{
     <ion-card class="welcome-card">
       <ion-card-header color="tertiary">
         <ion-card-title>
-            <ion-col size="4">
-          <ion-fab-button style="float:right" (click)="newPlan()">
-            <ion-icon name="add"></ion-icon>
-          </ion-fab-button></ion-col>
+          <ion-col size="4">
+            <ion-fab-button style="float:right" (click)="newPlan()">
+              <ion-icon name="add"></ion-icon>
+            </ion-fab-button>
+          </ion-col>
           Appointment (OPTIONAL)
         </ion-card-title>
 
@@ -294,7 +346,7 @@ ion-content{
 
       <ion-card-content *ngFor="let info of appointment">
         <div>
-          <table id="tblOne" style="width:50%; float:left">
+          <!-- <table id="tblOne" style="width:50%; float:left">
             <tr>
               <td>Clinic Name:</td>
               <p></p>
@@ -303,14 +355,27 @@ ion-content{
           </table>
           <ion-item lines="full">
             <ion-label>Date:</ion-label>
-            <ion-datetime placeholder="day/month/year hour:min" #mypicker  (ionChange)="dateChanged(mypicker.value,info.appTime)"
-              display-format="DD/MMM/YY h:mm A" min="2017" max="2022"></ion-datetime>
-          </ion-item>
-          <!-- <ion-item lines="full">
-            <ion-label>Time:&nbsp;&nbsp; </ion-label>
-            <ion-datetime placeholder="eg. 13:30 am/pm" #mpicker (ionChange)="minuteChanged(mpicker.value)" 
-            displayFormat="h:mm A"></ion-datetime>
+            <ion-datetime placeholder="day/month/year hour:min" #mypicker
+              (ionChange)="dateChanged(mypicker.value,info)" display-format="DD/MMM/YY h:mm A" min="2017"
+              max="2022"></ion-datetime>
           </ion-item> -->
+          <ion-row>
+            <ion-col>
+              <ion-label position="floating">Clinic Name:</ion-label>
+              <ion-input style="width: 250%" [(ngModel)]="info.clinicName"></ion-input>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-item lines="full">
+                <ion-label>Date:</ion-label>
+                <ion-datetime placeholder="day/month/year hour:min" #mypicker
+                  (ionChange)="dateChanged(mypicker.value,info)" display-format="DD/MMM/YY h:mm A" min="2017"
+                  max="2022">
+                </ion-datetime>
+              </ion-item>
+            </ion-col>
+          </ion-row>
         </div>
       </ion-card-content>
     </ion-card>
