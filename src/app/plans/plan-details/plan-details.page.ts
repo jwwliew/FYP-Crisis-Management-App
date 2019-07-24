@@ -5,9 +5,6 @@ import { ToastController, Events } from '@ionic/angular';
 import { TemplateService } from 'src/app/services/template.service';
 import { v4 as uuid } from 'uuid';
 
-import * as moment from 'moment';
-import { stringify } from '@angular/core/src/render3/util';
-
 @Component({
   selector: 'app-plan-details',
   templateUrl: './plan-details.page.html',
@@ -16,7 +13,8 @@ import { stringify } from '@angular/core/src/render3/util';
 export class PlanDetailsPage implements OnInit {
 
   constructor(private router: Router, private PlanService: PlanService, public toastController: ToastController, private activatedRoute: ActivatedRoute,
-    private templateService: TemplateService, private event: Events) { }
+    private templateService: TemplateService) { }
+
   clinicName: any;
   pNric: any;
   pName: any;
@@ -26,12 +24,8 @@ export class PlanDetailsPage implements OnInit {
   date1: string; // PLAN CREATED @ date
   datemy: string;
 
-  ngOnInit() {
+  ngOnInit() {}
 
-    // this.planName = this.activatedRoute.snapshot.paramMap.get('id');
-
-
-  }
 
   // dateChanged(time) {
   // console.log(time);
@@ -100,10 +94,13 @@ export class PlanDetailsPage implements OnInit {
     return this.templateService.getArray(id).length > 0 ? true : false
   }
 
+  inputTriggered = false;
+  inputFocus = () => this.inputTriggered = true;
   pressEvent(type, thisObject, arrayID) {
-    this.templateService.pressEvent(type, thisObject, arrayID);
+    this.inputTriggered || this.templateService.pressEvent(type, thisObject, arrayID);
+    this.inputTriggered = false;
   }
-
+  
   clickEvent(type, wholeItem, arrayID) {
     this.templateService.clickEvent(type, wholeItem, arrayID);
   }

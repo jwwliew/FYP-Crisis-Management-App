@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController, Events, PopoverController, Platform, LoadingController } from '@ionic/angular';
+import { AlertController, Events, LoadingController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { TemplateService } from 'src/app/services/template.service';
 
@@ -53,9 +53,13 @@ export class NewTemplatesPage implements OnInit {
   ngOnInit() {
   }
 
+  inputTriggered = false;
+
+  inputFocus = () => this.inputTriggered = true;
 
   pressEvent(type, thisObject, arrayID) {
-    this.templateService.pressEvent(type, thisObject, arrayID);
+    this.inputTriggered || this.templateService.pressEvent(type, thisObject, arrayID);
+    this.inputTriggered = false;
   }
 
   clickEvent(type, wholeItem, arrayID) {
@@ -228,7 +232,8 @@ export class NewTemplatesPage implements OnInit {
     this.presentLoading('Creating PDF file...');
       //This is where the PDF file will stored , you can change it as you like
         // for more information please visit https://ionicframework.com/docs/native/file/, https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-file/#where-to-store-files
-        const directory = this.file.externalRootDirectory + "Download";
+        // const directory = this.file.externalRootDirectory + "Download";
+        const directory = this.file.dataDirectory;
         // this.templateService.presentToastWithOptions(directory);
       console.time();
     const div = document.getElementById('Html2PDF'); //https://github.com/MarouaneSH/Ionic-jsPdf-Html2Canvas, https://stackoverflow.com/questions/43730612/opening-pdf-file-in-ionic-2-app
@@ -265,7 +270,7 @@ export class NewTemplatesPage implements OnInit {
         console.error("img height, milimetre height", imgHeight, millimeters.height);
         console.error("internal width vs milimeter width", doc.internal.pageSize.width, millimeters.width);
         // doc.addImage(dataUrl, "PNG", 6, 15, '','','', 'FAST');
-        doc.addImage(dataUrl,'PNG', 0, 6, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST');
+        doc.addImage(dataUrl,'PNG', 0, 10, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST');
         // const doc = new jsPDF('p', 'pt', [PDF_WIDTH, PDF_HEIGHT]);
 
         // doc.addImage(dataUrl, "PNG", top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);

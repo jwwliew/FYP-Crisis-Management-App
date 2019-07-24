@@ -1,6 +1,6 @@
 import { SymptomActionService } from '../../services/symptomaction.service';
-import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
-import { AlertController, Events, IonList } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Events, IonList } from '@ionic/angular';
 import { Router } from '@angular/router';
 
 import 'hammerjs'; //for gestures

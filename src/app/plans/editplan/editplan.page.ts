@@ -65,8 +65,11 @@ export class EditplanPage implements OnInit {
   checkType(id) {
     return this.templateService.getArray(id).length > 0 ? true : false
   }
+  inputTriggered = false;
+  inputFocus = () => this.inputTriggered = true;
   pressEvent(type, thisObject, arrayID) {
-    this.templateService.pressEvent(type, thisObject, arrayID);
+    this.inputTriggered || this.templateService.pressEvent(type, thisObject, arrayID);
+    this.inputTriggered = false;
   }
   clickEvent(type, wholeItem, arrayID) {
     this.templateService.clickEvent(type, wholeItem, arrayID);
@@ -134,7 +137,7 @@ export class EditplanPage implements OnInit {
       const doc = new jsPDF('p', 'mm', 'a4', true);
       doc.deletePage(1); //https://stackoverflow.com/questions/29578721/image-in-pdf-cut-off-how-to-make-a-canvas-fit-entirely-in-a-pdf-page/42295522#42295522
       doc.addPage(millimeters.width * 2, millimeters.height * 1.95);
-      doc.addImage(dataUrl,'PNG', 0, 6, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST');
+      doc.addImage(dataUrl,'PNG', 0, 10, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST');
 
       doc.save('pdfDocument.pdf'); //for website
 

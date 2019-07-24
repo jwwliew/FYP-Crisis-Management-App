@@ -249,7 +249,7 @@
               <ion-item no-padding class="yellowItem">
                 <ion-textarea rows="4" placeholder="Describe the symptom in more details."
                   [readonly]="item.combined[0]?.whatsapp" [(ngModel)]="item.symptom.description"
-                  [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}"></ion-textarea>
+                  [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}" (ionFocus)="inputFocus()"></ion-textarea>
               </ion-item>
             </ion-card>
           </ion-col>
@@ -275,7 +275,7 @@
                 <ion-item no-padding class="yellowItem">
                   <ion-textarea rows="4" placeholder="Describe the required action in your own words."
                     [readonly]="x.whatsapp" [(ngModel)]="x.description"
-                    [ngClass]="{'highlight': x.whatsapp && checked.length > 0}"></ion-textarea>
+                    [ngClass]="{'highlight': x.whatsapp && checked.length > 0}" (ionFocus)="inputFocus()"></ion-textarea>
                 </ion-item>
               </ion-card>
 
