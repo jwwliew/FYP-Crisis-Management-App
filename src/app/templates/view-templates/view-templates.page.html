@@ -46,7 +46,7 @@
 
         <ion-col size="6" *ngFor="let x of item.template; let i = index;">
           <!--https://ionicframework.com/docs/api/grid-->
-          <img class="imgCircle" [src]="x.symptom.img" />  
+          <img class="imgCircle" [src]="x.symptom.img" onError="this.src='assets/empty.svg'"/>  
           <p class="imgCircleText"> {{x.symptom.text}} </p>
         </ion-col>
 

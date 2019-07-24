@@ -95,7 +95,7 @@ export class EditplanPage implements OnInit {
 
   popOverController(x) { 
     let menuOptions = ["Edit", "Rename", "Export to PDF"];
-    this.templateService.popOverController(x, menuOptions).then(popover => {
+    this.templateService.popOverController('popover', x, menuOptions).then(popover => {
       popover.present();
       popover.onDidDismiss().then((data) => {
         data.data && this.callAction(data.data);
@@ -175,7 +175,11 @@ export class EditplanPage implements OnInit {
   }
 
   askForName() {
-
+    this.templateService.alertInput("Enter new name").then(alertData => {
+      console.error("rename alert data plan!!" + alertData);
+      this.details.planName = alertData;
+      this.templateService.presentToastWithOptions("Renamed plan!");
+    }).catch(() => {})
   }
 
 

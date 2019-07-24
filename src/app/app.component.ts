@@ -70,6 +70,1238 @@ export class AppComponent {
       tmName: "இருமல்",
       icon: "assets/pdfredcough.png"
     },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
+    {
+      id: uuid(),
+      enName: "Shortness of breath",
+      chName: "呼吸急促",
+      myName: "sesak nafas",
+      tmName: "மூச்சு திணறல்",
+      icon: "assets/pdfnobreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Good health condition",
+      chName: "身体状况良好",
+      myName: "Keadaan kesihatan yang baik",
+      tmName: "நல்ல உடல்நிலை",
+      icon: "assets/pdfgotbreath.png"
+    },
+    {
+      id: uuid(),
+      enName: "Cough",
+      chName: "咳嗽",
+      myName: "batuk",
+      tmName: "இருமல்",
+      icon: "assets/pdfredcough.png"
+    },
     // {
     //   id: uuid(),
     //   enName: "High Blood Pressure",
@@ -99,10 +1331,10 @@ export class AppComponent {
     },
     {
       id: uuid(),
-      enName: "Maintain usual activities",
+      enName: "Maintain usual activities/exercise levels",
       chName: "保持通常的活动/运动水平",
       myName: "Mengekalkan aktiviti biasa/tahap senaman",
-      tmName: "வழக்கமான நடவடிக்கைகள்",
+      tmName: "வழக்கமான நடவடிக்கைகள் / உடற்பயிற்சி நிலைகளை பராமரிக்கவும்",
       icon: "assets/pdfmaintain.png"
     },
     {

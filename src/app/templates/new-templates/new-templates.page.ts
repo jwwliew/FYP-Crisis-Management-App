@@ -107,7 +107,7 @@ export class NewTemplatesPage implements OnInit {
     this.viewPage = true;
   }
 
-  async askForName(typeOfAction) {
+  askForName(typeOfAction) {
     if (typeOfAction == "add") {
       if (this.templateService.checkAllArrayEmpty("adding")) {
         return false;
@@ -117,56 +117,28 @@ export class NewTemplatesPage implements OnInit {
     let templateName = (typeOfAction == "rename") ? "Enter new name" : 
       (typeOfAction == "duplicate") ? "Enter name of the duplicated template" :
       (typeOfAction == "Create Crisis Plan") ? "Enter Crisis Plan name" : "Enter template name"
-    let alert = await this.alertCtrl.create({
-      header: templateName,
-      message: '',
-      inputs: [
-        {
-          name: 'nameInput',
-          type: 'text'
+      this.templateService.alertInput(templateName).then((alertData: string) => {
+        console.warn("alert data here ==== " + alertData);
+        if (typeOfAction == "rename") {
+          this.templateService.renameTemplate(alertData, this.templateID).then(() => {
+            this.templateName = alertData;
+            this.templateService.presentToastWithOptions("Renamed template!");
+          });
         }
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary'
-        },
-        {
-          text: 'Ok',
-          handler: (alertData => {
-            console.warn(alertData);
-            console.log("ok name1 = " + alertData.nameInput);
-            //if (templateName == "Enter template name") {
-            if (alertData.nameInput === "") {
-              alert.message = "Name is required!"
-              this.templateService.presentToastWithOptions("Name is required!");
-              return false;
-            }
-            if (typeOfAction == "rename") {
-              this.templateService.renameTemplate(alertData.nameInput, this.templateID).then((val) => {
-                console.warn("rename val = " + JSON.stringify(val, null, 2));
-                this.templateName = alertData.nameInput;
-              });
-            }
-            else if (typeOfAction == "duplicate") {
-              this.templateService.duplicateTemplate(alertData.nameInput, this.templateID).then(() => {
-                this.router.navigate(["/tabs/templates"], {replaceUrl: true});
-              })
-            }
-            else if (typeOfAction == "Create Crisis Plan") {
-              this.router.navigateByUrl("/tabs/plans/details/" + this.defaultLanguage + "/" + alertData.nameInput);
-            }
-            else {
-              this.addTemplate(alertData.nameInput);
-            }
+        else if (typeOfAction == "duplicate") {
+          this.templateService.duplicateTemplate(alertData, this.templateID).then(() => {
+            this.templateService.presentToastWithOptions("Duplicated template!");
+            this.router.navigate(["/tabs/templates"], {replaceUrl: true});
           })
         }
-      ]
-    });
-    await alert.present();
+        else if (typeOfAction == "Create Crisis Plan") {
+          this.router.navigateByUrl("/tabs/plans/details/" + this.defaultLanguage + "/" + alertData);
+        }
+        else {
+          this.addTemplate(alertData);
+        }
+      }).catch(() => {console.error("alert input cancelleleddedd")})
   }
-
 
   frontViewData: any;
 
@@ -198,8 +170,8 @@ export class NewTemplatesPage implements OnInit {
 
 
   popOverController(x) { 
-    let menuOptions = ["Edit", "Rename", "Duplicate", "Create Crisis Plan", "Delete", "Export to PDF"];
-    this.templateService.popOverController(x, menuOptions).then(popover => {
+    let menuOptions = ["Edit", "Rename", "Duplicate", "Create Crisis Plan", "Delete"];
+    this.templateService.popOverController('popover', x, menuOptions).then(popover => {
       popover.present();
       popover.onDidDismiss().then((data) => { //method 2 ngOnInIt inside onDidDismiss()
         console.log("popup dismiss data = " + data.data);
@@ -215,7 +187,7 @@ export class NewTemplatesPage implements OnInit {
       'Duplicate': () => this.askForName('duplicate'),
       "Create Crisis Plan": () => this.askForName('Create Crisis Plan'),
       "Delete": () => this.delete(),
-      "Export to PDF": () => this.exportToPDF()
+      // "Export to PDF": () => this.exportToPDF()
     };
     call[type]();
   }
@@ -422,7 +394,7 @@ export class NewTemplatesPage implements OnInit {
         this.templateService.presentToastWithOptions("Deleted template!");
         this.router.navigate(["/tabs/templates"], {replaceUrl: true});
       });
-    }).catch(() => {})
+    }).catch(() => {console.log("delete canceled")})
   }
 
 }

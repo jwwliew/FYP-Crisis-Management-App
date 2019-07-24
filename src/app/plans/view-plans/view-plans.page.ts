@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PlanService } from './../../services/plan.service';
-import { ActionSheetController, IonItemSliding } from '@ionic/angular';
-import { PlanDetailsPage } from '../plan-details/plan-details.page';
+import { ActionSheetController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
+import { TemplateService } from 'src/app/services/template.service';
 
 
 @Component({
@@ -13,7 +13,7 @@ import { ToastController } from '@ionic/angular';
 })
 export class ViewPlansPage implements OnInit {
 
-  constructor(private router: Router, private PlanService: PlanService, public actionSheetController: ActionSheetController, public toastController: ToastController) {
+  constructor(private router: Router, private PlanService: PlanService, public actionSheetController: ActionSheetController, public toastController: ToastController, private templateService: TemplateService) {
 
   }
   details: any;
@@ -56,9 +56,12 @@ export class ViewPlansPage implements OnInit {
   //delete ADD alert
   swipeEvent(id, thisEvent) {
     thisEvent.stopPropagation();
-    this.PlanService.deletePlanByID(id).then(result => {
-      this.details = result;
-    });
+    this.templateService.delete("Are you sure you want to delete this plan?").then(() => {
+      this.PlanService.deletePlanByID(id).then(result => {
+        this.details = result;
+        this.templateService.presentToastWithOptions("Deleted plan!");
+      });
+    }).catch(() => {})
   }
 
   //Filter

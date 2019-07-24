@@ -23,7 +23,7 @@
   <ion-list>
 
     <ion-card *ngFor="let item of details " (click)="goEdit(item)">
-      <ion-item-sliding (ionSwipe)="swipeEvent(item.id)">
+      <ion-item-sliding (ionSwipe)="swipeEvent(item.id, $event)">
         <ion-card-header color="tertiary">
           <ion-card-title>{{item.planName}}</ion-card-title>
         </ion-card-header>

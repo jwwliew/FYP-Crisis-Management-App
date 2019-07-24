@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PopoverController, NavParams } from '@ionic/angular';
+import { PopoverController, NavParams, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-template-pop',
@@ -8,7 +8,9 @@ import { PopoverController, NavParams } from '@ionic/angular';
 })
 export class TemplatePopComponent implements OnInit {
 
-  constructor(public popoverController: PopoverController, public navParams: NavParams) { 
+  constructor(public popoverController: PopoverController, public navParams: NavParams, private modalController: ModalController) { 
+    console.warn("this navparams = ", navParams);
+    navParams.data.type == 'modal' && (this.modalPopUp = true);
     this.menuOptions = navParams.data.menuOptions; // this.menuOptions = navParams.get("keyOptions");
   }
 
@@ -16,10 +18,16 @@ export class TemplatePopComponent implements OnInit {
 
   // menuOptions = ["Edit", "Rename", "Duplicate", "Create Crisis Plan", "Delete", "Export to PDF"];
   menuOptions = [];
+  modalPopUp = false;
+  defaultLanguage = 0;
 
   close(thisOption) {
     console.warn(thisOption)
-    this.popoverController.dismiss(thisOption);
+    this.modalPopUp ? this.modalController.dismiss(thisOption) : this.popoverController.dismiss(thisOption);
   }
   
+  returnLanguage(element) {
+    let elementArray = [element.enName, element.chName, element.myName, element.tmName];
+    return elementArray[this.navParams.data.defaultLanguage] || element.enName;
+  }
 }

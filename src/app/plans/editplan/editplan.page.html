@@ -205,7 +205,7 @@
         <ion-row *ngFor="let item of getArray(globalItem.id)">
 
           <ion-col size="6">
-            <img class="imgCircle" [src]="item.symptom.img" />
+            <img class="imgCircle" [src]="item.symptom.img" onError="this.src='assets/empty.svg'"/>
             <p class="imgCircleText"> {{item.symptom.description == "" ? item.symptom.text : item.symptom.description}}
             </p>
           </ion-col>
@@ -215,7 +215,7 @@
           <ng-container *ngFor="let x of item.combined; let actIndex = index;">
             <ion-col size="6" *ngIf="actIndex != 0"></ion-col>
             <ion-col size="6" style="border-left: 2.5px solid #d3d3d3">
-              <img class="imgCircle" [src]="x.img" />
+              <img class="imgCircle" [src]="x.img" onError="this.src='assets/empty.svg'"/>
               <p class="imgCircleText"> {{x.description == "" ? x.text : x.description}} </p>
             </ion-col>
           </ng-container>
@@ -241,7 +241,7 @@
             (click)="checked.length > 0 && clickEvent('Symptom', item, globalItem.id)">
             <ion-card (click)="checked.length == 0 && presentActionSheet('Symptom', item, globalItem.id)"
               [ngClass]="{'highlight' : item.combined[0]?.whatsapp && checked.length > 0}">
-              <img class="imgCircle" [src]="item.symptom.img" />
+              <img class="imgCircle" [src]="item.symptom.img" onError="this.src='assets/empty.svg'"/>
               <!-- https://stackoverflow.com/questions/45263542/ngmodel-value-in-img-src-ionic-3 -->
               <p class="imgCircleText"> {{item.symptom.text}} </p>
             </ion-card>
@@ -268,7 +268,7 @@
 
               <ion-card (click)="checked.length == 0 && presentActionSheet('Action', x)"
                 [ngClass]="{'highlight': x.whatsapp && checked.length > 0}">
-                <img class="imgCircle" [src]="x.img" />
+                <img class="imgCircle" [src]="x.img" onError="this.src='assets/empty.svg'"/>
                 <p class="imgCircleText"> {{x.text}}</p>
               </ion-card>
 

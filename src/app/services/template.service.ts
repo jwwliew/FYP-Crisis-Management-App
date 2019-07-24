@@ -3,7 +3,7 @@ import { Storage } from '@ionic/storage';
 import {v4 as uuid} from 'uuid';
 import { Setting } from '../models/symptomaction';
 import { SymptomActionService } from './symptomaction.service';
-import { ActionSheetController, ToastController, AlertController, PopoverController } from '@ionic/angular';
+import { ActionSheetController, ToastController, AlertController, PopoverController, ModalController } from '@ionic/angular';
 import { TemplatePopComponent } from './../templates/template-pop/template-pop.component';
 
 const ALL_KEY = "allKey";
@@ -13,7 +13,7 @@ const ALL_KEY = "allKey";
 export class TemplateService {
 
   constructor(private storage: Storage, private settingStorage: SymptomActionService, private actionSheetCtrl: ActionSheetController, private zone: NgZone, 
-    private toastCtrl: ToastController, private alertCtrl: AlertController, private popoverCtrl: PopoverController ) { }
+    private toastCtrl: ToastController, private alertCtrl: AlertController, private popoverCtrl: PopoverController, private modalCtrl: ModalController) { }
 
   createTemplate(finalArray, templateNameFromInput, templateID, templateNameUpdate, defaultLanguage) {
 
@@ -297,20 +297,80 @@ export class TemplateService {
   }
 
 
+  alertInput(templateName) {
+    return new Promise(async (resolve, reject) => {
+      let alert = await this.alertCtrl.create({
+        header: templateName,
+        message: "",
+        inputs: [
+          {
+            name: 'nameInput',
+            type: 'text'
+          }
+        ],
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: () => reject(false)
+          },
+          {
+            text: 'Ok',
+            handler: (alertData) => {
+              console.log("clicked ok " + alertData);
+              if (alertData.nameInput === "") {
+                alert.message = "Name is required!";
+                this.presentToastWithOptions("Name is required!");
+                return false;
+              }
+              resolve(alertData.nameInput);
+            }
+          }
+        ]
+      })
+      await alert.present();
+    })
+  }
+
   //https://stackoverflow.com/questions/48133216/custom-icons-on-ionic-select-with-actionsheet-interface-ionic2
-  async presentActionSheet(symptomOrAction, item, defaultLanguage) { //https://ionicframework.com/docs/api/action-sheet
+   presentActionSheet(symptomOrAction, item, defaultLanguage) { //https://ionicframework.com/docs/api/action-sheet
     symptomOrAction = symptomOrAction == "updateAction" ? "Action" : symptomOrAction
     console.warn("symptomOrAction = " + symptomOrAction);
     if (this.checkSymptomOrActionEmpty(symptomOrAction)) {
       return false;
     }
-    const actionSheet = await this.actionSheetCtrl.create({
-      header: "Select a " + symptomOrAction.toLowerCase() + " from below",
-      cssClass: "wholeActionSheet",
-      buttons: this.createButtons(item, symptomOrAction, defaultLanguage),
-      mode: "ios"
-    });
-    await actionSheet.present();
+    let typeToCall = symptomOrAction == 'Symptom' ? this.settingSymptom: this.settingAction;
+
+    this.popOverController('modal', '', typeToCall, defaultLanguage).then(callModal => {
+      callModal.present();
+      callModal.onDidDismiss().then(data => {
+        console.warn("data modal ", data);
+        if (!data.data) return false;
+        if (symptomOrAction == "Symptom") {
+          item.symptom.text = this.returnLanguage(data.data, defaultLanguage);
+          item.symptom.img = data.data.icon;
+          item.symptom.symptomID = data.data.id;
+        }
+        else {
+          item.text = this.returnLanguage(data.data, defaultLanguage);
+          item.img = data.data.icon;
+          item.actionID = data.data.id;
+        }
+      })
+    })
+    // const actionSheet = await this.actionSheetCtrl.create({
+    //   header: "Select a " + symptomOrAction.toLowerCase() + " from below",
+    //   cssClass: "wholeActionSheet",
+    //   buttons: this.createButtons(item, symptomOrAction, defaultLanguage),
+    //   mode: "ios"
+    // });
+    // await actionSheet.present();
+  }
+
+  returnLanguage(element, defaultLanguage) {
+    let elementArray = [element.enName, element.chName, element.myName, element.tmName];
+    return elementArray[defaultLanguage] || element.enName;
   }
 
   createButtons(itemToUpdate, type, defaultLanguage) {
@@ -550,12 +610,9 @@ export class TemplateService {
     })
   }
 
-  popOverController(x, menuOptions) { 
-    return this.popoverCtrl.create({
-      component: TemplatePopComponent,
-      event: x, //https://www.youtube.com/watch?v=wMpGiniuZNc,
-      componentProps: {menuOptions}
-    });
+  popOverController(type, x, menuOptions, defaultLanguage?) {
+    let obj = {component: TemplatePopComponent, componentProps: {menuOptions, type, defaultLanguage}};
+    return type == 'modal' ? this.modalCtrl.create(obj) : this.popoverCtrl.create({...obj, event: x});
   }
   
 } //end of class

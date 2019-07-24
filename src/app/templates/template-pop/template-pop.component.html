@@ -1,15 +1,40 @@
-<ion-list mode="md">
-  <ion-item *ngFor="let item of menuOptions; let last = last;" (click)="close(item)" [lines]="last ? 'none' : 'full'" button>
-    <ion-label>
-      {{item}}
-    </ion-label>
-    <ion-ripple-effect></ion-ripple-effect>
-  </ion-item>
-</ion-list>
+<ion-header *ngIf="modalPopUp">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="close()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>
+      Select a action
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()"> Close </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 
+<ion-content>
+  <ion-list mode="md" lines="full">
+    <ion-item *ngFor="let item of menuOptions" (click)="close(item)" button>
+
+      <ion-label *ngIf="!modalPopUp">
+        {{item}}
+      </ion-label>
+
+      <ng-container *ngIf="modalPopUp">
+        <ion-thumbnail slot="start">
+          <img [src]="item.icon" />
+        </ion-thumbnail>
+        {{returnLanguage(item)}}
+      </ng-container>
+
+      <ion-ripple-effect></ion-ripple-effect>
+    </ion-item>
+  </ion-list>
+
+</ion-content>
 <style>
-.list-md {
-  padding-top: 0px;
-  padding-bottom: 0px;
-}
+  .list-md {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
 </style>
