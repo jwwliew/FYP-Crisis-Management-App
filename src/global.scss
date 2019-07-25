@@ -51,6 +51,22 @@ ion-title { //https://forum.ionicframework.com/t/navbar-ion-title-align-center-f
     }
 }
 
+.yellowItem {
+    --border-width: 0px;
+    --inner-padding-end: 0;
+    --padding-start: 0;
+    &ForDateTime{
+        @extend .yellowItem;
+            --background: #a0cdfa;
+    }
+}
+
+.gridReplace {
+    background-color: #d3d3d3;
+    padding-top: 6%;
+    padding-bottom: 3%;
+} 
+
 
 ion-fab-list{
     flex-direction: column;

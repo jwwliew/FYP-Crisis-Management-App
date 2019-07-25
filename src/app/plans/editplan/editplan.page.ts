@@ -8,6 +8,7 @@ import * as jsPDF from 'jspdf';
 import domtoimage from 'dom-to-image';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { v4 as uuid } from 'uuid';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -31,13 +32,27 @@ export class EditplanPage implements OnInit {
   isDisabled: boolean = true;
 
   details = {} as any;
+  backup = {} as any;
+
+  appointment = this.templateService.appointment;
 
   ngOnInit() {
 
   }
+  getApptArray() {
+    return this.templateService.getApptArray();
+  }
 
   backViewPlan() {
-    this.router.navigateByUrl('/tabs/plans');
+    if (this.isDisabled) {
+      this.router.navigateByUrl('/tabs/plans');
+    }
+    else {
+      this.templateService.goToViewPageFromEdit();
+      this.isDisabled = !this.isDisabled;
+      // this.appointment = this.templateService.appointment;
+    }
+    // this.router.navigateByUrl('/tabs/plans');
   }
 
   ionViewWillEnter() {
@@ -61,6 +76,9 @@ export class EditplanPage implements OnInit {
       this.templateService.filterArray(obj);
       this.details = everything;
       this.defaultLanguage = everything.language;
+      console.warn("EVERYTHING " + JSON.stringify(everything,null,2));
+      // this.appointment = everything.appointment;
+      // this.templateService.appointment = everything.appointment;
     });
   }
 
@@ -74,15 +92,17 @@ export class EditplanPage implements OnInit {
   checkType(id) {
     return this.templateService.getArray(id).length > 0 ? true : false
   }
+  
   inputTriggered = false;
   inputFocus = () => this.inputTriggered = true;
-  pressEvent(type, thisObject, arrayID) {
-    this.inputTriggered || this.templateService.pressEvent(type, thisObject, arrayID);
+  pressEvent(type, thisObject, arrayID, combinedIndex) {
+    this.inputTriggered || this.templateService.pressEvent(type, thisObject, arrayID, combinedIndex);
     this.inputTriggered = false;
   }
-  clickEvent(type, wholeItem, arrayID) {
-    this.templateService.clickEvent(type, wholeItem, arrayID);
+  clickEvent(type, wholeItem, arrayID, combinedIndex) {
+    this.templateService.clickEvent(type, wholeItem, arrayID, combinedIndex);
   }
+
   presentActionSheet(symptomOrAction, item) { //https://ionicframework.com/docs/api/action-sheet
     this.templateService.presentActionSheet(symptomOrAction, item, this.defaultLanguage);
   }
@@ -97,8 +117,10 @@ export class EditplanPage implements OnInit {
     // this.router.navigateByUrl("/tabs/plans/editplan/" + this.details.id);
   }
   deleteArray() {
+    console.warn("THIS appt BEFORE = " , this.templateService.appointment)
     this.templateService.deleteArray();
     this.templateService.presentToastWithOptions("Deleted items!");
+    console.warn("THIS APPT AFTER = " , this.templateService.appointment)
   }
 
 
@@ -211,14 +233,23 @@ export class EditplanPage implements OnInit {
     )
   }
 
-
-  dateChanged(my) {
-    this.details.datemy = new Date(my).toLocaleString();
+  dateChanged(my, appObj) {
+    let time = new Date(my).toLocaleString();
+    appObj.appTime = time;
   }
 
-  deleteAppoint() {
-
+  newAppt() {
+    // let apptObj = {
+    //   id: uuid(),
+    //   clinicName: "",
+    //   appTime: "",
+    // }
+    // this.appointment.push(apptObj);
+    this.templateService.newAppt();
   }
 
+  checkAppt() {
+    return this.templateService.appointment.length > 0
+  }
 
 }

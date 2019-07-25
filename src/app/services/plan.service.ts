@@ -52,8 +52,7 @@ export class PlanService {
         createdDate: date1,
         language: indexL,
         templates: maparr,
-        
-        appointment:appointment,
+        appointment: appointment
       }
       console.warn(details)
       if (items) {
@@ -97,6 +96,7 @@ export class PlanService {
       let maparr = this.templateService.cleansedArray();
       console.warn(maparr);
       details.templates = maparr;
+      details.appointment = this.templateService.appointment;
       items[y] = details;
       console.log(details)
       return this.storage.set(key, items);

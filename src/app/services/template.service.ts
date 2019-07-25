@@ -67,8 +67,21 @@ export class TemplateService {
   warningArray = [];
   goodArray = [];
   checked = [];
+  appointment = [];
 
-  pressEvent(type, thisObject, arrayID) {
+  getApptArray = () => this.appointment;
+  newAppt() {
+    let apptObj = {
+      id: uuid(),
+      clinicName: "",
+      appTime: "",
+    }
+    this.appointment.push(apptObj);
+  }
+
+  pressEvent(type, thisObject, arrayID, combinedIndex) {
+    console.warn("APPOINTMNET ", this.appointment);
+    console.warn("COMBINED INDEX = " + combinedIndex);
     if (this.checked.length == 0) {
       console.error("type === " + type);
       console.error("this object full === " + JSON.stringify(thisObject,null,2));
@@ -77,52 +90,75 @@ export class TemplateService {
       dynamicObj.forEach(element => {
         console.error("element == " + JSON.stringify(element,null,2));
         element.whatsapp = true;
-        element.arrayID = arrayID;
-        this.checked.push(element);
+        // element.arrayID = arrayID;
+        this.checked.push({element, arrayID, combinedIndex});
       });
     }
     console.error("this.checked after pressed = " + JSON.stringify(this.checked, null, 2));
   }
 
-  clickEvent(type, wholeItem, arrayID) {
-    let itemConverted = type == "Symptom" ? wholeItem.combined[0] : wholeItem
-    itemConverted.whatsapp = !itemConverted.whatsapp;
-    let itemIndex = this.checked.findIndex(x => x.id == itemConverted.id);
+  clickEvent(type, wholeItem, arrayID, combinedIndex) {
+    console.error("whole item combined ???? " + JSON.stringify(wholeItem,null,2));
+    let element = type == "Symptom" ? wholeItem.combined[0] : wholeItem
+    console.warn("dynamic elemeent click event", element);
+    console.error("this critical", this.criticalArray);
+    console.error("this appt c", this.appointment);
+    element.whatsapp = !element.whatsapp;
+    let itemIndex = this.checked.findIndex(x => x.element.id == element.id);
     if (itemIndex !== -1) {
       this.checked.splice(itemIndex, 1);
     }
     else {
-      itemConverted.arrayID = arrayID;
-      this.checked.push(itemConverted);
+      // itemConverted.arrayID = arrayID;
+      this.checked.push({element, arrayID, combinedIndex});
     }
     console.error("spliced finish checked array = " + JSON.stringify(this.checked, null, 2));
   }
 
   clearArray() {
-    this.checked.forEach(element => element.whatsapp = false);
+    this.checked.forEach(element => element.element.whatsapp = false);
     this.checked.length = 0;
   }
 
   deleteArray() {
+    // console.warn("appointment before ", appointmentArray);
     this.checked.forEach(element => {
       console.error("deleting this element === " + JSON.stringify(element,null,2));
-      let thisArray = this.getArray(element.arrayID);
+      // let thisArray = element.arrayID == 4 ? this.appointment : this.getArray(element.arrayID);
+      // let thisArray = this.getArray(element.arrayID);
       // let index = thisArray[0].combined.findIndex(x => x.id == element.id);
       // let index = thisArray.findIndex(x => x.combined.findIndex(y => y.id == element.id));
-      let index;
-      thisArray.map((x, keyIndex) => {
-        console.error("deleteArray x = " + JSON.stringify(x,null,2));
-        var found = x.combined.some(y => y.id == element.id)
-        if (found) index = keyIndex;
-      });
-      console.error("index === " + index);
-      let arrayIndex = thisArray[index].combined.findIndex(y => y.id == element.id);
-      console.error("array index ---- " + arrayIndex);
-      thisArray[index].combined.splice(arrayIndex, 1);
+      // let index;
+      // thisArray.map((x, keyIndex) => {
+      //   console.error("deleteArray x = " + JSON.stringify(x,null,2));
+      //   var found = x.combined.some(y => y.id == element.id)
+      //   if (found) index = keyIndex;
+      // });
+      // console.error("index === " + index);
+      // let arrayIndex = thisArray[index].combined.findIndex(y => y.id == element.id);
+      // console.error("array index ---- " + arrayIndex);
+      // thisArray[index].combined.splice(arrayIndex, 1);
+      // let arrayIndex = thisArray[element.combinedIndex].combined.findIndex(y => y.id == element.id)
+      // console.warn("deleeting combined index " + element.obj.combinedIndex + " act index = " + element.obj.actIndex);
+      if (element.arrayID == 4) {
+        // this.appointment = appointmentArray;
+        let dynamicIndex = this.appointment.findIndex(x => x.id == element.element.id);
+        console.warn("dynamic index === " + dynamicIndex);
+        console.warn("appointment ", this.appointment);
+        this.appointment.splice(dynamicIndex, 1);
+      } else {
+        let thisArray = this.getArray(element.arrayID);
+        let arrayIndex = thisArray[element.combinedIndex].combined.findIndex(y => y.id == element.id);
+        thisArray[element.combinedIndex].combined.splice(arrayIndex, 1);
+        thisArray[element.combinedIndex].combined.length == 0 && thisArray.splice(element.combinedIndex, 1);
+      }
+      // thisArray[element.combinedIndex].combined.splice(arrayIndex, 1);
     });
-    this.criticalArray = this.criticalArray.filter(x => x.combined.length !== 0);
-    this.warningArray = this.warningArray.filter(x => x.combined.length !== 0);
-    this.goodArray = this.goodArray.filter(x => x.combined.length !== 0);
+    console.error("after deleted loop critical array = " + JSON.stringify(this.criticalArray,null, 2));
+    console.warn("deleted appointment === " , this.appointment);
+    // this.criticalArray = this.criticalArray.filter(x => x.combined.length !== 0);
+    // this.warningArray = this.warningArray.filter(x => x.combined.length !== 0);
+    // this.goodArray = this.goodArray.filter(x => x.combined.length !== 0);
     console.error("after del critical array = " + JSON.stringify(this.criticalArray,null, 2));
     console.error("after del warning array = " + JSON.stringify(this.warningArray,null, 2));
     this.checked.length = 0;
@@ -231,6 +267,7 @@ export class TemplateService {
     this.warningArray.length = 0;
     this.goodArray.length = 0;
     this.checked.length = 0;
+    this.appointment.length = 0;
   }
 
   editPageUpdateArray(val, templateID) {
@@ -260,6 +297,7 @@ export class TemplateService {
   backUpCriticalArray = [];
   backUpWarningArray = [];
   backUpGoodArray = [];
+  backUpAppointment = [];
 
   callEdit(defaultLanguage) {
     this.backUpCriticalArray = JSON.parse(JSON.stringify(this.criticalArray)); //need to deep copy to remove reference
@@ -268,8 +306,10 @@ export class TemplateService {
     // this.backUpCriticalArray = this.criticalArray.map(object => { return [...object]})
     this.backUpWarningArray = this.warningArray.slice();
     this.backUpGoodArray = [...this.goodArray];
-
+    this.backUpAppointment = [...this.appointment];
+    
     console.log("critical array === " + JSON.stringify(this.backUpCriticalArray, null, 2));
+    console.log("backup appt-- " + JSON.stringify(this.backUpAppointment,null,2));
     let completedArray = this.getAllArray();
     completedArray.forEach(element => {
       element.forEach(array => {
@@ -293,7 +333,12 @@ export class TemplateService {
     this.criticalArray = [...this.backUpCriticalArray];
     this.warningArray = [...this.backUpWarningArray];
     this.goodArray = [...this.backUpGoodArray];
-    console.log("going back to view page ... " + JSON.stringify(this.backUpCriticalArray,null,2));
+    this.appointment = [...this.backUpAppointment];
+    console.error("backupcriticalarray" + JSON.stringify(this.criticalArray, null, 2));
+    console.error("backupcriticalarray" + JSON.stringify(this.goodArray, null, 2));
+    console.log("going back to view page ... backupap " + JSON.stringify(this.backUpAppointment,null,2));
+    console.log("going back to view page ... " + JSON.stringify(this.appointment,null,2));
+
   }
 
 
@@ -560,7 +605,7 @@ export class TemplateService {
         x.combined.forEach(element => {
           console.warn("inside each combined element " + JSON.stringify(element,null,2));
           delete element.whatsapp;
-          delete element.arrayID;
+          // delete element.arrayID;
           element.img = null;
         });
         x.id = uuid(); 

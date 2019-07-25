@@ -14,7 +14,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 export class PlanDetailsPage implements OnInit {
 
-  private thisgroup: FormGroup;
+  public thisgroup: FormGroup;
 
   constructor(private router: Router, private PlanService: PlanService, public toastController: ToastController, private activatedRoute: ActivatedRoute,
     private templateService: TemplateService, public formBuilder: FormBuilder) {
@@ -36,6 +36,8 @@ export class PlanDetailsPage implements OnInit {
   date1: string; // PLAN CREATED @ date
   datemy: string;
 
+  appointment = this.templateService.appointment;
+
   ngOnInit() { }
 
 
@@ -48,13 +50,10 @@ export class PlanDetailsPage implements OnInit {
     //this.datemy = my;
     // this.datemy = moment(my).format('YYYY-MM-DD hh:mmA');
     //install -npm i moment===>to use moment().format
-     let time = new Date(my).toLocaleString();
-    console.log("aft" + time, this.appointment)
-    console.log("my-->"+my)
-    console.log(appObj)
+    let time = new Date(my).toLocaleString();
     appObj.appTime=time;
- 
   }
+
   submitted = false;
 
   PlanDetails() {
@@ -70,7 +69,7 @@ export class PlanDetailsPage implements OnInit {
       let date = new Date();
       let date1 = date.getDate().toString() + '/' + (date.getMonth() + 1).toString() + '/' + date.getFullYear().toString();
       let maparr = this.templateService.cleansedArray();
-      console.log(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact, this.appointment);
+      console.log(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact);
       this.PlanService.addPlanDetails(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact, maparr, this.appointment).then(() => {
         this.router.navigateByUrl('/tabs/plans')
 
@@ -80,18 +79,14 @@ export class PlanDetailsPage implements OnInit {
 
   }
 
-  appointment = []
-
-  newPlan() {
-    let something = {
+  newAppt() {
+    let apptObj = {
+      id: uuid(),
       clinicName: "",
       appTime: "",
     }
-
-    this.appointment.push(something);
-    console.log(this.appointment);
+    this.appointment.push(apptObj);
   }
-
 
   //template codes 
   globalLanguage = this.templateService.globalLanguage;
@@ -123,14 +118,15 @@ export class PlanDetailsPage implements OnInit {
 
   inputTriggered = false;
   inputFocus = () => this.inputTriggered = true;
-  pressEvent(type, thisObject, arrayID) {
-    this.inputTriggered || this.templateService.pressEvent(type, thisObject, arrayID);
+  pressEvent(type, thisObject, arrayID, combinedIndex) {
+    this.inputTriggered || this.templateService.pressEvent(type, thisObject, arrayID, combinedIndex);
     this.inputTriggered = false;
   }
 
-  clickEvent(type, wholeItem, arrayID) {
-    this.templateService.clickEvent(type, wholeItem, arrayID);
+  clickEvent(type, wholeItem, arrayID, combinedIndex) {
+    this.templateService.clickEvent(type, wholeItem, arrayID, combinedIndex);
   }
+
 
   clearArray() {
     this.templateService.clearArray();

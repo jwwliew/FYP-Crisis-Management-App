@@ -28,7 +28,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-list lines="none">
+
     <ion-card class="welcome-card">
       <ion-card-header color="tertiary">
         <ion-card-title>Plan Details</ion-card-title>
@@ -43,7 +43,7 @@
               <ion-item no-padding>
                 <ion-label position="floating"> Name </ion-label>
                 <ion-input formControlName="detailname" type="text" [(ngModel)]="pName"
-                  [class.invalid]="!thisgroup.controls.detailname.valid && (thisgroup.controls.detailname.dirty)">
+                  [class.invalid]="!thisgroup.controls.detailname.valid && (thisgroup.controls['detailname'].dirty)">
                 </ion-input>
               </ion-item>
               <p *ngIf="!thisgroup.controls.detailname.valid &&submitted" style="color:red">Name required</p>
@@ -52,7 +52,7 @@
               <ion-item no-padding>
                 <ion-label position="floating"> NRIC </ion-label>
                 <ion-input formControlName="detailnric" type="text" [(ngModel)]="pNric"
-                  [class.invalid]="!thisgroup.controls.detailnric.valid && (thisgroup.controls.detailnric.dirty)">
+                  [class.invalid]="!thisgroup.controls.detailnric.valid && (thisgroup.controls['detailnric'].dirty)">
                 </ion-input>
               </ion-item>
               <p *ngIf="!thisgroup.controls.detailnric.valid  &&submitted" style="color:red">Valid NRIC</p>
@@ -63,7 +63,7 @@
               <ion-item no-padding>
                 <ion-label position="floating"> TCS Name </ion-label>
                 <ion-input formControlName="detailtcs" type="text" [(ngModel)]="tcsName"
-                  [class.invalid]="!thisgroup.controls.detailtcs.valid && (thisgroup.controls.detailtcs.dirty)">
+                  [class.invalid]="!thisgroup.controls.detailtcs.valid && (thisgroup.controls['detailtcs'].dirty)">
                 </ion-input>
               </ion-item>
               <p *ngIf="!thisgroup.controls.detailtcs.valid &&submitted" style="color:red">TCS name required</p>
@@ -72,7 +72,7 @@
               <ion-item no-padding>
                 <ion-label position="floating"> TCS Contact </ion-label>
                 <ion-input formControlName="detailcontact" type="text" [(ngModel)]="tcsContact"
-                  [class.invalid]="!thisgroup.controls.detailcontact.valid && (thisgroup.controls.detailcontact.dirty)">
+                  [class.invalid]="!thisgroup.controls.detailcontact.valid && (thisgroup.controls['detailcontact'].dirty)">
                 </ion-input>
               </ion-item>
               <p *ngIf="!thisgroup.controls.detailcontact.valid &&submitted" style="color:red">Valid Contact</p>
@@ -111,7 +111,6 @@
       </ion-card-content>
 
     </ion-card>
-  </ion-list>
 
   <style>
     .imgCircle {
@@ -142,6 +141,7 @@ ion-content{
       border-radius: 16px;
       background-color: white;
       color: black;
+      margin-top: 6%;
       /* text */
     }
 
@@ -202,15 +202,13 @@ ion-content{
       margin: 0;
     }
 
-    .yellowItem {
-      --border-width: 0px;
-      --inner-padding-end: 0;
-      --padding-start: 0;
+    ion-item{
+      --min-height:0px;
     }
   </style>
 
   <!-- Test my data yong rui -->
-  <ion-card *ngFor="let globalItem of frontViewData">
+  <ion-card *ngFor="let globalItem of frontViewData; let first = first;">
     <ion-card-header [color]="globalItem.colorCard">
       <ion-card-title>
         {{globalItem.textCard}}
@@ -239,8 +237,8 @@ ion-content{
         <!-- first column aka symptom -->
         <ion-col [size]="checked.length > 0 ? 5.25 : 6"
           [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}"
-          (press)="pressEvent('Symptom', item, globalItem.id);"
-          (click)="checked.length > 0 && clickEvent('Symptom', item, globalItem.id)">
+          (press)="pressEvent('Symptom', item, globalItem.id, i);"
+          (click)="checked.length > 0 && clickEvent('Symptom', item, globalItem.id, i)">
           <ion-card (click)="checked.length == 0 && presentActionSheet('Symptom', item, globalItem.id)"
             [ngClass]="{'highlight' : item.combined[0]?.whatsapp && checked.length > 0}">
             <img class="imgCircle" [src]="item.symptom.img" />
@@ -261,12 +259,12 @@ ion-content{
         <ng-container *ngFor="let x of item.combined; let actIndex = index;">
 
           <ion-col [size]="checked.length > 0 ? 5.25 : 6" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}"
-            (press)="pressEvent('Action', x, globalItem.id)"
-            (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id)" *ngIf="actIndex != 0"></ion-col>
+            (press)="pressEvent('Action', x, globalItem.id, i)"
+            (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id, i)" *ngIf="actIndex != 0"></ion-col>
 
           <ion-col [size]="checked.length > 0 ? 5.25 : 6" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}"
-            (press)="actIndex == 0 ? pressEvent('Symptom', item, globalItem.id) : pressEvent('Action', x, globalItem.id);"
-            (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id)">
+            (press)="actIndex == 0 ? pressEvent('Symptom', item, globalItem.id, i) : pressEvent('Action', x, globalItem.id, i);"
+            (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id, i)">
 
             <ion-card (click)="checked.length == 0 && presentActionSheet('Action', x)"
               [ngClass]="{'highlight': x.whatsapp && checked.length > 0}">
@@ -286,7 +284,7 @@ ion-content{
           </ion-col>
 
           <ion-col size="1.5" *ngIf="checked.length > 0" [ngClass]="{'highlight': x.whatsapp}"
-            (click)="clickEvent('Action', x, globalItem.id)">
+            (click)="clickEvent('Action', x, globalItem.id, i)">
             <ion-checkbox [checked]="x.whatsapp" mode="ios" color="success"></ion-checkbox>
           </ion-col>
 
@@ -329,39 +327,60 @@ ion-content{
     </div>
 
   </ion-card>
-  <ion-list lines="none">
-    <ion-card class="welcome-card">
+
+
+    <ion-card>
       <ion-card-header color="tertiary">
         <ion-card-title>
-          <ion-col size="4">
-            <ion-fab-button style="float:right" (click)="newPlan()">
-              <ion-icon name="add"></ion-icon>
-            </ion-fab-button>
-          </ion-col>
           Appointment (OPTIONAL)
         </ion-card-title>
+        <ion-content>
+        <ion-fab vertical="top" horizontal="end" edge slot="fixed">
+            <ion-fab-button (click)="newAppt(); apptToggle=!appToggle" size="small" class="btnAdd" [disabled]="checked.length > 0">
+                <ion-icon name="add"></ion-icon>
+              </ion-fab-button>
+        </ion-fab>
+      </ion-content>
+
       </ion-card-header>
-      <ion-card-content *ngFor="let info of appointment">
-        <div>
-          <ion-row>
-            <ion-col>
-              <ion-label position="floating">Clinic Name:</ion-label>
-              <ion-input style="width: 250%" [(ngModel)]="info.clinicName"></ion-input>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col>
-              <ion-item lines="full">
-                <ion-label>Date:</ion-label>
-                <ion-datetime placeholder="day/month/year hour:min" #mypicker
-                  (ionChange)="dateChanged(mypicker.value,info)" display-format="DD/MMM/YY h:mm A" min="2017"
-                  max="2022">
-                </ion-datetime>
-              </ion-item>
-            </ion-col>
-          </ion-row>
-        </div>
-      </ion-card-content>
+
+      <div class="gridReplace" style="background-color:white;">
+        <ion-row>
+          <ion-col>
+            <ion-label>Clinic Name</ion-label>
+          </ion-col>
+          <ion-col>
+            <ion-label>Date</ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngFor="let info of appointment; let apptIndex = index;" [ngClass]="{'highlight': info.whatsapp && checked.length > 0}"
+          (press)="pressEvent('appt', info, 4, apptIndex)">
+
+          <ion-col [size]="checked.length > 0 ? 5.25 : 6" (click)="checked.length > 0 && clickEvent('appt', info, 4, apptIndex)">
+            <ion-item no-padding [ngClass]="{'yellowItem': info.whatsapp && checked.length > 0}">
+              <ion-textarea rows="1" autoGrow="true" [(ngModel)]="info.clinicName" placeholder="Name of clinic" [ngClass]="{'highlight': info.whatsapp && checked.length > 0}"
+              [readonly]="info.whatsapp && checked.length > 0"></ion-textarea>
+            </ion-item>
+          </ion-col>
+
+          <ion-col [size]="checked.length > 0 ? 5.25 : 6" [ngClass]="{'highlight': info.whatsapp && checked.length > 0}"
+            (click)="checked.length > 0 && clickEvent('appt', info, 4, apptIndex)">
+            <ion-item no-padding [ngClass]="{'yellowItemForDateTime': info.whatsapp && checked.length > 0}">
+              <ion-datetime placeholder="day/month/year hour:min" #mypicker [readonly]="checked.length > 0"
+                (ionChange)="dateChanged(mypicker.value,info)" display-format="DD/MMM/YY h:mm A" min="2017"
+                max="2022" text-wrap no-padding [ngClass]="{'highlight': info.whatsapp && checked.length > 0}">
+              </ion-datetime>
+            </ion-item>
+          </ion-col>
+
+          <ion-col size="1.5" *ngIf="checked.length > 0"  [ngClass]="{'highlight': info.whatsapp}" (click)="checked.length > 0 && clickEvent('appt', info, 4, apptIndex)">
+            <ion-checkbox [checked]="info.whatsapp" mode="ios" color="success"></ion-checkbox>
+          </ion-col>
+
+        </ion-row>
+
+        <ion-row style="height:150px;" [ngClass]="{'blur': appToggle}" *ngIf="appointment.length == 0"> </ion-row>
+      </div>
     </ion-card>
-  </ion-list>
+
 </ion-content>

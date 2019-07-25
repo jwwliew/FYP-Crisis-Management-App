@@ -57,13 +57,13 @@ export class NewTemplatesPage implements OnInit {
 
   inputFocus = () => this.inputTriggered = true;
 
-  pressEvent(type, thisObject, arrayID) {
-    this.inputTriggered || this.templateService.pressEvent(type, thisObject, arrayID);
+  pressEvent(type, thisObject, arrayID, combinedIndex) {
+    this.inputTriggered || this.templateService.pressEvent(type, thisObject, arrayID, combinedIndex);
     this.inputTriggered = false;
   }
 
-  clickEvent(type, wholeItem, arrayID) {
-    this.templateService.clickEvent(type, wholeItem, arrayID);
+  clickEvent(type, wholeItem, arrayID, combinedIndex) {
+    this.templateService.clickEvent(type, wholeItem, arrayID, combinedIndex);
   }
 
   clearArray() {

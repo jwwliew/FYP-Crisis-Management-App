@@ -129,11 +129,11 @@ ion-textarea{
   margin:0;
 }
 
-.yellowItem{
+/* .yellowItem{
   --border-width: 0px;
   --inner-padding-end: 0;
   --padding-start: 0;
-}
+} */
 
 #Html2PDF {
   padding-bottom: 20px;
@@ -214,8 +214,8 @@ ion-textarea{
 
       <!-- first column aka symptom -->
         <ion-col [size]="checked.length > 0 ? 5.25 : 6" [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}"
-        (press)="pressEvent('Symptom', item, globalItem.id);"
-        (click)="checked.length > 0 && clickEvent('Symptom', item, globalItem.id)">
+        (press)="pressEvent('Symptom', item, globalItem.id, i);"
+        (click)="checked.length > 0 && clickEvent('Symptom', item, globalItem.id, i)">
             <ion-card (click)="checked.length == 0 && presentActionSheet('Symptom', item, globalItem.id)" [ngClass]="{'highlight' : item.combined[0]?.whatsapp && checked.length > 0}">
               <img class="imgCircle" [src]="item.symptom.img" onError="this.src='assets/empty.svg'"/> <!-- https://stackoverflow.com/questions/45263542/ngmodel-value-in-img-src-ionic-3 -->
               <p class="imgCircleText"> {{item.symptom.text}} </p>
@@ -232,12 +232,12 @@ ion-textarea{
         <ng-container *ngFor="let x of item.combined; let actIndex = index;">
 
           <ion-col [size]="checked.length > 0 ? 5.25 : 6" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}" 
-            (press)="pressEvent('Action', x, globalItem.id)"
-            (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id)" *ngIf="actIndex != 0" ></ion-col>
+            (press)="pressEvent('Action', x, globalItem.id, i, actIndex)"
+            (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id, i)" *ngIf="actIndex != 0" ></ion-col>
 
           <ion-col [size]="checked.length > 0 ? 5.25 : 6" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}"
-            (press)="actIndex == 0 ? pressEvent('Symptom', item, globalItem.id) : pressEvent('Action', x, globalItem.id);"
-            (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id)">
+            (press)="actIndex == 0 ? pressEvent('Symptom', item, globalItem.id, i, actIndex) : pressEvent('Action', x, globalItem.id, i, actIndex);"
+            (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id, i)">
 
             <ion-card (click)="checked.length == 0 && presentActionSheet('Action', x)" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}">
               <img class="imgCircle" [src]="x.img" onError="this.src='assets/empty.svg'"/> 
@@ -254,7 +254,7 @@ ion-textarea{
 
           </ion-col>
 
-          <ion-col size="1.5" *ngIf="checked.length > 0" [ngClass]="{'highlight': x.whatsapp}" (click)="clickEvent('Action', x, globalItem.id)">
+          <ion-col size="1.5" *ngIf="checked.length > 0" [ngClass]="{'highlight': x.whatsapp}" (click)="clickEvent('Action', x, globalItem.id, i, actIndex)">
             <ion-checkbox [checked]="x.whatsapp" mode="ios" color="success"></ion-checkbox>
           </ion-col>
 
