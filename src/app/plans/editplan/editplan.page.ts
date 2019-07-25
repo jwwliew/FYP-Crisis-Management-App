@@ -8,6 +8,7 @@ import * as jsPDF from 'jspdf';
 import domtoimage from 'dom-to-image';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-editplan',
@@ -15,10 +16,18 @@ import { FileOpener } from '@ionic-native/file-opener/ngx';
   styleUrls: ['./editplan.page.scss'],
 })
 export class EditplanPage implements OnInit {
+  private something: FormGroup;
+  constructor(private PlanService: PlanService, private activatedRoute: ActivatedRoute, private templateService: TemplateService, private settingService: SymptomActionService,
+    private router: Router, private file: File, private loadingController: LoadingController, private fileOpener: FileOpener, public formBuilder: FormBuilder) {
 
-  constructor(private PlanService: PlanService, private activatedRoute: ActivatedRoute, private templateService: TemplateService, private settingService: SymptomActionService, 
-    private router: Router, private file: File, private loadingController: LoadingController, private fileOpener: FileOpener) { }
-
+    this.something = formBuilder.group({
+      detailname: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+      detailnric: ['', Validators.compose([Validators.maxLength(9), Validators.minLength(9), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
+      detailtcs: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+      detailcontact: ['', Validators.compose([Validators.maxLength(8), Validators.minLength(8), Validators.pattern('[0-9]*'), Validators.required])],
+    });
+  }
+  submitted = false;
   isDisabled: boolean = true;
 
   details = {} as any;
@@ -27,7 +36,7 @@ export class EditplanPage implements OnInit {
 
   }
 
-  backViewPlan(){
+  backViewPlan() {
     this.router.navigateByUrl('/tabs/plans');
   }
 
@@ -93,7 +102,7 @@ export class EditplanPage implements OnInit {
   }
 
 
-  popOverController(x) { 
+  popOverController(x) {
     let menuOptions = ["Edit", "Rename", "Export to PDF"];
     this.templateService.popOverController('popover', x, menuOptions).then(popover => {
       popover.present();
@@ -127,17 +136,17 @@ export class EditplanPage implements OnInit {
 
     let width = div.clientWidth * 3;
     let height = div.clientHeight * 3;
-    let millimeters = {width,height};
-    millimeters.width = Math.floor(width*0.264583);
-    millimeters.height = Math.floor(height*0.264583);
-  
+    let millimeters = { width, height };
+    millimeters.width = Math.floor(width * 0.264583);
+    millimeters.height = Math.floor(height * 0.264583);
+
     let scale = 2; //https://github.com/tsayen/dom-to-image/issues/69
-    domtoimage.toPng(div, {height: div.offsetHeight * 2, width: div.offsetWidth * 2, style:{transform: `scale(${scale}) translate(${div.offsetWidth / 2 / scale}px, ${div.offsetHeight / 2 / scale}px)`}}).then(dataUrl => {
-  
+    domtoimage.toPng(div, { height: div.offsetHeight * 2, width: div.offsetWidth * 2, style: { transform: `scale(${scale}) translate(${div.offsetWidth / 2 / scale}px, ${div.offsetHeight / 2 / scale}px)` } }).then(dataUrl => {
+
       const doc = new jsPDF('p', 'mm', 'a4', true);
       doc.deletePage(1); //https://stackoverflow.com/questions/29578721/image-in-pdf-cut-off-how-to-make-a-canvas-fit-entirely-in-a-pdf-page/42295522#42295522
       doc.addPage(millimeters.width * 2, millimeters.height * 1.95);
-      doc.addImage(dataUrl,'PNG', 0, 10, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST');
+      doc.addImage(dataUrl, 'PNG', 0, 10, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST');
 
       doc.save('pdfDocument.pdf'); //for website
 
@@ -152,12 +161,12 @@ export class EditplanPage implements OnInit {
       // Name of pdf
       const fileName = "crisisOpener.pdf";
       //Writing File to Device  
-      this.file.writeFile(directory,fileName, buffer, {replace: true}).then(success => { //https://ourcodeworld.com/articles/read/38/how-to-capture-an-image-from-a-dom-element-with-javascript
+      this.file.writeFile(directory, fileName, buffer, { replace: true }).then(success => { //https://ourcodeworld.com/articles/read/38/how-to-capture-an-image-from-a-dom-element-with-javascript
         console.log("File created Succesfully" + JSON.stringify(success));
         this.loading.dismiss();
         this.templateService.presentToastWithOptions("File created successfully!!!");
         this.fileOpener.open(success.nativeURL, "application/pdf").catch(() => this.templateService.presentToastWithOptions("Please install a PDF Viewer such as Acrobat!"));
-      }).catch((error)=> console.log("Cannot Create File " + JSON.stringify(error)));
+      }).catch((error) => console.log("Cannot Create File " + JSON.stringify(error)));
     })
   }
 
@@ -167,11 +176,19 @@ export class EditplanPage implements OnInit {
   }
 
   savePage(id) {
-    this.PlanService.editPlan(id, this.details).then(allPlan => {
-      this.templateService.editPageUpdateArray(allPlan, id);
-      this.templateService.presentToastWithOptions("Saved plan successfully!");
-      this.isDisabled = true;
-    })
+    if (this.something.controls["detailcontact"].invalid || this.something.controls["detailname"].invalid ||
+      this.something.controls["detailtcs"].invalid ||
+      this.something.controls["detailnric"].invalid) {
+      this.submitted = true;
+      return false;
+    }
+    else {
+      this.PlanService.editPlan(id, this.details).then(allPlan => {
+        this.templateService.editPageUpdateArray(allPlan, id);
+        this.templateService.presentToastWithOptions("Saved plan successfully!");
+        this.isDisabled = true;
+      })
+    }
   }
 
   askForName() {
@@ -179,7 +196,7 @@ export class EditplanPage implements OnInit {
       console.error("rename alert data plan!!" + alertData);
       this.details.planName = alertData;
       this.templateService.presentToastWithOptions("Renamed plan!");
-    }).catch(() => {})
+    }).catch(() => { })
   }
 
 

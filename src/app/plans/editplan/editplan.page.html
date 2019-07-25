@@ -151,7 +151,7 @@
       </ion-card-header>
 
       <ion-card-content>
-        <div>
+        <!-- <div>
           <table id="tblOne" style="width:50%; float:left">
             <tr>
               <td>Name:</td>
@@ -171,10 +171,56 @@
             <tr>
               <td>TCS Contact:</td>
               <ion-input [(ngModel)]="details.ccontact" readonly="{{isDisabled}}"></ion-input>
-              <!-- <ion-input type="text">{{details.ccontact}}</ion-input> -->
-            </tr>
+                        </tr>
           </table>
-        </div>
+        </div> -->
+     
+
+
+
+  <form [formGroup]="something">
+      <ion-row>
+        <ion-col>
+          <ion-item no-padding>
+            <ion-label position="floating"> Name </ion-label>
+            <ion-input formControlName="detailname" type="text" [(ngModel)]="details.name" readonly="{{isDisabled}}"
+              [class.invalid]="!something.controls.detailname.valid && (something.controls.detailname.dirty)">
+            </ion-input>
+          </ion-item>
+          <p *ngIf="!something.controls.detailname.valid &&submitted" style="color:red">Name required</p>
+        </ion-col>
+        <ion-col>
+          <ion-item no-padding>
+            <ion-label position="floating"> NRIC </ion-label>
+            <ion-input formControlName="detailnric" type="text" [(ngModel)]="details.nric" readonly="{{isDisabled}}"
+              [class.invalid]="!something.controls.detailnric.valid && (something.controls.detailnric.dirty)">
+            </ion-input>
+          </ion-item>
+          <p *ngIf="!something.controls.detailnric.valid  &&submitted" style="color:red">Valid NRIC</p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item no-padding>
+            <ion-label position="floating"> TCS Name </ion-label>
+            <ion-input formControlName="detailtcs" type="text" [(ngModel)]="details.cname" readonly="{{isDisabled}}"
+              [class.invalid]="!something.controls.detailtcs.valid && (something.controls.detailtcs.dirty)">
+            </ion-input>
+          </ion-item>
+          <p *ngIf="!something.controls.detailtcs.valid &&submitted" style="color:red">TCS name required</p>
+        </ion-col>
+        <ion-col>
+          <ion-item no-padding>
+            <ion-label position="floating"> TCS Contact </ion-label>
+            <ion-input formControlName="detailcontact" type="text" [(ngModel)]="details.ccontact" readonly="{{isDisabled}}"
+              [class.invalid]="!something.controls.detailcontact.valid && (something.controls.detailcontact.dirty)">
+            </ion-input>
+          </ion-item>
+          <p *ngIf="!something.controls.detailcontact.valid &&submitted" style="color:red">Valid Contact</p>
+        </ion-col>
+      </ion-row>
+
+    </form>
       </ion-card-content>
     </ion-card>
 
@@ -337,8 +383,29 @@
         </ion-card-title>
 
       </ion-card-header>
+      <ion-card-content *ngFor="let item of details.appointment">
+        <div>
+          <ion-row>
+            <ion-col>
+              <ion-label position="floating">Clinic Name:</ion-label>
+              <ion-input style="width: 250%" [readonly]="isDisabled" [(ngModel)]="item.clinicName" style="position:inherit"></ion-input>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-item lines="full">
+                <ion-label>Date:</ion-label>
+                <ion-datetime placeholder="day/month/year hour:min" #mypicker
+                  (ionChange)="dateChanged(mypicker.value)" display-format="DD/MMM/YY h:mm A" [(ngModel)]="item.appTime" min="2017" max="2022"
+                  [readonly]="isDisabled" min="2017" max="2022">
+                </ion-datetime>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </div>
+      </ion-card-content>
 
-      <ion-card-content>
+      <!-- <ion-card-content>
         <div>
 
           <ion-row *ngFor="let item of details.appointment">
@@ -358,7 +425,7 @@
           </ion-row>
         
         </div>
-      </ion-card-content>
+      </ion-card-content> -->
     </ion-card>
   </div>
 </ion-content>

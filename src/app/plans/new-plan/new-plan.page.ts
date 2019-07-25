@@ -16,8 +16,7 @@ export class NewPlanPage implements OnInit {
 
   submitted=false;
   constructor(private router: Router, private PlanService: PlanService, private templateService: TemplateService, public formBuilder: FormBuilder) {
-    console.warn("form construct")
-    this.slideOneForm = formBuilder.group({
+      this.slideOneForm = formBuilder.group({
       firstName: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
     })
    

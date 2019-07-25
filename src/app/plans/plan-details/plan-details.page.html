@@ -75,7 +75,7 @@
                   [class.invalid]="!thisgroup.controls.detailcontact.valid && (thisgroup.controls.detailcontact.dirty)">
                 </ion-input>
               </ion-item>
-              <p *ngIf="!thisgroup.controls.detailcontact.valid &&submitted" style="color:red">Valid contact</p>
+              <p *ngIf="!thisgroup.controls.detailcontact.valid &&submitted" style="color:red">Valid Contact</p>
             </ion-col>
           </ion-row>
 
@@ -346,19 +346,6 @@ ion-content{
 
       <ion-card-content *ngFor="let info of appointment">
         <div>
-          <!-- <table id="tblOne" style="width:50%; float:left">
-            <tr>
-              <td>Clinic Name:</td>
-              <p></p>
-              <ion-input style="width: 250%" [(ngModel)]="info.clinicName"></ion-input>
-            </tr>
-          </table>
-          <ion-item lines="full">
-            <ion-label>Date:</ion-label>
-            <ion-datetime placeholder="day/month/year hour:min" #mypicker
-              (ionChange)="dateChanged(mypicker.value,info)" display-format="DD/MMM/YY h:mm A" min="2017"
-              max="2022"></ion-datetime>
-          </ion-item> -->
           <ion-row>
             <ion-col>
               <ion-label position="floating">Clinic Name:</ion-label>
