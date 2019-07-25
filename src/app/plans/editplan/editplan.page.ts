@@ -174,7 +174,12 @@ export class EditplanPage implements OnInit {
     this.isDisabled = false;
     this.templateService.callEdit(this.defaultLanguage);
   }
+  addAppt() {
+    console.log("triggered")
 
+
+
+  }
   savePage(id) {
     if (this.something.controls["detailcontact"].invalid || this.something.controls["detailname"].invalid ||
       this.something.controls["detailtcs"].invalid ||
@@ -192,13 +197,19 @@ export class EditplanPage implements OnInit {
   }
 
   askForName() {
-    this.templateService.alertInput("Enter new name").then(alertData => {
+    this.templateService.alertInput("Enter new name").then((alertData: string) => {
       console.error("rename alert data plan!!" + alertData);
-      this.details.planName = alertData;
-      this.templateService.presentToastWithOptions("Renamed plan!");
-    }).catch(() => { })
-  }
 
+      this.PlanService.renamePlan(this.details.id, alertData).then(() => {
+        this.details.planName = alertData;
+        this.templateService.presentToastWithOptions("Renamed plan!");
+      })
+
+    }).catch(() => {
+    }
+
+    )
+  }
 
 
   dateChanged(my) {

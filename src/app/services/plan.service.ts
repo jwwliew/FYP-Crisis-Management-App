@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { v4 as uuid } from 'uuid';
 import { TemplateService } from './template.service';
+import { findComponentView } from '@angular/core/src/render3/util';
+import { findReadVarNames } from '@angular/compiler/src/output/output_ast';
 
 const key = "plan";
 
@@ -101,6 +103,14 @@ export class PlanService {
     })
   }
 
+  renamePlan(id,planName) {
+    return this.getAllPlan().then(data => {
+      data.find(item => item.id ===id).planName = planName;
+      console.log(planName);
+      return this.storage.set(key, data);
+
+    })
+  }
 
   //delete by ID
   deletePlanByID(id: string) {

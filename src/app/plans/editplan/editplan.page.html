@@ -151,32 +151,6 @@
       </ion-card-header>
 
       <ion-card-content>
-        <!-- <div>
-          <table id="tblOne" style="width:50%; float:left">
-            <tr>
-              <td>Name:</td>
-              <ion-input [(ngModel)]="details.name" readonly="{{isDisabled}}"></ion-input>
-            </tr>
-            <p></p>
-            <tr>
-              <td>TCS Name:</td>
-              <ion-input [(ngModel)]="details.cname" readonly="{{isDisabled}}"></ion-input>
-            </tr>
-          </table>
-          <table id="tblTwo" style="width:50%; float:left">
-            <tr>
-              <td>NRIC:</td>
-              <ion-input [(ngModel)]="details.nric" readonly="{{isDisabled}}"></ion-input>
-            </tr>
-            <tr>
-              <td>TCS Contact:</td>
-              <ion-input [(ngModel)]="details.ccontact" readonly="{{isDisabled}}"></ion-input>
-                        </tr>
-          </table>
-        </div> -->
-     
-
-
 
   <form [formGroup]="something">
       <ion-row>
@@ -377,7 +351,7 @@
 
 
     <ion-card class="welcome-card" style="margin-bottom: 6%">
-      <ion-card-header color="tertiary">
+      <ion-card-header color="tertiary"><ion-icon name="add" (click)="addAppt()"></ion-icon> 
         <ion-card-title>
           Appointment (Optional)
         </ion-card-title>
