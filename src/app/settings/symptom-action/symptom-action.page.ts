@@ -84,7 +84,8 @@ export class SymptomActionPage implements OnInit {
       console.error("this array = " + JSON.stringify(thisArray,null,2))
       let thisElement = thisArray.find(oneItem => oneItem.id == x.id);
       console.error("this leement === " + JSON.stringify(thisElement,null,2));
-      thisElement.checked = false;
+      // thisElement.checked = false;
+      delete thisElement.checked;
     })
     this.checked.length = 0;
   }
@@ -120,6 +121,7 @@ export class SymptomActionPage implements OnInit {
     this.selectedTab = type;
     console.log(`selected ${this.selectedTab} tab`);
     this.clearArray();
+    this.mylist.closeSlidingItems();
   }
 
   segmentChanged() {

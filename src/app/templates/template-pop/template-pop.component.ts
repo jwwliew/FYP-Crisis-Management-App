@@ -12,14 +12,16 @@ export class TemplatePopComponent implements OnInit {
     console.warn("this navparams = ", navParams);
     navParams.data.type == 'modal' && (this.modalPopUp = true);
     this.menuOptions = navParams.data.menuOptions; // this.menuOptions = navParams.get("keyOptions");
+    this.symptomOrAction = navParams.data.symptomOrAction;
   }
 
   ngOnInit() {}
-
+  
   // menuOptions = ["Edit", "Rename", "Duplicate", "Create Crisis Plan", "Delete", "Export to PDF"];
   menuOptions = [];
   modalPopUp = false;
   defaultLanguage = 0;
+  symptomOrAction: string;
 
   close(thisOption) {
     console.warn(thisOption)

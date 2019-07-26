@@ -33,6 +33,9 @@
   /* ion-segment {
     margin-bottom: 12px;
   } */
+  .highlightPadding { /* the line height original when long press highlighted is 1.5, remove it then long text wrapped properly*/
+    line-height: 100%;
+  }
 </style>
 
 <ion-content>
@@ -46,7 +49,7 @@
     </ion-segment-button>
   </ion-segment>
 
-  <ion-list lines="full" #mylist>
+  <ion-list lines="full" #mylist padding-bottom>
     <ion-virtual-scroll [items]="selectedTab == 'Symptom' ? symptomList : actionList" approxItemHeight="59px" [headerFn]="renderDividers">
       <ion-item-divider *virtualHeader="let header">
         {{ header }}
@@ -58,7 +61,7 @@
             <ion-img [src]="item.icon" alt="empty" cache="true" width="40" height="40"></ion-img>
           </ion-thumbnail>
           <!-- <ion-img style="width:80px; height:100px" [src]="item.icon"></ion-img> -->
-          <ion-label text-wrap>
+          <ion-label text-wrap [ngClass]="{'highlightPadding': checked.length > 0}">
             {{item.enName}}
           </ion-label>
           <ion-checkbox mode="ios" slot="end" *ngIf="checked.length > 0" [(ngModel)]="item.checked" (ionChange)="check(item)" color="success"></ion-checkbox>

@@ -4,7 +4,7 @@
       <ion-button (click)="close()"><ion-icon name="arrow-back"></ion-icon></ion-button>
     </ion-buttons>
     <ion-title>
-      Select a action
+      Select one {{symptomOrAction | lowercase}}
     </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="close()"> Close </ion-button>
@@ -13,7 +13,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-list mode="md" lines="full" #mylist>
+  <ion-list mode="md" lines="full">
     <ng-container *ngIf="!modalPopUp">
       <ion-item *ngFor="let item of menuOptions" (click)="close(item)" button>
         <ion-label>
@@ -23,10 +23,12 @@
     </ng-container>
 
     <ng-container *ngIf="modalPopUp">
-      <ion-virtual-scroll [items]="menuOptions" approxItemHeight="320px">
+      <ion-virtual-scroll [items]="menuOptions">
         <ion-item *virtualItem="let item" (click)="close(item)" button>
           <ion-thumbnail slot="start">
-            <ion-img [src]="item.icon" alt="empty" cache="true" width="40" height="40"></ion-img>
+            <!-- <ion-img src="assets/empty.svg" (load)="loaded=true" [hidden]="!loaded"></ion-img> -->
+            <!-- <ion-img [src]="item.icon" alt="" (load)="loaded=false"></ion-img> -->
+            <ion-img [src]="item.icon || 'assets/loading.gif'"></ion-img>
           </ion-thumbnail>
           {{returnLanguage(item)}}
         </ion-item>

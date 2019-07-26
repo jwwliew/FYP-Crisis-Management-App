@@ -389,7 +389,7 @@ export class TemplateService {
     }
     let typeToCall = symptomOrAction == 'Symptom' ? this.settingSymptom: this.settingAction;
 
-    this.popOverController('modal', '', typeToCall, defaultLanguage).then(callModal => {
+    this.popOverController('modal', '', typeToCall, defaultLanguage, symptomOrAction).then(callModal => {
       callModal.present();
       callModal.onDidDismiss().then(data => {
         console.warn("data modal ", data);
@@ -658,8 +658,8 @@ export class TemplateService {
     })
   }
 
-  popOverController(type, x, menuOptions, defaultLanguage?) {
-    let obj = {component: TemplatePopComponent, componentProps: {menuOptions, type, defaultLanguage}};
+  popOverController(type, x, menuOptions, defaultLanguage?, symptomOrAction?) {
+    let obj = {component: TemplatePopComponent, componentProps: {menuOptions, type, defaultLanguage, symptomOrAction}};
     return type == 'modal' ? this.modalCtrl.create(obj) : this.popoverCtrl.create({...obj, event: x});
   }
   
