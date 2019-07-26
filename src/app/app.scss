@@ -29,3 +29,16 @@ ion-segment-button {
     border-radius: 0px;
     font-weight: bold;
 }
+ion-alert .alert-radio-label{
+    white-space: normal !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+}
+
+.alert-radio-group.sc-ion-alert-md, .alert-radio-group.sc-ion-alert-ios {
+    padding-bottom: 13px !important;
+}
+
+.alert-tappable.sc-ion-alert-ios {
+    height: 50px;
+}

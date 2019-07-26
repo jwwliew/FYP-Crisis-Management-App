@@ -47,12 +47,11 @@
         <form [formGroup]="slideOneForm">
           <ion-item>
             <ion-input formControlName="firstName" type="text" [(ngModel)]="planName"
-              [class.invalid]="!slideOneForm.controls.firstName.valid && (slideOneForm.controls.firstName.dirty)">
+              [class.invalid]="!slideOneForm.controls.firstName.valid && (slideOneForm.controls['firstName'].dirty)">
             </ion-input>
           </ion-item>
 
-          <ion-item
-            *ngIf="!slideOneForm.controls.firstName.valid && submitted">
+          <ion-item *ngIf="!slideOneForm.controls.firstName.valid && submitted">
             <p style="color: red">***Please enter plan name***</p>
           </ion-item>
 

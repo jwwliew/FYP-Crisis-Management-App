@@ -47,17 +47,20 @@
   </ion-segment>
 
   <ion-list lines="full" #mylist>
-    <ion-virtual-scroll [items]="selectedTab == 'Symptom' ? symptomList : actionList" approxItemHeight="88px">
+    <ion-virtual-scroll [items]="selectedTab == 'Symptom' ? symptomList : actionList" approxItemHeight="59px" [headerFn]="renderDividers">
+      <ion-item-divider *virtualHeader="let header">
+        {{ header }}
+      </ion-item-divider>
       <ion-item-sliding *virtualItem="let item" (ionSwipe)="deleteIOS(item)">
         <ion-item (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)" [color]="item.checked && 'lightBlue'" button>
           <ion-thumbnail slot="start">
-            <ion-img [src]="item.icon"></ion-img>
+            <!-- <img [src]="item.icon"/>  -->
+            <ion-img [src]="item.icon" alt="empty" cache="true" width="40" height="40"></ion-img>
           </ion-thumbnail>
-          <!-- <ion-avatar item-start>
-            <img [src]="item.icon">
-          </ion-avatar> -->
           <!-- <ion-img style="width:80px; height:100px" [src]="item.icon"></ion-img> -->
-          {{item.enName}}
+          <ion-label text-wrap>
+            {{item.enName}}
+          </ion-label>
           <ion-checkbox mode="ios" slot="end" *ngIf="checked.length > 0" [(ngModel)]="item.checked" (ionChange)="check(item)" color="success"></ion-checkbox>
           <ion-ripple-effect></ion-ripple-effect> 
         </ion-item>

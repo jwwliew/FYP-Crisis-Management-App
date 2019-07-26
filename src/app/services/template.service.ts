@@ -304,11 +304,13 @@ export class TemplateService {
     // this.backUpCriticalArray = [...this.criticalArray];
     // this.backUpCriticalArray = this.criticalArray.slice(0);
     // this.backUpCriticalArray = this.criticalArray.map(object => { return [...object]})
-    this.backUpWarningArray = this.warningArray.slice();
-    this.backUpGoodArray = [...this.goodArray];
-    this.backUpAppointment = [...this.appointment];
+    // this.backUpWarningArray = this.warningArray.slice();
+    this.backUpWarningArray = JSON.parse(JSON.stringify(this.warningArray));
+    this.backUpGoodArray = JSON.parse(JSON.stringify(this.goodArray));
+    this.backUpAppointment = JSON.parse(JSON.stringify(this.appointment));
     
     console.log("critical array === " + JSON.stringify(this.backUpCriticalArray, null, 2));
+    console.warn("actual appt when called " + JSON.stringify(this.appointment,null,2));
     console.log("backup appt-- " + JSON.stringify(this.backUpAppointment,null,2));
     let completedArray = this.getAllArray();
     completedArray.forEach(element => {
@@ -506,6 +508,7 @@ export class TemplateService {
       this.alertCtrl.create({
         header: "Select a symptom",
         inputs: this.createRadios(id),
+        mode:'ios',
         buttons: [
           {
             text: 'Cancel',
@@ -616,10 +619,10 @@ export class TemplateService {
     return maparr;
   }
 
-  checkAllArrayEmpty(type) {
+  checkAllArrayEmpty(text) {
     let returnValue = false;
     if (!this.getAllArray().some(x => x.some(y => !this.globalSymptom.includes(y.symptom.text)))) {
-      this.presentToastWithOptions("Please select at least one symptom before " + type + " template");
+      this.presentToastWithOptions("Please select at least one symptom before " + text);
       returnValue = true;
     } // https://stackoverflow.com/a/50475787
     return returnValue;

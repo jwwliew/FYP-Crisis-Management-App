@@ -8,7 +8,6 @@ import * as jsPDF from 'jspdf';
 import domtoimage from 'dom-to-image';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
-import { v4 as uuid } from 'uuid';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -17,22 +16,22 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./editplan.page.scss'],
 })
 export class EditplanPage implements OnInit {
-  private something: FormGroup;
+    
   constructor(private PlanService: PlanService, private activatedRoute: ActivatedRoute, private templateService: TemplateService, private settingService: SymptomActionService,
     private router: Router, private file: File, private loadingController: LoadingController, private fileOpener: FileOpener, public formBuilder: FormBuilder) {
-
-    this.something = formBuilder.group({
-      detailname: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
-      detailnric: ['', Validators.compose([Validators.maxLength(9), Validators.minLength(9), Validators.pattern('^(s|g|S|G|T|t)[0-9]{7}[a-z|A-Z]{1}$'), Validators.required])],
-      detailtcs: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
-      detailcontact: ['', Validators.compose([Validators.maxLength(8), Validators.minLength(8), Validators.pattern('[0-9]*'), Validators.required])],
-    });
   }
+
+  something = this.formBuilder.group({
+    detailname: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+    detailnric: ['', Validators.compose([Validators.maxLength(9), Validators.minLength(9), Validators.pattern('^(s|g|S|G|T|t)[0-9]{7}[a-z|A-Z]{1}$'), Validators.required])],
+    detailtcs: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+    detailcontact: ['', Validators.compose([Validators.maxLength(8), Validators.minLength(8), Validators.pattern('[0-9]*'), Validators.required])],
+  });
+
   submitted = false;
   isDisabled: boolean = true;
 
   details = {} as any;
-  backup = {} as any;
 
   appointment = this.templateService.appointment;
 
@@ -45,9 +44,11 @@ export class EditplanPage implements OnInit {
 
   backViewPlan() {
     if (this.isDisabled) {
+      this.templateService.resetArray();
       this.router.navigateByUrl('/tabs/plans');
     }
     else {
+      console.warn("going back to view page from edit plan");
       this.templateService.goToViewPageFromEdit();
       this.isDisabled = !this.isDisabled;
       // this.appointment = this.templateService.appointment;
@@ -78,7 +79,7 @@ export class EditplanPage implements OnInit {
       this.defaultLanguage = everything.language;
       console.warn("EVERYTHING " + JSON.stringify(everything,null,2));
       // this.appointment = everything.appointment;
-      // this.templateService.appointment = everything.appointment;
+      this.templateService.appointment = everything.appointment;
     });
   }
 
@@ -117,10 +118,8 @@ export class EditplanPage implements OnInit {
     // this.router.navigateByUrl("/tabs/plans/editplan/" + this.details.id);
   }
   deleteArray() {
-    console.warn("THIS appt BEFORE = " , this.templateService.appointment)
     this.templateService.deleteArray();
     this.templateService.presentToastWithOptions("Deleted items!");
-    console.warn("THIS APPT AFTER = " , this.templateService.appointment)
   }
 
 
@@ -196,41 +195,32 @@ export class EditplanPage implements OnInit {
     this.isDisabled = false;
     this.templateService.callEdit(this.defaultLanguage);
   }
-  addAppt() {
-    console.log("triggered")
 
-
-
-  }
   savePage(id) {
     if (this.something.controls["detailcontact"].invalid || this.something.controls["detailname"].invalid ||
-      this.something.controls["detailtcs"].invalid ||
-      this.something.controls["detailnric"].invalid) {
+      this.something.controls["detailtcs"].invalid || this.something.controls["detailnric"].invalid) {
       this.submitted = true;
+      this.templateService.presentToastWithOptions("Please enter required plan details highlighted in red");
       return false;
     }
-    else {
-      this.PlanService.editPlan(id, this.details).then(allPlan => {
-        this.templateService.editPageUpdateArray(allPlan, id);
-        this.templateService.presentToastWithOptions("Saved plan successfully!");
-        this.isDisabled = true;
-      })
+    if (this.templateService.checkAllArrayEmpty("updating plan")) {
+      return false;
     }
+    this.PlanService.editPlan(id, this.details).then(allPlan => {
+      this.templateService.editPageUpdateArray(allPlan, id);
+      this.templateService.presentToastWithOptions("Saved plan successfully!");
+      this.isDisabled = true;
+    })
   }
 
   askForName() {
     this.templateService.alertInput("Enter new name").then((alertData: string) => {
       console.error("rename alert data plan!!" + alertData);
-
       this.PlanService.renamePlan(this.details.id, alertData).then(() => {
         this.details.planName = alertData;
         this.templateService.presentToastWithOptions("Renamed plan!");
       })
-
-    }).catch(() => {
-    }
-
-    )
+    }).catch(() => {})
   }
 
   dateChanged(my, appObj) {
@@ -239,12 +229,6 @@ export class EditplanPage implements OnInit {
   }
 
   newAppt() {
-    // let apptObj = {
-    //   id: uuid(),
-    //   clinicName: "",
-    //   appTime: "",
-    // }
-    // this.appointment.push(apptObj);
     this.templateService.newAppt();
   }
 

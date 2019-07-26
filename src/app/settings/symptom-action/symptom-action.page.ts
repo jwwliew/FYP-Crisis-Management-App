@@ -137,4 +137,22 @@ export class SymptomActionPage implements OnInit {
     this.router.navigateByUrl('/tabs/settings/symptomAction/edit/' + this.selectedTab + "/" + "add"); //routing start from root level
   }
 
+
+  renderDividers(record : any, recordIndex : number, records : any)  : any
+  {
+    let num:number= 0;
+
+
+     // IF this is every tenth record we want to
+     // inject the correct heading from the above
+     // array into the list to act as a divider
+     // between different comic genres
+    if (recordIndex % 10 === 0)
+    {
+        return 'Header ' + recordIndex;
+    }
+    return null;
+  }
+
+
 }

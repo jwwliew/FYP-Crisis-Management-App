@@ -86,7 +86,7 @@ export class NewTemplatesPage implements OnInit {
 
   addTemplate(templateNameFromInput) {
     if (!templateNameFromInput) {
-      if (this.templateService.checkAllArrayEmpty("updating")) {
+      if (this.templateService.checkAllArrayEmpty("updating template")) {
         return false;
       }
     }
@@ -109,7 +109,7 @@ export class NewTemplatesPage implements OnInit {
 
   askForName(typeOfAction) {
     if (typeOfAction == "add") {
-      if (this.templateService.checkAllArrayEmpty("adding")) {
+      if (this.templateService.checkAllArrayEmpty("adding template")) {
         return false;
       }
     }

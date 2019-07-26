@@ -55,7 +55,7 @@
                   [class.invalid]="!thisgroup.controls.detailnric.valid && (thisgroup.controls['detailnric'].dirty)">
                 </ion-input>
               </ion-item>
-              <p *ngIf="!thisgroup.controls.detailnric.valid  &&submitted" style="color:red">Valid NRIC</p>
+              <p *ngIf="!thisgroup.controls.detailnric.valid  &&submitted" style="color:red">Invalid NRIC</p>
             </ion-col>
           </ion-row>
           <ion-row>
@@ -75,7 +75,7 @@
                   [class.invalid]="!thisgroup.controls.detailcontact.valid && (thisgroup.controls['detailcontact'].dirty)">
                 </ion-input>
               </ion-item>
-              <p *ngIf="!thisgroup.controls.detailcontact.valid &&submitted" style="color:red">Valid Contact</p>
+              <p *ngIf="!thisgroup.controls.detailcontact.valid &&submitted" style="color:red">Invalid Contact</p>
             </ion-col>
           </ion-row>
 
@@ -184,11 +184,11 @@ ion-content{
   width: 100vw;
   margin-left: calc(-50vw + 50%);
 } */
-    .gridReplace {
+    /* .gridReplace {
       background-color: #d3d3d3;
       padding-top: 6%;
       padding-bottom: 3%;
-    }
+    } */
 
     ion-card-title {
       color: white;
@@ -224,8 +224,15 @@ ion-content{
         </ion-fab>
       </ion-content>
     </ion-card-header>
-
-
+    
+    <ion-row style="background-color: grey; color: white;">
+      <ion-col>
+        <span style="margin-left: 10%"> Symptom </span>
+      </ion-col>
+      <ion-col>
+        <span style="margin-left: 6%;"> What to do </span>
+      </ion-col>
+    </ion-row>
 
     <div class="gridReplace">
       <!--https://forum.ionicframework.com/t/fab-button-backdrop/80019-->
@@ -336,9 +343,9 @@ ion-content{
         </ion-card-title>
         <ion-content>
         <ion-fab vertical="top" horizontal="end" edge slot="fixed">
-            <ion-fab-button (click)="newAppt(); apptToggle=!appToggle" size="small" class="btnAdd" [disabled]="checked.length > 0">
-                <ion-icon name="add"></ion-icon>
-              </ion-fab-button>
+          <ion-fab-button (click)="newAppt()" size="small" class="btnAdd" [disabled]="checked.length > 0">
+            <ion-icon name="add"></ion-icon>
+          </ion-fab-button>
         </ion-fab>
       </ion-content>
 
@@ -379,7 +386,8 @@ ion-content{
 
         </ion-row>
 
-        <ion-row style="height:150px;" [ngClass]="{'blur': appToggle}" *ngIf="appointment.length == 0"> </ion-row>
+        <ion-row style="height:15px;" *ngIf="!checkAppt()"> </ion-row>
+
       </div>
     </ion-card>
 

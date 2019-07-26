@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PlanService } from './../../services/plan.service';
-import { ToastController, Events } from '@ionic/angular';
 import { TemplateService } from 'src/app/services/template.service';
-import { v4 as uuid } from 'uuid';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -14,17 +12,15 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 export class PlanDetailsPage implements OnInit {
 
-  public thisgroup: FormGroup;
+  thisgroup = this.formBuilder.group({
+    detailname: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+    detailnric: ['', Validators.compose([Validators.maxLength(9), Validators.minLength(9), Validators.pattern('^(s|g|S|G|T|t)[0-9]{7}[a-z|A-Z]{1}$'), Validators.required])],
+    detailtcs: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+    detailcontact: ['', Validators.compose([Validators.maxLength(8), Validators.minLength(8), Validators.pattern('[0-9]*'), Validators.required])],
+  });
 
-  constructor(private router: Router, private PlanService: PlanService, public toastController: ToastController, private activatedRoute: ActivatedRoute,
+  constructor(private router: Router, private PlanService: PlanService, private activatedRoute: ActivatedRoute,
     private templateService: TemplateService, public formBuilder: FormBuilder) {
-    this.thisgroup = formBuilder.group({
-      detailname: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
-      detailnric: ['', Validators.compose([Validators.maxLength(9), Validators.minLength(9), Validators.pattern('^(s|g|S|G|T|t)[0-9]{7}[a-z|A-Z]{1}$'), Validators.required])],
-      detailtcs: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
-      detailcontact: ['', Validators.compose([Validators.maxLength(8), Validators.minLength(8), Validators.pattern('[0-9]*'), Validators.required])],
-    });
-
   }
 
   clinicName: any;
@@ -40,12 +36,6 @@ export class PlanDetailsPage implements OnInit {
 
   ngOnInit() { }
 
-
-  // dateChanged(time) {
-  // console.log(time);
-  // console.log(this.datedmy);
-  // }
-  // datedmy: any;
   dateChanged(my, appObj) {
     //this.datemy = my;
     // this.datemy = moment(my).format('YYYY-MM-DD hh:mmA');
@@ -61,31 +51,28 @@ export class PlanDetailsPage implements OnInit {
       this.thisgroup.controls["detailtcs"].invalid ||
       this.thisgroup.controls["detailnric"].invalid) {
       this.submitted = true;
+      this.templateService.presentToastWithOptions("Please enter required plan details highlighted in red");
       return false;
     }
-    else {
-
+    if (this.templateService.checkAllArrayEmpty("adding plan")) {
+      return false;
+    }
       //created Date**
       let date = new Date();
       let date1 = date.getDate().toString() + '/' + (date.getMonth() + 1).toString() + '/' + date.getFullYear().toString();
       let maparr = this.templateService.cleansedArray();
       console.log(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact);
       this.PlanService.addPlanDetails(this.defaultLanguage, date1, this.planName, this.pName, this.pNric, this.tcsName, this.tcsContact, maparr, this.appointment).then(() => {
-        this.router.navigateByUrl('/tabs/plans')
-
+        this.router.navigateByUrl('/tabs/plans');
       });
-    }
-
 
   }
 
   newAppt() {
-    let apptObj = {
-      id: uuid(),
-      clinicName: "",
-      appTime: "",
-    }
-    this.appointment.push(apptObj);
+    this.templateService.newAppt();
+  }
+  checkAppt() {
+    return this.templateService.appointment.length > 0
   }
 
   //template codes 

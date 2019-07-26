@@ -160,7 +160,7 @@
           <ion-item no-padding>
             <ion-label position="floating"> Name </ion-label>
             <ion-input formControlName="detailname" type="text" [(ngModel)]="details.name" readonly="{{isDisabled}}"
-              [class.invalid]="!something.controls.detailname.valid && (something.controls.detailname.dirty)">
+              [class.invalid]="!something.controls.detailname.valid && (something.controls['detailname'].dirty)">
             </ion-input>
           </ion-item>
           <p *ngIf="!something.controls.detailname.valid &&submitted" style="color:red">Name required</p>
@@ -169,10 +169,10 @@
           <ion-item no-padding>
             <ion-label position="floating"> NRIC </ion-label>
             <ion-input formControlName="detailnric" type="text" [(ngModel)]="details.nric" readonly="{{isDisabled}}"
-              [class.invalid]="!something.controls.detailnric.valid && (something.controls.detailnric.dirty)">
+              [class.invalid]="!something.controls.detailnric.valid && (something.controls['detailnric'].dirty)">
             </ion-input>
           </ion-item>
-          <p *ngIf="!something.controls.detailnric.valid  &&submitted" style="color:red">Valid NRIC</p>
+          <p *ngIf="!something.controls.detailnric.valid  &&submitted" style="color:red">Invalid NRIC</p>
         </ion-col>
       </ion-row>
       <ion-row>
@@ -180,7 +180,7 @@
           <ion-item no-padding>
             <ion-label position="floating"> TCS Name </ion-label>
             <ion-input formControlName="detailtcs" type="text" [(ngModel)]="details.cname" readonly="{{isDisabled}}"
-              [class.invalid]="!something.controls.detailtcs.valid && (something.controls.detailtcs.dirty)">
+              [class.invalid]="!something.controls.detailtcs.valid && (something.controls['detailtcs'].dirty)">
             </ion-input>
           </ion-item>
           <p *ngIf="!something.controls.detailtcs.valid &&submitted" style="color:red">TCS name required</p>
@@ -189,10 +189,10 @@
           <ion-item no-padding>
             <ion-label position="floating"> TCS Contact </ion-label>
             <ion-input formControlName="detailcontact" type="text" [(ngModel)]="details.ccontact" readonly="{{isDisabled}}"
-              [class.invalid]="!something.controls.detailcontact.valid && (something.controls.detailcontact.dirty)">
+              [class.invalid]="!something.controls.detailcontact.valid && (something.controls['detailcontact'].dirty)">
             </ion-input>
           </ion-item>
-          <p *ngIf="!something.controls.detailcontact.valid &&submitted" style="color:red">Valid Contact</p>
+          <p *ngIf="!something.controls.detailcontact.valid &&submitted" style="color:red">Invalid Contact</p>
         </ion-col>
       </ion-row>
 
@@ -221,6 +221,14 @@
 
       </ion-card-header>
 
+    <ion-row style="background-color: grey; color: white;">
+      <ion-col>
+        <span style="margin-left: 10%"> Symptom </span>
+      </ion-col>
+      <ion-col>
+        <span style="margin-left: 6%;"> What to do </span>
+      </ion-col>
+    </ion-row>
       <!-- view page when click on one template... show icon and text only -->
       <!-- <ion-grid style="padding:3%; background-color: #FFF" *ngIf="viewPage && !editPage"> -->
       <ion-grid style="padding:3%; background-color: #FFF" *ngIf="isDisabled">
@@ -353,13 +361,13 @@
 
 
     <ion-card class="welcome-card" style="margin-bottom: 6%">
-      <ion-card-header color="tertiary"><ion-icon name="add" (click)="addAppt()"></ion-icon> 
+      <ion-card-header color="tertiary">
         <ion-card-title>
           Appointment (Optional)
         </ion-card-title>
         <ion-content>
           <ion-fab vertical="top" horizontal="end" edge slot="fixed">
-            <ion-fab-button (click)="newAppt(); apptToggle=!appToggle" size="small" class="btnAdd" [disabled]="checked.length > 0" *ngIf="!isDisabled">
+            <ion-fab-button (click)="newAppt()" size="small" class="btnAdd" [disabled]="checked.length > 0" *ngIf="!isDisabled">
                 <ion-icon name="add"></ion-icon>
               </ion-fab-button>
         </ion-fab>
@@ -367,7 +375,7 @@
       </ion-card-header>
       
       <div class="gridReplace" style="background-color:white;">
-        <ion-row>
+        <ion-row *ngIf="checkAppt()">
           <ion-col>
             <ion-label>Clinic Name</ion-label>
           </ion-col>
@@ -401,7 +409,11 @@
 
         </ion-row>
 
-        <ion-row style="height:45px;" [ngClass]="{'blur': appToggle}" *ngIf="!checkAppt"> </ion-row>
+        <ion-row style="height:45px;" *ngIf="!checkAppt()"> 
+            <p text-center style="width:100%"> No appointments added </p>
+        </ion-row>
+
+
       </div>
 
     </ion-card>
