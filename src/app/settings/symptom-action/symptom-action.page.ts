@@ -1,9 +1,8 @@
 import { SymptomActionService } from '../../services/symptomaction.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Events, IonList } from '@ionic/angular';
+import { Events, IonList, IonItemSliding } from '@ionic/angular';
 import { Router } from '@angular/router';
 
-import 'hammerjs'; //for gestures
 import { TemplateService } from 'src/app/services/template.service';
 
 @Component({
@@ -34,9 +33,14 @@ export class SymptomActionPage implements OnInit {
     }).catch(() => {});
   }
 
+  dragAndCheckLongPress(slideItem: IonItemSliding) {
+    slideItem.close();
+  }
+
   pressEvent(x) {
     console.log("pressed " + JSON.stringify(x));
     if (this.checked.length == 0) {
+      this.mylist.closeSlidingItems();
       this.checked.push({
         id: x.id,
         selectedType: this.selectedTab
@@ -98,6 +102,7 @@ export class SymptomActionPage implements OnInit {
 
   ionViewWillEnter() {
     this.loadItems();
+    this.android = this.templateService.checkPlatformAndroid();
   }
 
   loadItems() {
@@ -126,6 +131,7 @@ export class SymptomActionPage implements OnInit {
 
   segmentChanged() {
     this.clearArray();
+    this.mylist.closeSlidingItems();
   }
 
   selectedSymptom(id) {
@@ -156,5 +162,35 @@ export class SymptomActionPage implements OnInit {
     return null;
   }
 
+  android: boolean;
+
+  ionViewWillLeave() {
+    this.mylist.closeSlidingItems();
+  }
+  
+  @ViewChild('content')content;
+  scrollToItem() {
+    console.warn("clicked scroll");
+    this.content.scrollToTop(1000);
+    setTimeout(() => {
+      this.buttonShown = false;
+    }, 1000);
+  }
+  buttonShown: boolean = false;
+  scroll(ev) {
+    let currentScrollHeight = ev.target.clientHeight + ev.detail.scrollTop;
+    let screenSize = ev.target.clientHeight;
+    // console.warn("sreen size", screenSize);
+    // console.warn("event + "+ dimension);
+    let totalHeight = document.getElementById("wholeList").clientHeight;
+    // let shownWhenHeight = totalHeight * 0.2;
+    // console.log(totalHeight)
+    // console.warn(shownWhenHeight);
+    // console.error(currentScrollHeight);
+    // console.log(this.sortedDetails.length)
+    currentScrollHeight > 1500 ? //shown when more than 20 settings https://stackoverflow.com/questions/45880214/how-to-show-hide-button-dependent-on-the-position-of-content-scroll-in-ionic-2
+      this.buttonShown = true 
+      : this.buttonShown = false;
+  }
 
 }

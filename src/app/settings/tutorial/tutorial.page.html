@@ -56,7 +56,7 @@
     
     <ion-slide>
       <h1>You have come to the end of the tutorial for {{selectedTab}}</h1>
-      <ion-button [routerLink]="selectedTab == 'templates' ? ['/tabs/templates/new'] : ['/tabs/plans/newPlan']">Get started</ion-button>
+      <ion-button (click)="getStarted()">Get started</ion-button>
     </ion-slide>
 
   </ion-slides>

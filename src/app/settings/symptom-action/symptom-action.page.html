@@ -1,17 +1,16 @@
 <ion-header>
   <ion-toolbar [color]="checked.length > 0 ? 'greenCard' : 'primary'">
     <ion-title>
-      Content
+      {{checked.length == 0 ? 'Content' : checked.length + ' Selected'}}
     </ion-title>
     <!-- <ion-button slot="start" href="/tabs/tab1" routerDirection="back">Back</ion-button> -->
     <ion-buttons slot="start">
       <ion-back-button *ngIf="checked.length > 0" defaultHref="/tabs/settings/symptomAction" (tap)="clearArray()"></ion-back-button>
-      <span *ngIf="checked.length > 0"> {{checked.length}} </span>
       <ion-back-button *ngIf="checked.length == 0" defaultHref="/tabs/settings"></ion-back-button>
     </ion-buttons>
 
     <ion-buttons slot="end" *ngIf="checked.length > 0" (tap)="deleteSelected()">
-        <ion-icon name="trash" style="font-size: 24px; margin-right:18px;"></ion-icon>
+      <ion-icon name="trash" style="font-size: 24px; margin-right:18px;"></ion-icon>
     </ion-buttons>
 
     <ion-buttons slot="end" *ngIf="checked.length == 0">
@@ -26,6 +25,7 @@
     padding-top: 0px;
     padding-bottom: 0px;
   }
+
   img {
     border-radius: 50%;
   }
@@ -33,12 +33,14 @@
   /* ion-segment {
     margin-bottom: 12px;
   } */
-  .highlightPadding { /* the line height original when long press highlighted is 1.5, remove it then long text wrapped properly*/
+  .highlightPadding {
+    /* the line height original when long press highlighted is 1.5, remove it then long text wrapped properly*/
     line-height: 100%;
+    padding-bottom: 4px;
   }
 </style>
 
-<ion-content>
+<ion-content #content (ionScroll)="scroll($event)" [scrollEvents]="true">
   <!-- Segment with default selection -->
   <ion-segment (ionChange)="segmentChanged()" [(ngModel)]="selectedTab" value="Symptom" color="originalPrimary">
     <ion-segment-button value="Symptom">
@@ -49,37 +51,33 @@
     </ion-segment-button>
   </ion-segment>
 
-  <ion-list lines="full" #mylist padding-bottom>
-    <ion-virtual-scroll [items]="selectedTab == 'Symptom' ? symptomList : actionList" approxItemHeight="59px" [headerFn]="renderDividers">
-      <ion-item-divider *virtualHeader="let header">
-        {{ header }}
-      </ion-item-divider>
-      <ion-item-sliding *virtualItem="let item" (ionSwipe)="deleteIOS(item)">
-        <ion-item (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)" [color]="item.checked && 'lightBlue'" button>
-          <ion-thumbnail slot="start">
-            <!-- <img [src]="item.icon"/>  -->
-            <ion-img [src]="item.icon" alt="empty" cache="true" width="40" height="40"></ion-img>
-          </ion-thumbnail>
-          <!-- <ion-img style="width:80px; height:100px" [src]="item.icon"></ion-img> -->
-          <ion-label text-wrap [ngClass]="{'highlightPadding': checked.length > 0}">
-            {{item.enName}}
-          </ion-label>
-          <ion-checkbox mode="ios" slot="end" *ngIf="checked.length > 0" [(ngModel)]="item.checked" (ionChange)="check(item)" color="success"></ion-checkbox>
-          <ion-ripple-effect></ion-ripple-effect> 
-        </ion-item>
+  <ion-list lines="full" #mylist padding-bottom id="wholeList">
+    <ion-virtual-scroll [items]="selectedTab == 'Symptom' ? symptomList : actionList" id="virtualScroll">
 
-        <ion-item-options side="end"> 
-          <ion-item-option color="danger" expandable (click)="deleteIOS(item)">
-            <ion-icon name="trash" slot="top" style="zoom:2.0"></ion-icon> Delete
-          </ion-item-option>
-        </ion-item-options>
-        <ion-item-options side="start">
-          <ion-item-option color="danger" expandable (click)="deleteIOS(item)">
-            <ion-icon name="trash" slot="top" style="zoom:2.0"></ion-icon> Delete
-          </ion-item-option>
-        </ion-item-options>
-          
-      </ion-item-sliding>
+        <ion-item-sliding *virtualItem="let item" (ionSwipe)="checked.length == 0 && deleteIOS(item)" class="ion-activatable" (ionDrag)="checked.length > 0 && dragAndCheckLongPress(slidingItem)" #slidingItem>
+          <ion-item (tap)="selectedSymptom(item.id)" (press)="pressEvent(item)" [color]="item.checked && 'lightBlue'" detail>
+            <ion-thumbnail slot="start">
+              <img [src]="item.icon" width="45" height="45" margin-end/> 
+              <!-- <ion-img [src]="item.icon" cache="true"></ion-img> -->
+            </ion-thumbnail>
+            <!-- <ion-img style="width:80px; height:100px" [src]="item.icon"></ion-img> -->
+            <ion-label text-wrap [ngClass]="{'highlightPadding': checked.length > 0}">
+              {{item.enName}}
+            </ion-label>
+            <ion-checkbox mode="ios" slot="end" *ngIf="checked.length > 0" [(ngModel)]="item.checked"
+              (ionChange)="check(item)" color="success"></ion-checkbox>
+      
+          </ion-item>
+
+          <ion-item-options side="end">
+            <ion-item-option color="danger" expandable (click)="checked.length == 0 && deleteIOS(item)">
+              <ion-icon name="trash" slot="top" style="zoom:2.0"></ion-icon> DELETE
+            </ion-item-option>
+          </ion-item-options>
+
+          <ion-ripple-effect></ion-ripple-effect>
+        </ion-item-sliding>
+  
     </ion-virtual-scroll>
   </ion-list>
 
@@ -109,4 +107,12 @@
         
       </ion-item-sliding>
     </ion-list> -->
+
+    <!-- fab placed to the bottom end -->
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="buttonShown">
+      <ion-fab-button size="small" (tap)="scrollToItem()">
+        <ion-icon name="ios-arrow-dropup"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+
 </ion-content>

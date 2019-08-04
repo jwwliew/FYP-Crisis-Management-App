@@ -19,8 +19,26 @@ export class AppComponent {
     private statusBar: StatusBar,
     private storage: Storage
   ) {
+    for(let i =0; i<100; i++) {
+      let globalPlanObj = {
+          id: uuid(),
+          ccontact: "12345678" + i,
+          cname: "cname" + i,
+          // createdDate: new Date().toLocaleString('en-GB', {hour12: true}), //https://angular.io/api/common/DatePipe
+          createdDate: new Date().toLocaleString(),
+          language: 0,
+          name: "nameplan" + i,
+          nric: "S1234567Z" + i,
+          planName: "planName" + i,
+          appointment: [],
+          templates: []
+      }
+      this.globalPlan.push(globalPlanObj)
+    }
     this.initializeApp();
   }
+
+  globalPlan = [];
 
   initializeApp() {
     this.platform.ready().then(() => {
@@ -32,7 +50,9 @@ export class AppComponent {
       //https://forum.ionicframework.com/t/after-splash-screen-display-white-screen-long-time/80162/20
       //https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-splashscreen/#preferences
       this.storage.length().then(length => {
-        length == 0 && (this.storage.set("settingStorageKey", this.globalSettingObj), this.storage.set("actionKey", this.globalActionObj))
+        length == 0 && (
+          this.storage.set("settingStorageKey", this.globalSettingObj), this.storage.set("actionKey", this.globalActionObj), this.storage.set("plan", this.globalPlan)
+        );
       })
     });
   }
@@ -1346,5 +1366,4 @@ export class AppComponent {
       icon: "assets/pdfrescue.png"
     }
   ]
-  
 }

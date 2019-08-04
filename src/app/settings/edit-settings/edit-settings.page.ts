@@ -1,11 +1,10 @@
 import { Setting } from '../../models/symptomaction';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import { SymptomActionService } from 'src/app/services/symptomaction.service';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { TemplateService } from 'src/app/services/template.service';
 
-import {v4 as uuid} from 'uuid';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 
 @Component({
@@ -38,9 +37,9 @@ export class EditSettingsPage implements OnInit {
 
   ngOnInit() {
     this.editID = this.activatedRoute.snapshot.paramMap.get("id");
-    console.log("hello this page params = " + this.editID);
+    // console.log("hello this page params = " + this.editID);
     this.selectedTab = this.activatedRoute.snapshot.paramMap.get("selectedTab");  
-    console.log("this selected tab = " + this.selectedTab);
+    // console.log("this selected tab = " + this.selectedTab);
     if (this.editID == "add") {
       this.contentDetails.enName = "New " + this.selectedTab;
     }
@@ -58,11 +57,13 @@ export class EditSettingsPage implements OnInit {
     // })
   }
 
+  @ViewChild('englishInput') input;
   save(value) {
     console.log("clicked save " + JSON.stringify(value));
     if (value.english == "") {
       this.templateService.presentToastWithOptions("English name is required!");
       this.englishEmpty = true;
+      this.input.setFocus();
       return false;
     }
     console.error("content detail obj before saving = " + JSON.stringify(this.contentDetails, null, 2));
@@ -74,7 +75,9 @@ export class EditSettingsPage implements OnInit {
       tmName: value.tamil,
       icon: this.contentDetails.icon || "assets/empty.svg"
     }
-    let functionToCall = this.editID == "add" ? this.settingService.addReusable(this.selectedTab, newValues) : this.settingService.updateOneSetting(this.selectedTab, newValues)
+    let functionToCall = this.editID == "add" ? 
+      (this.settingService.addReusable(this.selectedTab, newValues), this.templateService.presentToastWithOptions("Added " + this.selectedTab.toLowerCase()))
+      : (this.settingService.updateOneSetting(this.selectedTab, newValues), this.templateService.presentToastWithOptions("Updated " + this.selectedTab.toLowerCase()))
     functionToCall.then(() => {
       this.goBack();
     })
@@ -82,8 +85,10 @@ export class EditSettingsPage implements OnInit {
 
   goBack() {
     //this.router.navigate(['/tabs/settings/symptomAction'])
-    this.thisForm.reset();
-    this.router.navigateByUrl("/tabs/settings/symptomAction"); //https://stackoverflow.com/questions/41678356/router-navigate-does-not-call-ngoninit-when-same-page
+    this.router.navigateByUrl("/tabs/settings/symptomAction").then(() => {
+      // this.thisForm.reset(); //reset clears the form data, which will show the error msg when navigating back to page
+      this.thisForm.markAsPristine();
+    }); //https://stackoverflow.com/questions/41678356/router-navigate-does-not-call-ngoninit-when-same-page
   }
 
   takePhoto(sourceType: number) {
@@ -105,5 +110,36 @@ export class EditSettingsPage implements OnInit {
     });
   }
 
+  focus(position) {
+    let thisItem = this.thisForm.controls[position];
+    console.warn("markAsTouched() and dirty", thisItem);
+    this.thisForm.controls[position].markAsTouched();
+    this.thisForm.controls[position].markAsDirty();
+    // this.thisForm.controls[position].markAsDirty();
+  }
+  defocus(position) {
+    let thisItem = this.thisForm.controls[position];
+    // if (!thisItem.value) { //press away, if no value in input, mark as untouched, show placeholder text, label gone
+    //   thisItem.markAsPristine();
+    //   console.warn("untouched, no value in", thisItem);
+    // }
+    if (position == 'english') {
+      console.warn("position english mark as pristine", thisItem);
+      thisItem.markAsPristine(); //https://stackoverflow.com/questions/40690371/set-form-to-pristine-without-clearing-data
+    }
+    else {
+      console.error("position not english mark as untouched", thisItem);
+      this.thisForm.controls[position].markAsUntouched();
+    }
+    // console.error("defocused markAsUntouched()");
+  }
 
+  get(item) {
+    return this.thisForm.controls[item];
+  }
+
+  checkLength(item) {
+    let x = this.thisForm.controls[item]
+    return x.value ? true : false
+  }
 }

@@ -12,6 +12,7 @@ import { SymptomActionService } from 'src/app/services/symptomaction.service';
 export class ViewTemplatesPage implements OnInit {
 
   allTemplate = [];
+  loading = true;
 
   constructor(private router: Router, private templateService: TemplateService, private event: Events, private navCtrl: NavController, private settingService: SymptomActionService) { }
 
@@ -46,16 +47,28 @@ export class ViewTemplatesPage implements OnInit {
     //   console.groupEnd();
     //   console.log(this.allTemplate);
     // })
+    this.loading = true;
+    this.loadTemplates();
+    setTimeout(() => {
+      this.loading = false;
+    }, 300);
+    // this.templateService.getAllTemplate("templateKey").then(val => {
+    //   console.log("val = " + JSON.stringify(val));
+    //   this.allTemplate = val;
+    // });
+  }
+
+  loadTemplates() {
     this.templateService.getAllTemplate("allKey").then(val => {
-      console.group("json data view page " + JSON.stringify(val,null,2));
-      console.log(val);
-      console.groupEnd();
+      // console.group("json data view page " + JSON.stringify(val,null,2));
+      // console.log(val);
+      // console.groupEnd();
       val = val || []; //prevent null if val empty at start no storage
       this.allTemplate = val.map((element, index) => {
-        console.log("ele,ent --- " + JSON.stringify(element, null, 2))
-        console.warn("concat templates" + JSON.stringify([].concat(...element.templates), null, 2));
+        // console.log("ele,ent --- " + JSON.stringify(element, null, 2))
+        // console.warn("concat templates" + JSON.stringify([].concat(...element.templates), null, 2));
         element.templates.forEach(x => {
-          console.warn("X === " + JSON.stringify(x,null,2));
+          // console.warn("X === " + JSON.stringify(x,null,2));
           // x.length && this.settingService.getOneImage("Symptom", x[oneIndex].symptom.symptomID).then(oneImg => {
           x.length && x.forEach(y => {
             this.settingService.getOneImage("Symptom", y.symptom.symptomID).then(oneImg => {
@@ -64,7 +77,7 @@ export class ViewTemplatesPage implements OnInit {
             // x[oneIndex].symptom.img = oneImg;
           });
         })
-        console.warn("obj finally end----")
+        // console.warn("obj finally end----")
         let obj = {
           id: val[index].id,
           name: val[index].name,
@@ -75,22 +88,17 @@ export class ViewTemplatesPage implements OnInit {
       });
       // this.allTemplate = [{name: val[0].name, template: [].concat(...val[0].templates)}]; //https://stackoverflow.com/questions/10865025/merge-flatten-an-array-of-arrays
       // console.warn("array pushed = " + JSON.stringify(this.allTemplate, null, 2) + "\n array length = " + this.allTemplate[0].template.length);
-      console.warn(JSON.stringify(this.allTemplate, null, 2));
+      // console.warn(JSON.stringify(this.allTemplate, null, 2));
       this.allTemplate.sort((a,b) => a.language - b.language); //sort template by language English > Chinese > Malay > Tamil
-      console.error(JSON.stringify(this.allTemplate, null, 2));
+      // console.error(JSON.stringify(this.allTemplate, null, 2));
       this.allTemplate.forEach(x => {
         x.template = x.template.filter(function(element) {
-          console.error(this);
+          // console.error(this);
           return !this.has(element.symptom.symptomID) && this.add(element.symptom.symptomID) // https://stackoverflow.com/questions/51517650/removing-duplicates-using-set-in-javascript
         }, new Set);
         // console.warn(JSON.stringify(x.template,null,2));       
       })
     });
-
-    // this.templateService.getAllTemplate("templateKey").then(val => {
-    //   console.log("val = " + JSON.stringify(val));
-    //   this.allTemplate = val;
-    // });
   }
 
   newTemplate() {
@@ -128,6 +136,10 @@ export class ViewTemplatesPage implements OnInit {
         this.event.publish("view", modifiedTemplate);
       })
     })
+  }
+
+  itemHeightFn(item, index) { //method to prevent virtual scroll flicker when navigate between tabs
+    return 190; //https://github.com/ionic-team/ionic/issues/17540#issuecomment-511136665
   }
 
 }

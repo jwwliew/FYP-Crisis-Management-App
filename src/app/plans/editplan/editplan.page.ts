@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PlanService } from './../../services/plan.service';
 import { TemplateService } from 'src/app/services/template.service';
 import { SymptomActionService } from 'src/app/services/symptomaction.service';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, IonList, IonItemSliding } from '@ionic/angular';
 import * as jsPDF from 'jspdf';
 import domtoimage from 'dom-to-image';
 import { File } from '@ionic-native/file/ngx';
@@ -16,47 +16,46 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./editplan.page.scss'],
 })
 export class EditplanPage implements OnInit {
-    
+
+  submitted = false;
+  isDisabled: boolean = true;
+  details = {} as any;
+  backUpPlanDetails = [];
+  android: boolean;
+
   constructor(private PlanService: PlanService, private activatedRoute: ActivatedRoute, private templateService: TemplateService, private settingService: SymptomActionService,
     private router: Router, private file: File, private loadingController: LoadingController, private fileOpener: FileOpener, public formBuilder: FormBuilder) {
   }
 
   something = this.formBuilder.group({
-    detailname: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+    detailname: ['', Validators.compose([Validators.maxLength(30), Validators.pattern(/(?!\s*$)/), Validators.required])],
     detailnric: ['', Validators.compose([Validators.maxLength(9), Validators.minLength(9), Validators.pattern('^(s|g|S|G|T|t)[0-9]{7}[a-z|A-Z]{1}$'), Validators.required])],
-    detailtcs: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+    detailtcs: ['', Validators.compose([Validators.maxLength(30), Validators.pattern(/(?!\s*$)/), Validators.required])],
     detailcontact: ['', Validators.compose([Validators.maxLength(8), Validators.minLength(8), Validators.pattern('[0-9]*'), Validators.required])],
   });
 
-  submitted = false;
-  isDisabled: boolean = true;
+  ngOnInit() {}
 
-  details = {} as any;
-
-  appointment = this.templateService.appointment;
-
-  ngOnInit() {
-
-  }
   getApptArray() {
     return this.templateService.getApptArray();
   }
 
-  backViewPlan() {
-    if (this.isDisabled) {
-      this.templateService.resetArray();
-      this.router.navigateByUrl('/tabs/plans');
-    }
-    else {
-      console.warn("going back to view page from edit plan");
-      this.templateService.goToViewPageFromEdit();
-      this.isDisabled = !this.isDisabled;
-      // this.appointment = this.templateService.appointment;
-    }
-    // this.router.navigateByUrl('/tabs/plans');
+  backViewPlan(id) {
+    this.isDisabled ? this.templateService.resetArray()
+      : (
+        this.something.controls.detailname.setValue(this.backUpPlanDetails[0]),
+        this.something.controls.detailnric.setValue(this.backUpPlanDetails[1]),
+        this.something.controls.detailtcs.setValue(this.backUpPlanDetails[2]),
+        this.something.controls.detailcontact.setValue(this.backUpPlanDetails[3]),
+        // this.something.markAsUntouched(),
+        this.templateService.goToViewPageFromEdit(),
+        this.router.navigateByUrl('/tabs/plans/editplan/' + id),
+        this.isDisabled = true
+      )
   }
 
   ionViewWillEnter() {
+    this.android = this.templateService.checkPlatformAndroid();
     let id = this.activatedRoute.snapshot.paramMap.get('item');
     console.warn("id = " + id);
     this.templateService.setGlobalSettings();
@@ -78,8 +77,11 @@ export class EditplanPage implements OnInit {
       this.details = everything;
       this.defaultLanguage = everything.language;
       console.warn("EVERYTHING " + JSON.stringify(everything,null,2));
-      // this.appointment = everything.appointment;
       this.templateService.appointment = everything.appointment;
+      this.something.controls['detailname'].setValue(this.details.name);
+      this.something.controls.detailnric.setValue(this.details.nric);
+      this.something.controls.detailtcs.setValue(this.details.cname);
+      this.something.controls.detailcontact.setValue(this.details.ccontact);
     });
   }
 
@@ -97,6 +99,8 @@ export class EditplanPage implements OnInit {
   inputTriggered = false;
   inputFocus = () => this.inputTriggered = true;
   pressEvent(type, thisObject, arrayID, combinedIndex) {
+    this.mylist.closeSlidingItems();
+    this.apptList.closeSlidingItems();
     this.inputTriggered || this.templateService.pressEvent(type, thisObject, arrayID, combinedIndex);
     this.inputTriggered = false;
   }
@@ -180,7 +184,7 @@ export class EditplanPage implements OnInit {
       }
 
       // Name of pdf
-      const fileName = "crisisOpener.pdf";
+      const fileName = "CrisisPlan.pdf";
       //Writing File to Device  
       this.file.writeFile(directory, fileName, buffer, { replace: true }).then(success => { //https://ourcodeworld.com/articles/read/38/how-to-capture-an-image-from-a-dom-element-with-javascript
         console.log("File created Succesfully" + JSON.stringify(success));
@@ -192,23 +196,32 @@ export class EditplanPage implements OnInit {
   }
 
   callEdit() {
+    this.backUpPlanDetails = [this.details.name, this.details.nric, this.details.cname, this.details.ccontact];
     this.isDisabled = false;
     this.templateService.callEdit(this.defaultLanguage);
   }
 
-  savePage(id) {
+  savePage(id, formValue) {
     if (this.something.controls["detailcontact"].invalid || this.something.controls["detailname"].invalid ||
       this.something.controls["detailtcs"].invalid || this.something.controls["detailnric"].invalid) {
       this.submitted = true;
       this.templateService.presentToastWithOptions("Please enter required plan details highlighted in red");
       return false;
     }
-    if (this.templateService.checkAllArrayEmpty("updating plan")) {
+    if (this.templateService.checkAllArrayEmpty("updating plan") || this.templateService.checkAppointmentEmpty()) {
       return false;
     }
+    this.details.name = formValue.detailname.trim();
+    this.details.nric = formValue.detailnric;
+    this.details.cname = formValue.detailtcs.trim();
+    this.details.ccontact = formValue.detailcontact;
+    // this.details.appointment = this.details.appointment.filter(x => x.clinicName);
+    console.warn("saving details" + JSON.stringify(this.details,null,2));
     this.PlanService.editPlan(id, this.details).then(allPlan => {
       this.templateService.editPageUpdateArray(allPlan, id);
       this.templateService.presentToastWithOptions("Saved plan successfully!");
+      this.something.controls.detailname.setValue(this.details.name); //set again trim() value in case there is white space
+      this.something.controls.detailtcs.setValue(this.details.cname);
       this.isDisabled = true;
     })
   }
@@ -224,7 +237,10 @@ export class EditplanPage implements OnInit {
   }
 
   dateChanged(my, appObj) {
-    let time = new Date(my).toLocaleString();
+    // console.warn("my picker --> ", my);
+    // let time = new Date(my).toLocaleString('en-GB'); //'en-GB' will crash as the system keeps returning 02/08 and 08/02 at same time when logged
+    let time = new Date(my).toLocaleString(); 
+    // console.warn("time changed --", time);
     appObj.appTime = time;
   }
 
@@ -234,6 +250,24 @@ export class EditplanPage implements OnInit {
 
   checkAppt() {
     return this.templateService.appointment.length > 0
+  }
+
+  @ViewChild('mylist')mylist: IonList;
+  @ViewChild('apptList')apptList: IonList;
+  deleteIOSAppointment(item) {
+    this.templateService.deleteIOSAppointment(item);
+    this.apptList.closeSlidingItems();
+    this.templateService.presentToastWithOptions("Deleted appointment!");
+  }
+
+  deleteIOS(thisItem, arrayID, mainID, combinedID) {
+    this.templateService.deleteIOS(thisItem, arrayID, mainID, combinedID);
+    this.mylist.closeSlidingItems();
+    this.templateService.presentToastWithOptions("Deleted action!");
+  }
+
+  dragAndCheckLongPress(slideItem: IonItemSliding) {
+    slideItem.close();
   }
 
 }

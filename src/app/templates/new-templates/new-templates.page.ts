@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { AlertController, Events, LoadingController } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { AlertController, Events, LoadingController, IonList, IonItemSliding } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { TemplateService } from 'src/app/services/template.service';
 
@@ -7,7 +7,6 @@ import * as jsPDF from 'jspdf';
 import domtoimage from 'dom-to-image';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
-
 
 @Component({
   selector: 'app-new-templates',
@@ -54,16 +53,30 @@ export class NewTemplatesPage implements OnInit {
   }
 
   inputTriggered = false;
-
+  
   inputFocus = () => this.inputTriggered = true;
 
-  pressEvent(type, thisObject, arrayID, combinedIndex) {
-    this.inputTriggered || this.templateService.pressEvent(type, thisObject, arrayID, combinedIndex);
-    this.inputTriggered = false;
+  @ViewChild('mylist')mylist: IonList;
+  android: boolean;
+  pressEvent(type, thisObject, arrayID, combinedIndex, ev) {
+    this.mylist.closeSlidingItems();
+    console.warn("input triggered", this.inputTriggered);
+    if (!this.android) {
+      console.warn("NOT ANDROID")
+      this.inputTriggered || this.templateService.pressEvent(type, thisObject, arrayID, combinedIndex);
+      this.inputTriggered = false;
+    }
+    else {
+      console.error("ANDROID!!");
+      this.templateService.pressEvent(type, thisObject, arrayID, combinedIndex);
+    }
   }
-
+  dragAndCheckLongPress(slideItem: IonItemSliding) {
+    slideItem.close();
+  }
   clickEvent(type, wholeItem, arrayID, combinedIndex) {
     this.templateService.clickEvent(type, wholeItem, arrayID, combinedIndex);
+    this.inputTriggered = false; //added to attempt to stop inputTriggered from being true when tap onto ion-textarea, hence need to long press 2nd time
   }
 
   clearArray() {
@@ -73,6 +86,12 @@ export class NewTemplatesPage implements OnInit {
   deleteArray() {
     this.templateService.deleteArray();
     this.templateService.presentToastWithOptions("Deleted items!");
+  }
+
+  deleteIOS(thisItem, arrayID, mainID, combinedID) {
+    this.templateService.deleteIOS(thisItem, arrayID, mainID, combinedID);
+    this.mylist.closeSlidingItems();
+    this.templateService.presentToastWithOptions("Deleted item!");
   }
 
 //https://stackoverflow.com/questions/48133216/custom-icons-on-ionic-select-with-actionsheet-interface-ionic2
@@ -96,8 +115,8 @@ export class NewTemplatesPage implements OnInit {
       // this.event.publish("created", this.criticalArray);
       console.error("VAL " + JSON.stringify(val,null,2))
       templateNameFromInput ?
-        this.router.navigateByUrl('/tabs/templates') :
-        this.templateService.editPageUpdateArray(val, this.templateID), this.editPage = false, this.viewPage = true
+        (this.router.navigateByUrl('/tabs/templates'), this.templateService.presentToastWithOptions("Created template!")) :
+        (this.templateService.editPageUpdateArray(val, this.templateID), this.templateService.presentToastWithOptions("Updated template!"),this.editPage = false, this.viewPage = true)
     })
   }
 
@@ -144,6 +163,7 @@ export class NewTemplatesPage implements OnInit {
 
   ionViewWillEnter() {
     console.log("ng init + " + JSON.stringify(this.templateService.getAllArray(),null,2));
+    this.android = this.templateService.checkPlatformAndroid();
     this.frontViewData = this.templateService.frontViewData;
   }
 

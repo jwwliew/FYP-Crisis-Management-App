@@ -18,7 +18,7 @@ export class SymptomActionService {
 
   getType(type) {
     this.thisKey = type == "Symptom" ? STORAGE_KEY : ACTION_KEY
-    console.log("this key is " + this.thisKey);
+    // console.log("this key is " + this.thisKey);
     return this.storage.get(this.thisKey);
   }
   
@@ -73,13 +73,13 @@ export class SymptomActionService {
   getOneSetting(type, id) {
     console.log("type = " + type);
     return this.getType(type).then((items: Setting[]) => {
-      console.error("items = " + JSON.stringify(items, null, 2));
+      // console.error("items = " + JSON.stringify(items, null, 2));
       return items.find(item => item.id == id) //previously used filter returns array need [0] to access in editSettings page
     })
   }
 
   updateOneSetting(type, newValues) {
-    return this.getType(type).then(async (items: Setting[]) => {
+    return this.getType(type).then((items: Setting[]) => {
       let itemIndex = items.findIndex(item => item.id === newValues.id);
       console.log("item index to update = " + itemIndex);
       console.log("this key in update = " + this.thisKey);

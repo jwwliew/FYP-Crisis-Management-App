@@ -3,7 +3,7 @@
     <ion-title>
       Plans
     </ion-title>
-    <ion-buttons slot="" (click)="presentActionSheet()">
+    <ion-buttons slot="start" (click)="presentActionSheetDelayed()">
       <ion-button>
         <ion-icon name="funnel"></ion-icon>
       </ion-button>
@@ -14,45 +14,66 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content #content (ionScroll)="scroll($event)" [scrollEvents]="true">
 
   <!----THIS IS SEARCH BAR---->
-  <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="setFilteredItems()">
-  </ion-searchbar>
+  <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="setFilteredItems()" animated margin-bottom (ionFocus)="ionFocus()" (ionBlur)="ionBlur()"></ion-searchbar>
 
-  <ion-list>
+  <div *ngIf="searchTerm && sortedDetails && sortedDetails.length == 0" text-center padding> No search results found. Please try again.</div>
 
-    <ion-card *ngFor="let item of details " (click)="goEdit(item)">
-      <ion-item-sliding (ionSwipe)="swipeEvent(item.id, $event)">
-        <ion-card-header color="tertiary">
-          <ion-card-title>{{item.planName}}</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <ion-row>
-            <ion-col>
-              <h6>{{item.name}}</h6>
-            </ion-col>
-            <ion-col text-center>
-              <h6>{{item.ccontact}}</h6>
-            </ion-col>
-            <ion-col text-right>
-              <h6>{{item.createdDate}}</h6>
-            </ion-col>
-          </ion-row>
-        </ion-card-content>
+  <div *ngIf="!searchTerm && sortedDetails && sortedDetails.length == 0" id="noPlanDiv">
+      Click "New" at the right top of this screen to create a plan.
+  </div>
 
-        <ion-item-options>
-          <ion-item-option color="primary" (click)="swipeEvent(item.id, $event)">
-            <ion-icon slot="start" name="trash">
-              <ion-item></ion-item>
-            </ion-icon>
-            Delete
-          </ion-item-option>
-        </ion-item-options>
+  <ion-list lines="none" margin-bottom [style.padding-top]="'0px'" #mylist id="wholeList">
 
-      </ion-item-sliding>
+    <ion-virtual-scroll [items]="sortedDetails" id="virtualScroll" [itemHeight]="itemHeightFn">
+      <!-- <div *virtualItem="let item; let index = index;"> -->
+        <ion-item-sliding (ionSwipe)="swipeEvent(item.id)" *virtualItem="let item; let index = index;">
+          <ion-item (click)="goEdit(item)" detail="false">
+            <ion-card button>
+              <ion-card-header color="tertiary">
+                <ion-card-title>{{item.planName}}</ion-card-title>
+              </ion-card-header>
+              <ion-card-content no-padding>
+                <ion-row style="border-bottom: 1px solid grey;" padding-start>
+                  <ion-col>
+                    <h6>{{item.name}}</h6>
+                  </ion-col>
+                </ion-row>
+                  <ion-row padding-start>
+                    <ion-col>
+                      {{item.ccontact}}
+                    </ion-col>
+                    <ion-col text-right padding-end>
+                      <!-- <h6>{{item.createdDate | date: 'MM/dd/yyyy'}}</h6> -->
+                      {{item.createdDate | date: 'dd/MM/yyyy'}}
+                    </ion-col>
+                  </ion-row>
+                <!-- </ion-row> -->
+              </ion-card-content>
+              <ion-ripple-effect></ion-ripple-effect>
+            </ion-card>
+          </ion-item>
 
-    </ion-card>
-</ion-list>
+          <ion-item-options side="end">
+            <ion-item-option color="danger" (click)="swipeEvent(item.id)" expandable>
+              <ion-icon name="trash" slot="top" style="zoom:2.0"></ion-icon> DELETE
+            </ion-item-option>
+          </ion-item-options>
+        
+        </ion-item-sliding>
+        
+      <!-- </div> -->
+    </ion-virtual-scroll>
+
+  </ion-list>
+
+  <!-- fab placed to the bottom end -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="buttonShown">
+    <ion-fab-button size="small" (tap)="scrollToItem()">
+      <ion-icon name="ios-arrow-dropup"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
 </ion-content>

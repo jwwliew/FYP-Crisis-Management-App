@@ -4,23 +4,25 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/templates" *ngIf="viewPage && !editPage"></ion-back-button>
       <ion-button [routerLink]="['/tabs/templates']" *ngIf="!viewPage && !editPage"> Cancel </ion-button>
-      <ion-back-button defaultHref="/tabs/templates/new" (click)="goToViewPageFromEdit()" *ngIf="editPage"></ion-back-button>
+      <ion-back-button defaultHref="/tabs/templates/new" (tap)="goToViewPageFromEdit()" *ngIf="editPage">
+      </ion-back-button>
     </ion-buttons>
-    
-    <ion-title> {{templateName}} </ion-title>
+
+    <ion-title [ngClass]="{'androidTitle': android && (viewPage || editPage)}">{{templateName}}
+    </ion-title>
 
     <ion-buttons slot="end" *ngIf="(!viewPage && !editPage) || editPage">
-      <ion-button (click)="editPage ? addTemplate() : askForName('add')">
+      <ion-button (tap)="editPage ? addTemplate() : askForName('add')">
         Save
       </ion-button>
     </ion-buttons>
 
     <ion-buttons slot="end" *ngIf="viewPage && !editPage">
-      <ion-button (click)="popOverController($event)">
+      <ion-button (tap)="popOverController($event)">
         <ion-icon ios="ios-more" md="md-more"></ion-icon>
       </ion-button>
     </ion-buttons>
-    
+
     <!-- <ion-buttons slot="end" *ngIf="editPage">
       <ion-button (click)="addTemplate('Update')">
         Save
@@ -31,15 +33,18 @@
 
   <ion-toolbar color="greenCard" *ngIf="checked.length > 0">
     <ion-buttons slot="start">
-        <ion-back-button defaultHref="/tabs/templates/new" (tap)="clearArray()"></ion-back-button>
-        <span> {{checked.length}} </span>
+      <ion-back-button defaultHref="/tabs/templates/new" (tap)="clearArray()"></ion-back-button>
     </ion-buttons>
+
+    <ion-title>
+      {{checked.length + ' Selected'}}
+    </ion-title>
 
     <ion-buttons slot="end">
       <ion-icon name="trash" style="font-size: 24px; margin-right:14px;" (tap)="deleteArray()"></ion-icon>
     </ion-buttons>
 
-  
+
   </ion-toolbar>
 </ion-header>
 
@@ -48,7 +53,7 @@
     float: left;
     border-radius: 50%;
     width: 50%;
-    height: 100%;
+    /* height: 100%; */
     padding: 4%;
     /* background-color:#000000 !important; */
     /* border: 1px solid black;  */
@@ -59,121 +64,172 @@
     /* margin:16px; */
     white-space: normal;
     text-align: left;
-    margin-top: 12%;
+    /* margin-top: 12%; */
     /*FIXME: https://ionicframework.com/docs/v3/theming/css-utilities/ */
   }
 
-/* 
+  /* 
 ion-content{
   --ion-background-color:grey;
 } */
 
-ion-card { 
-  border-radius: 16px;
-  background-color: white;
-  color: black; /* text */
-}
+  ion-card {
+    border-radius: 16px;
+    background-color: white;
+    color: black;
+    /* text */
+  }
 
-ion-grid {
-  background-color: #d3d3d3;
-}
+  ion-grid {
+    background-color: #d3d3d3;
+  }
 
-.btnAdd {
-  margin-top: 18px !important;
-}
+  .btnAdd {
+    margin-top: 18px !important;
+  }
 
-.blur {
+  .blur {
     filter: blur(15px);
-    -webkit-filter: blur(15px); 
+    -webkit-filter: blur(15px);
     opacity: 1;
     background-color: #FFF;
-    transition: -webkit-filter 200ms linear;
+    /* transition: -webkit-filter 200ms linear; */
     height: 100%;
     width: 100%;
     position: absolute;
-}
-.blurTitle{
+  }
 
-  filter: blur(15px);
-  -webkit-filter: blur(15px);
-  /* transition: -webkit-filter 200ms linear; */
-}
+  .blurTitle {
 
-/* .highlight{
+    filter: blur(15px);
+    -webkit-filter: blur(15px);
+    /* transition: -webkit-filter 200ms linear; */
+  }
+
+  /* .highlight{
   background-color: #1ebea5;
 } */
 
-ion-content{
-  --padding-start: 4px;
-  --padding-end: 4px;
-}
-/* ion-grid{
+  ion-content {
+    --padding-start: 4px;
+    --padding-end: 4px;
+  }
+
+  /* ion-grid{
   width: 100vw;
   margin-left: calc(-50vw + 50%);
 } */
-.gridReplace {
-  background-color: #d3d3d3;
-  padding-top: 6%;
-  padding-bottom: 3%;
-}
+  .gridReplace {
+    background-color: #d3d3d3;
+    /* padding-top: 6%; */
+    /* padding-bottom: 3%; */
+  }
 
-ion-card-title{
+  /* ion-card-title{
   color: white;
   font-weight: bold;
   font-size: 1.1em;
   padding: 0;
   margin: 0 4px;
-}
+} */
 
-ion-textarea{
-  margin:0;
-}
+  ion-textarea {
+    margin: 0;
+    --padding-start: 8px !important;
+  }
 
-/* .yellowItem{
+  /* .yellowItem{
   --border-width: 0px;
   --inner-padding-end: 0;
   --padding-start: 0;
 } */
 
-#Html2PDF {
-  padding-bottom: 20px;
-}
+  /* #Html2PDF {
+    padding-bottom: 20px;
+  } */
+
+  .androidTitle {
+    position: initial;
+  }
+
+  ion-item {
+    --padding-start: 0px;
+    --highlight-color-valid: none;
+  }
+
+  /* ion-label {
+    padding-left: 16px;
+  } */
+
+  /* .list-md {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  } */
+  /* .itemBlock {
+    display: block;
+  }
+
+  div.item-native {
+    flex-flow: column !important;
+  }
+
+  .cardStyle {
+    width: 150px;
+  } */
+  .cardIOS {
+    margin-inline-end: 0px;
+    -webkit-margin-end: 0px;
+  }
+  .colIOS {
+    padding-inline-start: 0px; /* default is 5px*/
+    padding-inline-end: 16px;
+  }
+  .sc-ion-card-ios-h {
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+  .labelAlign {
+    padding-left: 32px;
+  }
 </style>
 
 <ion-content padding id="pdf">
   <div id="Html2PDF">
-  <ion-card *ngIf="!viewPage || editPage" style="margin-bottom: 6%">
-    <ion-card-header color="tertiary">
-      <ion-card-title>
-        Select Language
-      </ion-card-title>
-    </ion-card-header>
-    <ion-list>
-      <ion-radio-group [(ngModel)]="defaultLanguage" (ionChange)="selectRadio()">
-        <ion-item *ngFor="let thisLanguage of globalLanguage; let i = index" [lines]="i == 3 ? 'none' : 'full'" [ngStyle]="thisLanguage[0] == defaultLanguage && {'font-weight': 'bold'}" button>
-          <ion-label>{{thisLanguage[1]}}</ion-label>
-          <ion-radio [value]="thisLanguage[0]" color="originalPrimary" mode="md"></ion-radio>
-          <ion-ripple-effect></ion-ripple-effect>
-        </ion-item>
-      </ion-radio-group>
-    </ion-list>
-  </ion-card>
+    <ion-card *ngIf="!viewPage || editPage" style="margin-bottom: 6%">
+      <ion-card-header color="tertiary">
+        <ion-card-title>
+          Select Language
+        </ion-card-title>
+      </ion-card-header>
+      <ion-list style="padding-top: 0px; padding-bottom: 0px;">
+        <ion-radio-group [(ngModel)]="defaultLanguage" (ionChange)="selectRadio()">
+          <ion-item *ngFor="let thisLanguage of globalLanguage; let i = index" [lines]="i == 3 ? 'none' : 'full'"
+            [ngStyle]="thisLanguage[0] == defaultLanguage && {'font-weight': 'bold'}" button detail="false">
+            <ion-label class="labelAlign">{{thisLanguage[1]}}</ion-label>
+            <ion-radio [style.margin-right]="android ? '8px' : '12px'" [value]="thisLanguage[0]" color="originalPrimary" mode="md"></ion-radio>
+            <ion-ripple-effect></ion-ripple-effect>
+          </ion-item>
+        </ion-radio-group>
+      </ion-list>
+    </ion-card>
 
-  <ion-card class="welcome-card" *ngFor="let globalItem of frontViewData; let globalIndex = index;" [ngStyle]="globalIndex !== 0 && {'margin-top': '6%'}">
+    <ion-card class="welcome-card" *ngFor="let globalItem of frontViewData; let globalIndex = index;"
+      [ngStyle]="globalIndex !== 0 && {'margin-top': '6%'}">
 
-    <ion-card-header [color]="globalItem.colorCard">
-      <ion-card-title>
-        {{globalItem.textCard}}
-      </ion-card-title>
+      <ion-card-header [color]="globalItem.colorCard">
+        <ion-card-title>
+          {{globalItem.textCard}}
+        </ion-card-title>
 
-      <ion-content *ngIf="!viewPage || editPage">
-        <ion-fab vertical="top" horizontal="end" edge slot="fixed">
-          <!-- <ion-fab-button size="small" (click)="addNewCriticalArray('Critical')" class="btnAdd" color="redCard"> -->
-          <ion-fab-button size="small" class="btnAdd" (click)="globalItem.toggle=!globalItem.toggle" [disabled]="checked.length > 0">
-            <ion-icon name="{{!globalItem.toggle ? 'md-add' : 'md-close'}}"></ion-icon>
-          </ion-fab-button>
+        <ion-content *ngIf="!viewPage || editPage">
+          <ion-fab vertical="top" horizontal="end" edge slot="fixed">
+            <!-- <ion-fab-button size="small" (click)="addNewCriticalArray('Critical')" class="btnAdd" color="redCard"> -->
+            <ion-fab-button size="small" class="btnAdd" (tap)="globalItem.toggle=!globalItem.toggle"
+              [disabled]="checked.length > 0">
+              <ion-icon name="{{!globalItem.toggle ? 'md-add' : 'md-close'}}"></ion-icon>
+            </ion-fab-button>
 
-          <!-- <ion-fab-list side="start">
+            <!-- <ion-fab-list side="start">
             <ion-fab-button [color]="globalItem.colorBtn" (click)="globalItem.toggle=!globalItem.toggle; addNewCriticalArray(globalItem.type, globalItem.id)">
               <ion-icon name="add"></ion-icon>
             </ion-fab-button>
@@ -186,147 +242,163 @@ ion-textarea{
 
           </ion-fab-list> -->
 
-        </ion-fab>
-        
-
-  
-      </ion-content>
-
-    </ion-card-header>
-
-    <ion-row style="background-color: grey; color: white;">
-      <ion-col>
-        <span style="margin-left: 10%"> Symptom </span>
-      </ion-col>
-      <ion-col>
-        <span style="margin-left: 6%;"> What to do </span>
-      </ion-col>
-    </ion-row>
-      
-  
+          </ion-fab>
 
 
-    <div class="gridReplace" *ngIf="!viewPage || editPage"> <!--https://forum.ionicframework.com/t/fab-button-backdrop/80019-->
 
-    
-      <ion-row *ngFor="let item of getArray(globalItem.id); let i = index;" style="border-bottom: 2px solid #A9A9A9" 
-      [ngClass]="{'blur': globalItem.toggle}">
+        </ion-content>
 
-      <!-- first column aka symptom -->
-        <ion-col [size]="checked.length > 0 ? 5.25 : 6" [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}"
-        (press)="pressEvent('Symptom', item, globalItem.id, i);"
-        (click)="checked.length > 0 && clickEvent('Symptom', item, globalItem.id, i)">
-            <ion-card (click)="checked.length == 0 && presentActionSheet('Symptom', item, globalItem.id)" [ngClass]="{'highlight' : item.combined[0]?.whatsapp && checked.length > 0}">
-              <img class="imgCircle" [src]="item.symptom.img || 'assets/empty.svg'"/> <!-- https://stackoverflow.com/questions/45263542/ngmodel-value-in-img-src-ionic-3 -->
-              <p class="imgCircleText"> {{item.symptom.text}} </p>
-            </ion-card>
-            <ion-card>
-              <ion-item no-padding class="yellowItem">
-                <ion-textarea rows="4" placeholder="Describe the symptom in more details." [readonly]="item.combined[0]?.whatsapp"
-                [(ngModel)]="item.symptom.description" [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}" (ionFocus)="inputFocus()"></ion-textarea>
-              </ion-item>
-            </ion-card>
+      </ion-card-header>
+
+      <ion-row style="background-color: grey; color: white;" *ngIf="getArray(globalItem.id).length > 0">
+        <ion-col text-center>
+          <span> Symptom </span>
         </ion-col>
-
-        <!-- for each second column aka action -->
-        <ng-container *ngFor="let x of item.combined; let actIndex = index;">
-
-          <ion-col [size]="checked.length > 0 ? 5.25 : 6" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}" 
-            (press)="pressEvent('Action', x, globalItem.id, i, actIndex)"
-            (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id, i)" *ngIf="actIndex != 0" ></ion-col>
-
-          <ion-col [size]="checked.length > 0 ? 5.25 : 6" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}"
-            (press)="actIndex == 0 ? pressEvent('Symptom', item, globalItem.id, i, actIndex) : pressEvent('Action', x, globalItem.id, i, actIndex);"
-            (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id, i)">
-
-            <ion-card (click)="checked.length == 0 && presentActionSheet('Action', x)" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}">
-              <img class="imgCircle" [src]="x.img || 'assets/empty.svg'"/> 
-              <p class="imgCircleText"> {{x.text}}</p>
-            </ion-card>
-
-            <ion-card>
-              <ion-item no-padding class="yellowItem">
-                <ion-textarea rows="4" placeholder="Describe the required action in your own words." [readonly]="x.whatsapp"
-                [(ngModel)]="x.description" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}" (ionFocus)="inputFocus()"></ion-textarea>
-              </ion-item>
-            </ion-card>
-        
-
-          </ion-col>
-
-          <ion-col size="1.5" *ngIf="checked.length > 0" [ngClass]="{'highlight': x.whatsapp}" (click)="clickEvent('Action', x, globalItem.id, i, actIndex)">
-            <ion-checkbox [checked]="x.whatsapp" mode="ios" color="success"></ion-checkbox>
-          </ion-col>
-
-        </ng-container>
-
+        <ion-col [ngStyle]="{'text-align': viewPage && !editPage ? 'center' : 'initial'}">
+          <span [ngStyle]="{'margin-left': viewPage && !editPage ? '0%' : '6%'}"> What to do </span>
+        </ion-col>
       </ion-row>
 
 
 
-      <ion-row style="height:150px;" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!checkType(globalItem.id)"></ion-row>
+      <!-- <div> -->
+      <ion-list style="background-color: #d3d3d3" *ngIf="!viewPage || editPage" #mylist [ngClass]="globalItem.toggle ? 'addPaddingTopBottom' : 'removePaddingTopBottom'">
+        <!--https://forum.ionicframework.com/t/fab-button-backdrop/80019-->
+        <ion-row *ngFor="let item of getArray(globalItem.id); let i = index; let last = last" [style.border-bottom]="!last && '2px solid #A9A9A9'"
+          [ngClass]="{'blur': globalItem.toggle}">
+          <!-- first column aka symptom -->
+          <ion-col [size]="checked.length > 0 ? 5.25 : 6"
+            [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}"
+            (press)="pressEvent('Symptom', item, globalItem.id, i, $event);"
+            (click)="checked.length > 0 && clickEvent('Symptom', item, globalItem.id, i)">
+
+            <ion-card (click)="checked.length == 0 && presentActionSheet('Symptom', item, globalItem.id)" class="removeCardMargin"
+            [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0, 'ion-activatable': checked.length == 0, 'cardIOS': !android}">
+              <ion-ripple-effect *ngIf="checked.length == 0"></ion-ripple-effect> 
+                <img class="imgCircle" [src]="item.symptom.img || 'assets/empty.svg'"/>
+                <p class="imgCircleText"> {{item.symptom.text}} </p>
+              </ion-card>
+            <ion-card [class.cardIOS]="!android" class="removeCardMargin">
+              <ion-textarea rows="4" placeholder="Describe the symptom in more details."
+                [readonly]="item.combined[0]?.whatsapp" [(ngModel)]="item.symptom.description"
+                [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}" (ionFocus)="inputFocus()">
+              </ion-textarea>
+            </ion-card>
+          </ion-col>
+
+          <!-- for each second column aka action -->
+          <ng-container *ngFor="let x of item.combined; let actIndex = index;">
+
+            <ion-col [size]="checked.length > 0 ? 5.25 : 6" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}"
+              (press)="pressEvent('Action', x, globalItem.id, i, actIndex)"
+              (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id, i)" *ngIf="actIndex != 0">
+            </ion-col>
+
+            <ion-col [size]="checked.length > 0 ? 5.25 : 6" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}"
+              (press)="actIndex == 0 ? pressEvent('Symptom', item, globalItem.id, i, actIndex) : pressEvent('Action', x, globalItem.id, i, actIndex);"
+              (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id, i)">
+
+              <ion-item-sliding (ionSwipe)="checked.length == 0 && deleteIOS(x, globalItem.id, i, actIndex)" (ionDrag)="checked.length > 0 && dragAndCheckLongPress(slidingItem)" #slidingItem> 
+                <ion-item appShadowCss [customCSS]="[x.whatsapp, 'newTemplate']">
+                  <ion-card class="removeCardMargin" (click)="checked.length == 0 && presentActionSheet('Action', x)" 
+                  [ngClass]="{'highlight': x.whatsapp && checked.length > 0, 'cardIOS': !android, 'ion-activatable': checked.length == 0}">
+                    <img class="imgCircle" [src]="x.img || 'assets/empty.svg'" />
+                    <p class="imgCircleText"> {{x.text}} </p>
+                    <ion-ripple-effect *ngIf="checked.length == 0"></ion-ripple-effect>
+                  </ion-card>
+                  <ion-card [class.cardIOS]="!android" class="removeCardMargin">
+                    <ion-textarea rows="4" placeholder="Describe the action to take in your own words." [readonly]="checked.length > 0"
+                      [ngClass]="{'highlight': x.whatsapp && checked.length > 0}" [(ngModel)]="x.description"(ionFocus)="inputFocus()">
+                    </ion-textarea>
+                  </ion-card>
+                </ion-item>
+                <ion-item-options side="end" [ngStyle]="{'padding-bottom': android ? '8px' : '16px', 'padding-top': '8px'}">
+                  <ion-item-option color="danger" expandable (click)="checked.length == 0 && deleteIOS(x, globalItem.id, i, actIndex)">
+                    <ion-icon name="trash" slot="top" style="zoom:2.0"></ion-icon> DELETE
+                  </ion-item-option>
+                </ion-item-options>
+                </ion-item-sliding>
+
+            </ion-col>
+
+            <ion-col size="1.5" *ngIf="checked.length > 0" [ngClass]="{'highlight': x.whatsapp}" style="display:flex;align-items:center;"
+              (click)="clickEvent('Action', x, globalItem.id, i, actIndex)">
+              <ion-checkbox [checked]="x.whatsapp" mode="ios" color="success"></ion-checkbox>
+            </ion-col>
+
+          </ng-container>
+
+        </ion-row>
 
 
-      <ng-container *ngIf="globalItem.toggle">  <!--https://stackoverflow.com/questions/28975673/how-to-blurcss-div-without-blur-child-element/29249483-->
-        <ion-row (click)="globalItem.toggle=!globalItem.toggle; addNewCriticalArray(globalItem.type, globalItem.id)">
-          <ion-col size="4">
-            <ion-fab-button [color]="globalItem.colorBtn" style="float:right">
-              <ion-icon name="add"></ion-icon>
-            </ion-fab-button>
+        <ion-row style="height:150px;" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!checkType(globalItem.id)">
+        </ion-row>
+
+
+        <ng-container *ngIf="globalItem.toggle">
+          <!--https://stackoverflow.com/questions/28975673/how-to-blurcss-div-without-blur-child-element/29249483-->
+          <ion-row (click)="globalItem.toggle=!globalItem.toggle; addNewCriticalArray(globalItem.type, globalItem.id)" [style.position]="'relative'" class="ion-activatable">
+            <ion-col size="4">
+              <ion-fab-button [color]="globalItem.colorBtn" style="float:right">
+                <ion-icon name="add"></ion-icon>
+              </ion-fab-button>
             </ion-col>
             <ion-col size="8">
               <ion-label class="addLabel"> Add symptom</ion-label>
               <br>
               <ion-label class="addLabelTwo"> and action </ion-label>
             </ion-col>
-        </ion-row>
-
-        <ion-row *ngIf="checkType(globalItem.id)" (click)="globalItem.toggle=!globalItem.toggle; popUp(globalItem.id);">
-          <ion-col size="4">
-            <ion-fab-button [color]="globalItem.colorBtn" style="float:right">
-              <ion-icon name="add"></ion-icon>
-            </ion-fab-button>
-          </ion-col>
-          <ion-col size="8">
-            <ion-label class="addLabel"> Add action</ion-label>
-          </ion-col>
-        </ion-row>
-      </ng-container>
+            <ion-ripple-effect></ion-ripple-effect>
+          </ion-row>
   
-      
-    </div>
-
-
-    <!-- view page when click on one template... show icon and text only -->
-    <ion-grid style="padding:3%; background-color: #FFF" *ngIf="viewPage && !editPage">
-      
-      <ion-row *ngFor="let item of getArray(globalItem.id)">
-
-        <ion-col size="6">
-          <img class="imgCircle" [src]="item.symptom.img || 'assets/empty.svg'"/>
-          <p class="imgCircleText"> {{item.symptom.description == "" ? item.symptom.text : item.symptom.description}} </p>
-        </ion-col>
-
-        <ion-col size="6" *ngIf="item.combined.length == 0" style="border-left: 2.5px solid #d3d3d3"></ion-col>
-        
-        <ng-container *ngFor="let x of item.combined; let actIndex = index;">
-          <ion-col size="6" *ngIf="actIndex != 0"></ion-col>
-          <ion-col size="6" style="border-left: 2.5px solid #d3d3d3">
-            <img class="imgCircle" [src]="x.img || 'assets/empty.svg'"/>
-            <p class="imgCircleText"> {{x.description == "" ? x.text : x.description}} </p>
-          </ion-col>
+          <ion-row *ngIf="checkType(globalItem.id)"
+            (click)="globalItem.toggle=!globalItem.toggle; popUp(globalItem.id);" [style.position]="'relative'" class="ion-activatable">
+            <ion-col size="4">
+              <ion-fab-button [color]="globalItem.colorBtn" style="float:right">
+                <ion-icon name="add"></ion-icon>
+              </ion-fab-button>
+            </ion-col>
+            <ion-col size="8">
+              <ion-label class="addLabel"> Add action</ion-label>
+            </ion-col>
+            <ion-ripple-effect></ion-ripple-effect>
+          </ion-row>
         </ng-container>
 
-      </ion-row>
-      
-      <ion-row style="height:45px;" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!checkType(globalItem.id)">
-        <p text-center style="width:100%"> No symptoms and actions added </p>
-      </ion-row>
+        <!-- </div> -->
+      </ion-list>
 
-    </ion-grid>
-  
 
-    
-  </ion-card>
-</div>
+      <!-- view page when click on one template... show icon and text only -->
+      <ion-grid style="background-color: #FFF" *ngIf="viewPage && !editPage">
+
+        <ion-row *ngFor="let item of getArray(globalItem.id)">
+
+          <ion-col size="6">
+            <img class="imgCircle" [src]="item.symptom.img || 'assets/empty.svg'" />
+            <p class="imgCircleText"> {{item.symptom.description == "" ? item.symptom.text : item.symptom.description}} </p>
+          </ion-col>
+
+          <ion-col size="6" *ngIf="item.combined.length == 0" style="border-left: 2.5px solid #d3d3d3"></ion-col>
+
+          <ng-container *ngFor="let x of item.combined; let actIndex = index;">
+            <ion-col size="6" *ngIf="actIndex != 0"></ion-col>
+            <ion-col size="6" style="border-left: 2.5px solid #d3d3d3">
+              <img class="imgCircle" [src]="x.img || 'assets/empty.svg'" />
+              <p class="imgCircleText"> {{x.description == "" ? x.text : x.description}} </p>
+            </ion-col>
+          </ng-container>
+
+        </ion-row>
+
+        <ion-row style="height:45px;" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!checkType(globalItem.id)">
+          <p text-center style="width:100%"> No symptoms and actions added </p>
+        </ion-row>
+
+      </ion-grid>
+
+
+
+    </ion-card>
+  </div>
 </ion-content>

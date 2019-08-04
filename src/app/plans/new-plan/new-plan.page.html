@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons (click)="cancel()" slot="start">
-      <ion-button>cancel</ion-button>
+      <ion-button>Cancel</ion-button>
     </ion-buttons>
     <ion-title>
       New Crisis Plan
@@ -9,56 +9,76 @@
 
     <ion-buttons (click)="nextPage()" slot="end">
       <ion-button>
-        <ion-icon name="arrow-forward"></ion-icon>
+        <ion-icon name="arrow-forward" ios="md-arrow-forward"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
+<style>
+  ion-item {
+    --padding-start: 0px;
+  }
+  .list-md {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+  ion-card {
+      border-radius: 16px;
+      background-color: white;
+      color: black;
+      margin-top: 6%;
+  }
+  .labelAlign {
+    padding-left: 32px;
+  }
+  .card-content-ios {
+    padding-top: 0px;
+  }
+  .sc-ion-input-md-h, .sc-ion-input-ios-h{
+    --padding-bottom: 0px;
+    --padding-top: 0px;
+      margin-top: 2px;
+  }
+</style>
+
 <ion-content>
   <!--CARD-->
-  <ion-list lines="none">
-    <ion-card class="welcome-card" style="height: 1%">
-      <ion-card-header color="tertiary">
-        <ion-card-title>Select Language</ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        <ion-list>
-          <ion-radio-group [(ngModel)]="defaultLanguage">
-            <ion-item *ngFor="let thisLanguage of globalLanguage; let i = index" [lines]="i == 3 ? 'none' : 'full'"
-              [ngStyle]="thisLanguage[0] == defaultLanguage && {'font-weight': 'bold'}" button>
-              <ion-label>{{thisLanguage[1]}}</ion-label>
-              <ion-radio [value]="thisLanguage[0]" color="originalPrimary" mode="md"></ion-radio>
-              <ion-ripple-effect></ion-ripple-effect>
-            </ion-item>
-          </ion-radio-group>
-        </ion-list>
-      </ion-card-content>
-      <!---ABOVE ARE OPTIONS-->
-    </ion-card>
-    <!--PLAN NAME-->
-    <ion-card class="welcome-card">
-      <ion-card-header color="tertiary">
-        <ion-card-title>Crisis Plan Name</ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        <form [formGroup]="slideOneForm">
-          <ion-item>
-            <ion-input formControlName="firstName" type="text" [(ngModel)]="planName"
-              [class.invalid]="!slideOneForm.controls.firstName.valid && (slideOneForm.controls['firstName'].dirty)">
-            </ion-input>
+  <ion-card>
+    <ion-card-header color="tertiary">
+      <ion-card-title>Select Language</ion-card-title>
+    </ion-card-header>
+      <ion-list>
+        <ion-radio-group [(ngModel)]="defaultLanguage">
+          <ion-item *ngFor="let thisLanguage of globalLanguage; let i = index" [lines]="i == 3 ? 'none' : 'full'"
+            [ngStyle]="thisLanguage[0] == defaultLanguage && {'font-weight': 'bold'}" button detail="false">
+            <ion-label class="labelAlign">{{thisLanguage[1]}} </ion-label>
+            <ion-radio [style.margin-right]="android ? '8px' : '12px'" [value]="thisLanguage[0]" color="originalPrimary" mode="md"></ion-radio>
+            <ion-ripple-effect></ion-ripple-effect>
           </ion-item>
+        </ion-radio-group>
+      </ion-list>
+    <!---ABOVE ARE OPTIONS-->
+  </ion-card>
 
-          <ion-item *ngIf="!slideOneForm.controls.firstName.valid && submitted">
-            <p style="color: red">***Please enter plan name***</p>
-          </ion-item>
+  <!--PLAN NAME-->
+  <ion-card>
+    <ion-card-header color="tertiary">
+      <ion-card-title>Crisis Plan Name</ion-card-title>
+    </ion-card-header>
 
-        </form>
+    <ion-card-content>
+      <form [formGroup]="slideOneForm">
+        <ion-item no-padding [ngClass]="android ? 'minHeightAndroid' : 'planDetailItem'">
+          <ion-label position="floating"> Plan Name </ion-label>
+          <ion-input formControlName="firstName" type="text" (ionFocus)="inputFocus()" (ionBlur)="defocus()" #input></ion-input>
+        </ion-item>
 
-      </ion-card-content>
-    </ion-card>
-  </ion-list>
+        <p *ngIf="!slideOneForm.controls['firstName'].valid && submitted" style="color: red">Please enter plan name</p>
+      
+      </form>
+
+    </ion-card-content>
+  </ion-card>
 
 </ion-content>

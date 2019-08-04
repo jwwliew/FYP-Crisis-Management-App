@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { PlanDetailsPage } from './plan-details.page';
+import { SharedModuleModule } from 'src/app/shared-module/shared-module.module';
 
 const routes: Routes = [
   {
@@ -20,7 +21,8 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    SharedModuleModule
   ],
   declarations: [PlanDetailsPage]
 })

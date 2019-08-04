@@ -3,7 +3,7 @@ import { Storage } from '@ionic/storage';
 import {v4 as uuid} from 'uuid';
 import { Setting } from '../models/symptomaction';
 import { SymptomActionService } from './symptomaction.service';
-import { ActionSheetController, ToastController, AlertController, PopoverController, ModalController } from '@ionic/angular';
+import { ActionSheetController, ToastController, AlertController, PopoverController, ModalController, Platform } from '@ionic/angular';
 import { TemplatePopComponent } from './../templates/template-pop/template-pop.component';
 
 const ALL_KEY = "allKey";
@@ -13,7 +13,7 @@ const ALL_KEY = "allKey";
 export class TemplateService {
 
   constructor(private storage: Storage, private settingStorage: SymptomActionService, private actionSheetCtrl: ActionSheetController, private zone: NgZone, 
-    private toastCtrl: ToastController, private alertCtrl: AlertController, private popoverCtrl: PopoverController, private modalCtrl: ModalController) { }
+    private toastCtrl: ToastController, private alertCtrl: AlertController, private popoverCtrl: PopoverController, private modalCtrl: ModalController, private plt: Platform) { }
 
   createTemplate(finalArray, templateNameFromInput, templateID, templateNameUpdate, defaultLanguage) {
 
@@ -69,6 +69,10 @@ export class TemplateService {
   checked = [];
   appointment = [];
 
+  refreshAppt() {
+    this.appointment = this.appointment.filter(x => x.clinicName);
+    return this.appointment;
+  }
   getApptArray = () => this.appointment;
   newAppt() {
     let apptObj = {
@@ -80,29 +84,29 @@ export class TemplateService {
   }
 
   pressEvent(type, thisObject, arrayID, combinedIndex) {
-    console.warn("APPOINTMNET ", this.appointment);
-    console.warn("COMBINED INDEX = " + combinedIndex);
+    // console.warn("APPOINTMNET ", this.appointment);
+    // console.warn("COMBINED INDEX = " + combinedIndex);
     if (this.checked.length == 0) {
-      console.error("type === " + type);
-      console.error("this object full === " + JSON.stringify(thisObject,null,2));
+      // console.error("type === " + type);
+      // console.error("this object full === " + JSON.stringify(thisObject,null,2));
       let dynamicObj = type == "Symptom" ? thisObject.combined : [thisObject];
-      console.error("dynamic obj = " + JSON.stringify(dynamicObj,null, 2));
+      // console.error("dynamic obj = " + JSON.stringify(dynamicObj,null, 2));
       dynamicObj.forEach(element => {
-        console.error("element == " + JSON.stringify(element,null,2));
+        // console.error("element == " + JSON.stringify(element,null,2));
         element.whatsapp = true;
         // element.arrayID = arrayID;
         this.checked.push({element, arrayID, combinedIndex});
       });
     }
-    console.error("this.checked after pressed = " + JSON.stringify(this.checked, null, 2));
+    // console.error("this.checked after pressed = " + JSON.stringify(this.checked, null, 2));
   }
 
   clickEvent(type, wholeItem, arrayID, combinedIndex) {
-    console.error("whole item combined ???? " + JSON.stringify(wholeItem,null,2));
+    // console.error("whole item combined ???? " + JSON.stringify(wholeItem,null,2));
     let element = type == "Symptom" ? wholeItem.combined[0] : wholeItem
-    console.warn("dynamic elemeent click event", element);
-    console.error("this critical", this.criticalArray);
-    console.error("this appt c", this.appointment);
+    // console.warn("dynamic elemeent click event", element);
+    // console.error("this critical", this.criticalArray);
+    // console.error("this appt c", this.appointment);
     element.whatsapp = !element.whatsapp;
     let itemIndex = this.checked.findIndex(x => x.element.id == element.id);
     if (itemIndex !== -1) {
@@ -112,7 +116,7 @@ export class TemplateService {
       // itemConverted.arrayID = arrayID;
       this.checked.push({element, arrayID, combinedIndex});
     }
-    console.error("spliced finish checked array = " + JSON.stringify(this.checked, null, 2));
+    // console.error("spliced finish checked array = " + JSON.stringify(this.checked, null, 2));
   }
 
   clearArray() {
@@ -167,21 +171,25 @@ export class TemplateService {
   deleteIOS(thisItem, arrayID, mainID, combinedID) {
     console.warn("ARRAY ID", arrayID);
     let thisArray = this.getArray(arrayID);
-    this.criticalArray === thisArray ? console.warn("equaal") : console.error("not eq");
-    console.error("this array before ", JSON.stringify(thisArray,null,2));
-    console.warn("criticla rray beforez", JSON.stringify(this.criticalArray,null,2));
+    // this.criticalArray === thisArray ? console.warn("equaal") : console.error("not eq");
+    // console.error("this array before ", JSON.stringify(thisArray,null,2));
+    // console.warn("criticla rray beforez", JSON.stringify(this.criticalArray,null,2));
     thisArray[mainID].combined.splice(combinedID, 1);
-    thisArray.forEach((x,index) => x.combined.length === 0 && thisArray.splice(index, 1));
-    console.warn("this critical array" + JSON.stringify(this.criticalArray,null,2));
-    console.warn("this array after " + JSON.stringify(thisArray, null, 2));
-    this.criticalArray === thisArray ? console.warn("equal") : console.error("not eq");
-    console.error("this item", thisItem);
-    let index;
+    thisArray[mainID].combined.length === 0 && thisArray.splice(mainID, 1);
+    // thisArray.forEach((x,index) => x.combined.length === 0 && thisArray.splice(index, 1));
+    // console.warn("this critical array" + JSON.stringify(this.criticalArray,null,2));
+    // console.warn("this array after " + JSON.stringify(thisArray, null, 2));
+    // this.criticalArray === thisArray ? console.warn("equal") : console.error("not eq");
+    // console.error("this item", thisItem);
+    // let index;
     // thisArray.some((x, mainIndex) => x.combined.some((y, combinedIndex) => y.id == thisItem.id && (index = [mainIndex, combinedIndex])))
     // console.warn("index =", index)
     console.warn("main ID %s", mainID, "combined ID = ", combinedID);
   }
   
+  deleteIOSAppointment(thisItem) {
+    this.appointment.splice(this.appointment.findIndex(x => x.id == thisItem.id), 1);
+  }
   // getArray(id) { //return array type
   //   return [this.criticalArray, this.warningArray, this.goodArray][id];
   // }
@@ -339,8 +347,7 @@ export class TemplateService {
     console.error("backupcriticalarray" + JSON.stringify(this.criticalArray, null, 2));
     console.error("backupcriticalarray" + JSON.stringify(this.goodArray, null, 2));
     console.log("going back to view page ... backupap " + JSON.stringify(this.backUpAppointment,null,2));
-    console.log("going back to view page ... " + JSON.stringify(this.appointment,null,2));
-
+    console.log("going back to view page ... " + JSON.stringify(this.appointment,null,2))
   }
 
 
@@ -349,6 +356,7 @@ export class TemplateService {
       let alert = await this.alertCtrl.create({
         header: templateName,
         message: "",
+        cssClass: "testCSS",
         inputs: [
           {
             name: 'nameInput',
@@ -357,26 +365,31 @@ export class TemplateService {
         ],
         buttons: [
           {
-            text: 'Cancel',
+            text: 'CANCEL',
             role: 'cancel',
             cssClass: 'secondary',
             handler: () => reject(false)
           },
           {
-            text: 'Ok',
+            text: 'OK',
+            cssClass: 'okBlueBtn',
             handler: (alertData) => {
               console.log("clicked ok " + alertData);
-              if (alertData.nameInput === "") {
-                alert.message = "Name is required!";
+              if (alertData.nameInput.trim() === "") {
+                alert.message = "Name is required!"; //https://stackoverflow.com/questions/45969821/alert-controller-input-box-validation
                 this.presentToastWithOptions("Name is required!");
                 return false;
               }
-              resolve(alertData.nameInput);
+              resolve(alertData.nameInput.trim());
             }
           }
         ]
       })
-      await alert.present();
+      await alert.present().then(() => {
+        let x:any= document.querySelector('ion-alert input'); //https://forum.ionicframework.com/t/set-focus-on-input-inside-alert-prompt/51885/6
+        x.focus();
+        return;
+      });
     })
   }
 
@@ -461,7 +474,7 @@ export class TemplateService {
       buttons.push(button);
     });
     buttons.push({
-      text: "Cancel",
+      text: "CANCEL",
       icon: "close",
       role: "selected"
     })
@@ -503,52 +516,44 @@ export class TemplateService {
     let thisArray = this.getArray(id);
     if (thisArray.every(a => this.globalSymptom.includes(a.symptom.text))) {
       this.presentToastWithOptions("Actions are allowed only when symptoms have been selected!");
+      return false;
     }
-    else {
-      this.alertCtrl.create({
-        header: "Select a symptom",
-        inputs: this.createRadios(id),
-        mode:'ios',
-        buttons: [
-          {
-            text: 'Cancel',
-            role: 'cancel',
-            cssClass: 'secondary'
-          },
-          {
-            text: 'Ok',
-            handler: (alertData => {
-              console.log("ok name1 = " + alertData);
-              // let x = this.criticalArray.find(x => x.symptom.text == alertData);
-              console.warn("this arr = " + JSON.stringify(thisArray, null, 2))
-              if (alertData === undefined) {
-                this.presentToastWithOptions("Please select a symptom!");
-                return false; //https://stackoverflow.com/questions/45969821/alert-controller-input-box-validation
-              }
-              else {
-                let x = thisArray.find(x => x.symptom.id == alertData);
-                console.error("X + " + JSON.stringify(x,null,2));
-                let newAction = {
-                  id: uuid(),
-                  // text: "Action",
-                  text: this.globalAction[defaultLanguage],
-                  type: "Action",
-                  img: "assets/empty.svg",
-                  description: "",
-                  actionID: ""
-                }
-                x.combined.push(newAction);
-                this.presentActionSheet("updateAction", newAction, defaultLanguage)
-                // console.error("pushed after " + JSON.stringify(this.criticalArray));
-                console.error("pushed after " + JSON.stringify(thisArray));
-              }
-            })
-          }
-        ]
-      }).then(alert => {
+    this.alertCtrl.create({
+      header: "Select a symptom",
+      inputs: this.createRadios(id),
+      mode:'ios',
+      buttons: [
+        {
+          text: 'CANCEL',
+          role: 'cancel',
+          cssClass: 'secondary'
+        },
+        {
+          text: 'OK',
+          handler: (alertData => {
+            console.log("ok name1 = " + alertData);
+            // let x = this.criticalArray.find(x => x.symptom.text == alertData);
+            console.warn("this arr = " + JSON.stringify(thisArray, null, 2))
+            let x = thisArray.find(x => x.symptom.id == alertData);
+            console.error("X + " + JSON.stringify(x,null,2));
+            let newAction = {
+              id: uuid(),
+              // text: "Action",
+              text: this.globalAction[defaultLanguage],
+              type: "Action",
+              img: "assets/empty.svg",
+              description: "",
+              actionID: ""
+            }
+            x.combined.push(newAction);
+            this.presentActionSheet("updateAction", newAction, defaultLanguage)
+            // console.error("pushed after " + JSON.stringify(this.criticalArray));
+            console.error("pushed after " + JSON.stringify(thisArray));
+          })
+        }
+      ]}).then(alert => {
         alert.present()
       });
-    }
   }
 
   createRadios(id) {
@@ -564,6 +569,7 @@ export class TemplateService {
       }
       radioBtns.push(radioBtn);
     })
+    radioBtns[0].checked = true;
     return radioBtns;
   }
 
@@ -583,7 +589,7 @@ export class TemplateService {
         //   }
         // }, 
       {
-        text: 'Close',
+        text: 'CLOSE',
         role: 'cancel'
       }]
     });
@@ -628,6 +634,34 @@ export class TemplateService {
     return returnValue;
   }
 
+  checkAppointmentEmpty() {
+    let returnValue = false;
+    // if (this.appointment.some(x => !x.clinicName)) {
+    //   console.warn("clinic name not filled up");
+    //   this.presentToastWithOptions("Please ensure clinic name for appointment is filled up");
+    //   return false;
+    // }
+    this.appointment.forEach(x => {
+      if (!x.clinicName.trim() && !x.appTime) {this.presentToastWithOptions("Please ensure both clinic name and time for appointment is filled up"); returnValue=true;return false}
+      else if (!x.clinicName.trim()) { this.presentToastWithOptions("Please ensure all the clinic name for appointment is filled up"); returnValue=true;return false}
+      else if (!x.appTime) {this.presentToastWithOptions("Please ensure all the appointment time is filled up"); returnValue=true;return false}
+    })
+    // let someFn = this.appointment.some(function(x) {
+    //   return !x.clinicName && !x.appTime 
+    //   ? this.presentToastWithOptions("Please ensure both clinic name and time for appointment is filled up") && this.validate(!x.clinicName, !x.appTime)
+    //   : !x.clinicName ? this.presentToastWithOptions("Please ensure clinic name for appointment is filled up") && this.validate(!x.clinicName)
+    //   : !x.appTime && this.presentToastWithOptions("Please ensure appointment time is filled up") && this.validate(!x.appTime)
+    // })
+    // console.error("value from.some()", someFn);
+    // if (!someFn) {
+    //   returnValue = true;
+    // }
+    console.warn("appointment false ---? ", returnValue);
+    return returnValue;
+  }
+  validate(...args) {
+    return args.length == 2 ? args[0] && args[1] : args[0]
+  }
   checkSymptomOrActionEmpty(type) {
     console.warn("type = " + type);
     let thisList = type == "Action" ? this.settingAction : this.settingSymptom;
@@ -643,12 +677,13 @@ export class TemplateService {
         message: 'Once deleted, there is no retrieving back!',
         buttons: [
           {
-          text: 'Cancel',
+          text: 'CANCEL',
           role: 'cancel',
           handler: () => reject(false)
         },
         {
-          text: 'Delete',
+          text: 'DELETE',
+          cssClass: 'deleteRedBtn',
           handler: () => resolve(true)
         }
         ]
@@ -663,6 +698,9 @@ export class TemplateService {
     return type == 'modal' ? this.modalCtrl.create(obj) : this.popoverCtrl.create({...obj, event: x});
   }
   
+  checkPlatformAndroid() {
+    return this.plt.is("android")
+  }
 } //end of class
 
 

@@ -11,27 +11,36 @@
     margin-left: 6%;
     font-weight: bold;
   }
+  ion-item {
+    --padding-start: 0px;
+  }
+  ion-icon {
+    padding-left: 16px;
+  }
 </style>
 <ion-content>
   <!-- <ion-button href="/tabs/settings/symptomAction">Move to setting page</ion-button> -->
   <!-- List of Text Items -->
-  <ion-list lines="full">
+  <ion-list lines="full" no-padding>
 
-    <ion-item color="black" (click)="onClick(0)">
+    <ion-item color="black" (click)="onClick(0)" button>
       <ion-icon name="md-medkit"></ion-icon>
       <ion-label>Symptom & Action</ion-label>
+      <ion-ripple-effect></ion-ripple-effect>
     </ion-item>
 
-    <ion-item color="black" (click)="onClick(1)">
-        <ion-icon name="book"></ion-icon>
+    <ion-item color="black" (click)="onClick(1)" button>
+      <ion-icon name="book"></ion-icon>
       <ion-label>Tutorial</ion-label>
+      <ion-ripple-effect></ion-ripple-effect>
     </ion-item>
 
-    <ion-item color="black" (click)="onClick(2)">
+    <ion-item color="black" (click)="onClick(2)" button>
       <ion-icon name="ios-information-circle"></ion-icon>
-      <ion-label>About</ion-label>
+      <ion-label>About</ion-label>   
+      <ion-ripple-effect></ion-ripple-effect>
     </ion-item>
-
+    
   </ion-list>
 
 </ion-content>

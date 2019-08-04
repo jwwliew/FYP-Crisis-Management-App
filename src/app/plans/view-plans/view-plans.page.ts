@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { PlanService } from './../../services/plan.service';
-import { ActionSheetController } from '@ionic/angular';
-import { ToastController } from '@ionic/angular';
+import { ActionSheetController, Events, IonList } from '@ionic/angular';
 import { TemplateService } from 'src/app/services/template.service';
 
 
@@ -13,98 +12,179 @@ import { TemplateService } from 'src/app/services/template.service';
 })
 export class ViewPlansPage implements OnInit {
 
-  constructor(private router: Router, private PlanService: PlanService, public actionSheetController: ActionSheetController, public toastController: ToastController, private templateService: TemplateService) {
+  constructor(private router: Router, private planService: PlanService, public actionSheetController: ActionSheetController, 
+    private event: Events, private templateService: TemplateService) {
 
   }
   details: any;
   plan: any;
-  public searchTerm: string = "";
-  public items: string[];
+  searchTerm: string = "";
+  sortedDetails: any;
 
   ngOnInit() {
   }
 
   ionViewWillEnter() {
-    this.PlanService.getAllPlan().then(plandetails => {
-      this.details = plandetails
+    this.searchTerm = "";
+    this.planService.getAllPlan().then(plandetails => {
+      console.warn("plan details = ", plandetails);
+      this.details = plandetails;
+      this.sortedDetails = plandetails; //https://stackoverflow.com/questions/53346885/how-to-efficiently-load-large-list-in-ionic/53347064#53347064
+      console.error("sorted = ", this.sortedDetails)
     });
   }
   //search item(s)
   setFilteredItems() {
-    this.PlanService.getPlanFilter(this.searchTerm).then(sname => {
-      this.details = sname;
-      console.log(sname);
-    })
-    console.log("check   " + this.searchTerm);
+    this.sortedDetails = this.details.filter(result => result.planName.toLowerCase().indexOf(this.searchTerm.toLowerCase()) !== -1);
+    this.mylist.closeSlidingItems();
+    // this.PlanService.getPlanFilter(this.searchTerm).then(sname => {
+    //   this.mylist.closeSlidingItems();
+    //   this.details = sname;
+    //   console.log(sname);
+    // })
+    // console.log("check   " + this.searchTerm);
   }
 
   //redirect
   onClick() {
-    this.router.navigateByUrl('tabs/plans/newPlan');
-  }
-
-  //redirect
-  goToTestPage() {
-    this.router.navigateByUrl('/templatedetails');
+    this.router.navigateByUrl('/tabs/plans/newPlan').then(() => this.event.publish("newPlan"))
   }
 
   goEdit(item) {
-    this.router.navigateByUrl('tabs/plans/editplan/' + item.id)
+    this.router.navigateByUrl('/tabs/plans/editplan/' + item.id);
   }
 
   //https://ionicframework.com/docs/api/alert
   //delete ADD alert
-  swipeEvent(id, thisEvent) {
-    thisEvent.stopPropagation();
+  @ViewChild('mylist')mylist: IonList;
+
+  swipeEvent(id) {
+    // thisEvent.stopPropagation();
     this.templateService.delete("Are you sure you want to delete this plan?").then(() => {
-      this.PlanService.deletePlanByID(id).then(result => {
-        this.details = result;
+      this.details.splice(this.details.findIndex(x => x.id == id), 1);
+      this.sortedDetails = [...this.details];
+      this.planService.deletePlanByID(this.details); //default plans from old to new
+      // this.PlanService.deletePlanByID(id, this.sortedDetails).then(result => {
+        // this.details = result;
+        // this.sortedDetails = result;
         this.templateService.presentToastWithOptions("Deleted plan!");
-      });
+        this.mylist.closeSlidingItems();
+        this.searchTerm = "";
+      // });
     }).catch(() => {})
+  }
+
+  presentActionSheetDelayed() { //needed to prevent keyboard taking up white space when tap onto searchbar then tap onto filter button
+    console.error("start of 5000")
+    if (this.focused) {
+      setTimeout(() => {
+        this.presentActionSheet();
+      }, 150);
+    }
+    else {
+      this.presentActionSheet();
+    }
+  }
+  focused: boolean;
+  ionFocus() {
+    this.focused = true;
+  }
+  ionBlur() {
+    setTimeout(() => { //need setTimeout else too fast for the if statement in presentActionSheetDelayed()
+      this.focused = false;
+    }, 10);
   }
 
   //Filter
   async presentActionSheet() {
+    this.mylist.closeSlidingItems();
     const actionSheet = await this.actionSheetController.create({
       header: 'Sort by',
       buttons: [{
         text: 'A to Z',
-        role: 'destructive',
+        // role: 'destructive',
         icon: 'arrow-round-down',
         handler: () => {
-          this.PlanService.getAllPlan().then(wholeplan => {
-            wholeplan.sort((a, b) => a.planName.localeCompare(b.planName))
-            this.details = wholeplan;
-            console.log("A-Z sorted");
-          });
+          this.details.sort((a,b) => a.planName.localeCompare(b.planName));
+          this.sortedDetails = [...this.details]; //https://github.com/angular/components/issues/13854 angular does not detect change until variable get new value
+          this.templateService.presentToastWithOptions("Plans sorted from A to Z");
+          
+          // this.PlanService.getAllPlan().then(wholeplan => {
+          //   console.log(this.details);
+          //   wholeplan.sort((a, b) => a.planName.localeCompare(b.planName))
+          //   this.details = wholeplan;
+          //   this.templateService.presentToastWithOptions("Plans sorted from A to Z");
+          //   console.log(this.details);
+          // });
         }
       }, {
         text: 'Z to A',
         icon: 'arrow-round-up',
         handler: () => {
-          this.PlanService.getAllPlan().then(wholeplan => {
-            wholeplan.sort((a, b) => b.planName.localeCompare(a.planName))
-            this.details = wholeplan;
-            console.log("Z-A sorted");
-          });
+          this.details.sort((a,b) => b.planName.localeCompare(a.planName));
+          this.sortedDetails = [...this.details];
+          // this.PlanService.getAllPlan().then(wholeplan => {
+          //   wholeplan.sort((a, b) => b.planName.localeCompare(a.planName))
+          //   this.details = wholeplan;
+          this.templateService.presentToastWithOptions("Plans sorted from Z to A");
+          // });
         }
       }, {
         text: 'Date: New to Old',
         icon: 'Trending-down',
         handler: () => {
-          this.PlanService.getAllPlan().then(wholeplan => {
-            wholeplan.sort((a, b) => b.createdDate.localeCompare(a.createdDate))
-            this.details = wholeplan;
-            console.log("date sorted")
-          });
-
+          this.details.sort((a,b) => b.createdDate.localeCompare(a.createdDate));
+          this.sortedDetails = [...this.details];
+          // this.PlanService.getAllPlan().then(wholeplan => {
+          //   wholeplan.sort((a, b) => b.createdDate.localeCompare(a.createdDate))
+          //   this.details = wholeplan;
+            this.templateService.presentToastWithOptions("Plans sorted from latest to oldest");
+          // });
+        }
+      }, {
+        text: 'Date: Old to New',
+        icon: 'Trending-up',
+        handler: () => {
+          this.details.sort((a,b) => a.createdDate.localeCompare(b.createdDate));
+          this.sortedDetails = [...this.details];
+          this.templateService.presentToastWithOptions("Plans sorted from oldest to latest");
         }
       }]
     });
     await actionSheet.present();
   }
 
+  itemHeightFn(item, index) { //method to prevent virtual scroll flicker when navigate between tabs
+    return 140; //https://github.com/ionic-team/ionic/issues/17540#issuecomment-511136665
+  }
 
+  ionViewDidLeave() {
+    this.mylist.closeSlidingItems();
+  }
+
+  @ViewChild('content')content;
+  scrollToItem() {
+    console.warn("clicked scroll");
+    this.content.scrollToTop(1000);
+    setTimeout(() => {
+      this.buttonShown = false;
+    }, 1000);
+  }
+  buttonShown: boolean = false;
+  scroll(ev) {
+    let currentScrollHeight = ev.target.clientHeight + ev.detail.scrollTop;
+    let screenSize = ev.target.clientHeight;
+    // console.warn("sreen size", screenSize);
+    // console.warn("event + "+ dimension);
+    let totalHeight = document.getElementById("wholeList").clientHeight;
+    // let shownWhenHeight = totalHeight * 0.2;
+    // console.log(totalHeight)
+    // console.warn(shownWhenHeight);
+    // console.error(currentScrollHeight);
+    // console.log(this.sortedDetails.length)
+    currentScrollHeight > 3000 ? //shown when more than 20 plans https://stackoverflow.com/questions/45880214/how-to-show-hide-button-dependent-on-the-position-of-content-scroll-in-ionic-2
+      this.buttonShown = true 
+      : this.buttonShown = false;
+  }
 
 }

@@ -1,7 +1,9 @@
 <ion-header *ngIf="modalPopUp">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-button (click)="close()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+      <ion-button (click)="close()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title>
       Select one {{symptomOrAction | lowercase}}
@@ -12,10 +14,10 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-list mode="md" lines="full">
+<ion-content #content (ionScroll)="scroll($event)" [scrollEvents]="true">
+  <ion-list id="wholeList">
     <ng-container *ngIf="!modalPopUp">
-      <ion-item *ngFor="let item of menuOptions" (click)="close(item)" button>
+      <ion-item *ngFor="let item of menuOptions; let last=last" (tap)="close(item)" button [lines]="last ? 'none' : 'full'">
         <ion-label>
           {{item}}
         </ion-label>
@@ -23,21 +25,31 @@
     </ng-container>
 
     <ng-container *ngIf="modalPopUp">
-      <ion-virtual-scroll [items]="menuOptions">
-        <ion-item *virtualItem="let item" (click)="close(item)" button>
-          <ion-thumbnail slot="start">
-            <!-- <ion-img src="assets/empty.svg" (load)="loaded=true" [hidden]="!loaded"></ion-img> -->
+      <ion-virtual-scroll [items]="menuOptions" id="virtualScroll">
+        <ion-item (tap)="close(item)" button *virtualItem="let item" detail lines="full">
+          <ion-avatar slot="start">
+            <!-- <ion-img src="assets/empty.svg" (load)="item.loaded=true" [hidden]="!item.loaded"></ion-img> -->
             <!-- <ion-img [src]="item.icon" alt="" (load)="loaded=false"></ion-img> -->
-            <ion-img [src]="item.icon || 'assets/loading.gif'"></ion-img>
-          </ion-thumbnail>
-          {{returnLanguage(item)}}
+            <img [src]="item.icon" height="40" width="40"/>
+            <!-- <ion-img [src]="item.icon"></ion-img> -->
+          </ion-avatar>
+          <ion-label text-wrap>
+            {{returnLanguage(item)}}
+          </ion-label>
         </ion-item>
       </ion-virtual-scroll>
     </ng-container>
-    
+
     <ion-ripple-effect></ion-ripple-effect>
-  
+
   </ion-list>
+
+   <!-- fab placed to the bottom end -->
+   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="modalPopUp && buttonShown">
+    <ion-fab-button size="small" (tap)="scrollToItem()">
+      <ion-icon name="ios-arrow-dropup"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
 </ion-content>
 <style>
@@ -45,4 +57,17 @@
     padding-top: 0px;
     padding-bottom: 0px;
   }
+  .list-ios {
+    margin-top: 0px; /*in ios is -1px which the last item in the list for action no lines="full" shown*/
+  }
+  ion-item { 
+    padding-top: 0px;
+    /* --min-height: 69px; */ /*1px lesser than the itemHeight to see the lines, but image might not load when ion-img*/
+  } 
+  /*
+  ion-avatar { 
+    width: 55px;
+    height: 55px;
+  } 
+  */
 </style>

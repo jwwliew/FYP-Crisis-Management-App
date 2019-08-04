@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { v4 as uuid } from 'uuid';
 import { TemplateService } from './template.service';
-import { findComponentView } from '@angular/core/src/render3/util';
-import { findReadVarNames } from '@angular/compiler/src/output/output_ast';
 
 const key = "plan";
 
@@ -96,7 +94,8 @@ export class PlanService {
       let maparr = this.templateService.cleansedArray();
       console.warn(maparr);
       details.templates = maparr;
-      details.appointment = this.templateService.appointment;
+      // details.appointment = this.templateService.appointment;
+      details.appointment = this.templateService.refreshAppt();
       items[y] = details;
       console.log(details)
       return this.storage.set(key, items);
@@ -113,11 +112,15 @@ export class PlanService {
   }
 
   //delete by ID
-  deletePlanByID(id: string) {
-    return this.storage.get(key).then((items) => {
-      items.splice(items.findIndex(x => x.id == id), 1)
-      return this.storage.set(key, items);
-    })
-
+  deletePlanByID(sortedList) {
+    // return this.storage.get(key).then((items) => {
+    //   let y = items.findIndex(x => x.id ==id);
+    //   console.warn("index value...", y);
+    //   console.warn(items);
+    //   items.splice(items.findIndex(x => x.id == id), 1);
+    //   return this.storage.set(key, items);
+    // })
+    // sortedList.splice(sortedList.findIndex(x => x.id == id), 1);
+    return this.storage.set(key, sortedList);
   }
 }

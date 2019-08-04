@@ -77,6 +77,139 @@ ion-fab-list{
     bottom: 0px;
 }
 
-.alert-message.sc-ion-alert-md {
+.alert-message.sc-ion-alert-md, .alert-message.sc-ion-alert-ios {
     color:red;
+    padding-bottom: 10px;
+    font-size: 14px;
+    text-align: center;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.alert-title.sc-ion-alert-md {
+    font-size: 22px;
+    font-weight: 600;
+    text-align: center;
+}
+.alert-title.sc-ion-alert-ios {
+    font-size: 22px;
+    padding: 2px;
+}
+.alert-input-group.sc-ion-alert-md, .alert-message.sc-ion-alert-md {
+    padding-top: 0px;
+    // padding-bottom: 0px;
+}
+ion-card-title {
+    color: white;
+    font-weight: bold;
+    font-size: 1.1em;
+    padding: 0;
+    margin: 0 4px;
+}
+
+.sc-ion-segment-ios-h.ion-color.sc-ion-segment-ios-s > ion-segment-button {
+    border: 1px solid #3880FF;
+}
+.sc-ion-segment-ios-h {
+    padding: 12px;
+}
+
+// .alert-button-inner.sc-ion-alert-md {
+//     color: #3880FF;
+// }
+.deleteRedBtn {
+    font-weight: 700 !important;
+    color: red !important;
+}
+.okBlueBtn {
+    font-weight: 700 !important;
+    color: #3880FF !important;
+}
+
+.list-ios {
+    margin-bottom: 0px;
+}
+.sc-ion-card-ios-h {
+    box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12); //from view template
+}
+
+.addPaddingTopBottom {
+    padding-top: 3%;
+    padding-bottom: 3%;
+}
+.removePaddingTopBottom {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+.labelFocused {
+    color:#3880ff !important;
+}
+
+
+
+.label-floating.sc-ion-label-md-h, .label-floating.sc-ion-label-ios-h {
+    color: grey;
+}
+.item-has-focus .label-floating.sc-ion-label-md-h, .item-has-focus .label-floating.sc-ion-label-ios-h {
+    color: #3880ff;
+}
+ion-item.item-has-focus{
+    // --border-color: #e7f5ed !important;
+    // --border-color: #10dc60 !important;
+    --inner-border-width: 0px !important;
+    --highlight-height: 2px;
+}
+.removeBorder {
+    --padding-start: 0px;
+    --border-color: transparent !important; // need important for below the card text Action remove green color 
+    --highlight-color-valid: none; // for ion-textarea remove green color when tap onto 
+}
+.minHeightAndroid {
+    --min-height: 44px !important;
+}
+.minHeightIOS {
+    --min-height: 66px !important;
+    --inner-border-width: 0px 0px 1px 0px;
+}
+.planDetailItem {
+    --min-height: 55px !important;
+}  
+.notClickable {
+    pointer-events: none;
+}
+.card-content-ios {
+    padding-top: 0px;
+}
+
+.removeCardMargin {
+    margin-inline-end: 0px;
+    margin-inline-start: 0px;
+}
+.alert-input.sc-ion-alert-md {
+    border-bottom: 2px solid #10dc60 !important;
+    margin-top: 0px;
+    padding-bottom: 2px;
+    font-size: 24px;
+}
+
+// .alert-wrapper.sc-ion-alert-md {
+//     margin-bottom: 35% !important;
+// }
+
+// .sc-ion-alert-md-h.testCSS{
+//     // background-color: red !important;
+//     padding-bottom: 35% !important;
+// }
+// .sc-ion-alert-md-h.testCSS.alert-wrapper.sc-ion-alert-md {
+//     margin-bottom: 50% !important;
+// }
+// .sc-ion-alert-md-h.testCSS { /*https://github.com/ionic-team/ionic/issues/12560*/
+//     // padding-bottom: 50% !important;
+//     // position: fixed;
+//     // bottom: 50%;
+//     // top: -10%;
+//     position: absolute
+// }
+
+.sc-ion-alert-md-h, .sc-ion-alert-ios-h { //needed when set focus on keyboard, the keyboard will not overlap the input
+    position: absolute;
 }

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Events } from '@ionic/angular';
 
 
 @Component({
@@ -8,7 +10,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TutorialPage implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router, private event: Events) { }
 
   ngOnInit() {
   }
@@ -22,7 +24,13 @@ export class TutorialPage implements OnInit {
               "assets/tutorial_plan11.jpg", "assets/tutorial_plan12.jpg", "assets/tutorial_plan13.jpg"]
 
   slideOpts= {
-    loop: true, // allow first and last slide to move to each other, but click won't work when slide first to last
+    loop: false, // allow first and last slide to move to each other, but click won't work when slide first to last
+  }
+
+  getStarted() {
+    this.selectedTab == "templates" ? 
+      this.router.navigateByUrl("/tabs/templates/new") 
+      : this.router.navigateByUrl("/tabs/plans/newPlan").then(() => this.event.publish("newPlan"))
   }
 
 }
