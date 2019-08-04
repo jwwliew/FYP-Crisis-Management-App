@@ -202,8 +202,14 @@ export class EditplanPage implements OnInit {
   }
 
   savePage(id, formValue) {
-    if (this.something.controls["detailcontact"].invalid || this.something.controls["detailname"].invalid ||
-      this.something.controls["detailtcs"].invalid || this.something.controls["detailnric"].invalid) {
+    let arrayForm = [this.something.controls.detailcontact, this.something.controls.detailname, this.something.controls.detailtcs, this.something.controls.detailnric];
+    !this.submitted && arrayForm.forEach(element => {
+      if (element.invalid) {
+        element.setValue(element.value);
+        element.markAsTouched(); // and touch so the red color underline ion-input will be shown
+      }
+    });
+    if (this.something.invalid) {
       this.submitted = true;
       this.templateService.presentToastWithOptions("Please enter required plan details highlighted in red");
       return false;

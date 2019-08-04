@@ -26,7 +26,7 @@ export class EditSettingsPage implements OnInit {
   englishEmpty = false;
 
   thisForm = this.formBuilder.group({
-    english: ['', Validators.required],
+    english: ['', Validators.compose([Validators.pattern(/(?!\s*$)/), Validators.required])],
     chinese: '',
     malay: '',
     tamil: ''
@@ -57,10 +57,14 @@ export class EditSettingsPage implements OnInit {
     // })
   }
 
+  ionViewWillEnter() {
+    this.editID == "add" && this.input.setFocus();
+  }
+  
   @ViewChild('englishInput') input;
   save(value) {
     console.log("clicked save " + JSON.stringify(value));
-    if (value.english == "") {
+    if (value.english.trim() == "") {
       this.templateService.presentToastWithOptions("English name is required!");
       this.englishEmpty = true;
       this.input.setFocus();
@@ -69,10 +73,10 @@ export class EditSettingsPage implements OnInit {
     console.error("content detail obj before saving = " + JSON.stringify(this.contentDetails, null, 2));
     let newValues: Setting = {
       id: this.editID,
-      enName: value.english,
-      chName: value.chinese,
-      myName: value.malay,
-      tmName: value.tamil,
+      enName: value.english.trim(),
+      chName: value.chinese.trim(),
+      myName: value.malay.trim(),
+      tmName: value.tamil.trim(),
       icon: this.contentDetails.icon || "assets/empty.svg"
     }
     let functionToCall = this.editID == "add" ? 
@@ -84,11 +88,11 @@ export class EditSettingsPage implements OnInit {
   }
 
   goBack() {
-    //this.router.navigate(['/tabs/settings/symptomAction'])
-    this.router.navigateByUrl("/tabs/settings/symptomAction").then(() => {
+    this.router.navigate(['/tabs/settings/symptomAction']);
+    // this.router.navigateByUrl("/tabs/settings/symptomAction").then(() => {
       // this.thisForm.reset(); //reset clears the form data, which will show the error msg when navigating back to page
-      this.thisForm.markAsPristine();
-    }); //https://stackoverflow.com/questions/41678356/router-navigate-does-not-call-ngoninit-when-same-page
+      // this.thisForm.markAsPristine();
+    // }); //https://stackoverflow.com/questions/41678356/router-navigate-does-not-call-ngoninit-when-same-page
   }
 
   takePhoto(sourceType: number) {

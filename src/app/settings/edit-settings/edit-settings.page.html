@@ -52,11 +52,22 @@
   .touchedColor {
     color: #3880FF !important
   }
-  .notTouchedColor {
+  /* .notTouchedColor {
     color: #808080 !important;
   }
   ion-label {
     color: #808080 !important;
+  } */
+  .sc-ion-input-md-h, .sc-ion-input-ios-h{
+    --padding-bottom: 0px;
+    --padding-top: 0px;
+      margin-top: 2px;
+  }
+  .label-floating.sc-ion-label-ios-h{
+    margin-top: 20px !important;
+  }
+  .label-floating.sc-ion-label-md-h {
+    margin-top: 8px;
   }
 </style>
 
@@ -98,16 +109,16 @@
           Please enter at least english name
         </span>
       </ion-item> -->
-    
-    <ion-item id="itemEnglish">
-      <ion-label color="secondary" position="floating" *ngIf="get('english').dirty || get('english').valid" [class.touchedColor]="get('english').dirty"> English </ion-label>
+    <ion-item id="itemEnglish" no-padding>
+      <!-- <ion-label color="secondary" position="floating" *ngIf="get('english').dirty || get('english').valid" [class.touchedColor]="get('english').dirty"> English </ion-label>
       <ion-input type="text" [ngClass]="get('english').dirty || get('english').valid ? 'originalInput' : 'notTouchedInput'" placeholder="Enter english name" #englishInput
-        formControlName="english" required (ionFocus)="focus('english')" (ionBlur)="defocus('english')"></ion-input>
+        formControlName="english" required (ionFocus)="focus('english')" (ionBlur)="defocus('english')"></ion-input> -->
+        <ion-label position="floating">English</ion-label>
+        <ion-input type="text" formControlName="english" required #englishInput></ion-input>
     </ion-item>
     
     <p *ngIf="editID == 'add' ? englishEmpty && get('english').invalid : get('english').invalid" style="color:red; margin-top:4px; margin-bottom:0px">Please enter english name</p>
     <!-- <div *ngIf="editID == 'add' ? englishEmpty && get('english').invalid : get('english').invalid" style="color:red; margin-top:8px;">Please enter english name</div> -->
-    
       
 
     <!-- design for base on powerpoint's one
@@ -123,27 +134,26 @@
     </ion-list> 
     -->
 
-
-    <ion-item>
-      <ion-label color="secondary" position="floating" *ngIf="get('chinese').touched || checkLength('chinese')" [class.touchedColor]="get('chinese').touched"> Chinese </ion-label>
-      <ion-input type="text" [ngClass]="get('chinese').touched || checkLength('chinese') ? 'originalInput' : 'notTouchedInput'" placeholder="Enter chinese name"
-      formControlName="chinese" (ionFocus)="focus('chinese')" (ionBlur)="defocus('chinese')"></ion-input>
+    <ion-item style="margin-top:2.5%;"> 
+      <ion-label position="floating">Chinese</ion-label>
+      <ion-input type="text" formControlName="chinese"></ion-input>
     </ion-item>
 
-    <ion-item>
-      <ion-label color="secondary" position="floating" *ngIf="get('malay').touched || checkLength('malay')" [class.touchedColor]="get('malay').touched"> Malay </ion-label>
-      <ion-input type="text" [ngClass]="get('malay').touched || checkLength('malay') ? 'originalInput' : 'notTouchedInput'" placeholder="Enter malay name"
-      formControlName="malay" (ionFocus)="focus('malay')" (ionBlur)="defocus('malay')"></ion-input>
+    <ion-item style="margin-top:2.5%;">
+      <ion-label position="floating">Malay</ion-label>
+      <ion-input type="text" formControlName="malay"></ion-input>
     </ion-item>
 
-  
-    <ion-item>
-      <ion-label color="secondary" position="floating" *ngIf="get('tamil').touched || checkLength('tamil')" [class.touchedColor]="get('tamil').touched"> Tamil </ion-label>
-      <ion-input type="text" [ngClass]="get('tamil').touched || checkLength('tamil') ? 'originalInput' : 'notTouchedInput'" placeholder="Enter tamil name"
-      formControlName="tamil" (ionFocus)="focus('tamil')" (ionBlur)="defocus('tamil')"></ion-input>
+    <ion-item style="margin-top:2.5%;">
+      <ion-label position="floating">Tamil</ion-label>
+      <ion-input type="text" formControlName="tamil"></ion-input>
     </ion-item>
     <!-- <ion-button class="submit-btn" expand="block" type="submit" [disabled]="!thisForm.valid">Update</ion-button> --> 
     <!-- https://stackoverflow.com/questions/49336255/how-can-i-submit-my-form-when-clicking-on-go-button-in-ionic-3-framework -->
-    <ion-button expand="block" (click)="takePhoto(0)"> Take Photo </ion-button>
+    
+    <ion-button expand="block" (click)="takePhoto(0)" style="position:fixed; left:0; right:0;bottom:0"> 
+      <ion-icon name="camera" style="margin-right:1.5%;"></ion-icon>
+      Take Photo 
+    </ion-button>
   </form>
 </ion-content>

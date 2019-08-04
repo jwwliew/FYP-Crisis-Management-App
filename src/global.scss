@@ -152,12 +152,13 @@ ion-card-title {
 .item-has-focus .label-floating.sc-ion-label-md-h, .item-has-focus .label-floating.sc-ion-label-ios-h {
     color: #3880ff;
 }
-ion-item.item-has-focus{
+ion-item.item-has-focus, ion-item.ion-touched{
     // --border-color: #e7f5ed !important;
     // --border-color: #10dc60 !important;
-    --inner-border-width: 0px !important;
-    --highlight-height: 2px;
+    // --inner-border-width: 0px !important;
+    --highlight-height: 1.6px;
 }
+
 .removeBorder {
     --padding-start: 0px;
     --border-color: transparent !important; // need important for below the card text Action remove green color 
@@ -165,10 +166,11 @@ ion-item.item-has-focus{
 }
 .minHeightAndroid {
     --min-height: 44px !important;
+    // --inner-border-width: 0px 0px 1px 0px !important;
 }
 .minHeightIOS {
     --min-height: 66px !important;
-    --inner-border-width: 0px 0px 1px 0px;
+    // --inner-border-width: 0px 0px 1px 0px; //need for appointment line to appear
 }
 .planDetailItem {
     --min-height: 55px !important;
