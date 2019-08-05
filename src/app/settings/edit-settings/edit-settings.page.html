@@ -77,7 +77,7 @@
     <p> {{contentDetails.enName}} </p> 
     -->
     
-  <ion-img class="imgCircle" [src]="contentDetails.icon || 'assets/empty.svg'"></ion-img>
+  <ion-img class="imgCircle" [src]="contentDetails.icon || 'assets/empty.svg'" (click)="takePhoto(0)"></ion-img>
 
 
   <!-- <ion-input type="text" [(ngModel)]="contentDetails.enName"></ion-input> -->
@@ -151,9 +151,5 @@
     <!-- <ion-button class="submit-btn" expand="block" type="submit" [disabled]="!thisForm.valid">Update</ion-button> --> 
     <!-- https://stackoverflow.com/questions/49336255/how-can-i-submit-my-form-when-clicking-on-go-button-in-ionic-3-framework -->
     
-    <ion-button expand="block" (click)="takePhoto(0)" style="position:fixed; left:0; right:0;bottom:0"> 
-      <ion-icon name="camera" style="margin-right:1.5%;"></ion-icon>
-      Take Photo 
-    </ion-button>
   </form>
 </ion-content>

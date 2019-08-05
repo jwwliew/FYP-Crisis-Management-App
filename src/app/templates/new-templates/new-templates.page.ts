@@ -91,7 +91,7 @@ export class NewTemplatesPage implements OnInit {
   deleteIOS(thisItem, arrayID, mainID, combinedID) {
     this.templateService.deleteIOS(thisItem, arrayID, mainID, combinedID);
     this.mylist.closeSlidingItems();
-    this.templateService.presentToastWithOptions("Deleted item!");
+    this.templateService.presentToastWithOptions("Deleted action!");
   }
 
 //https://stackoverflow.com/questions/48133216/custom-icons-on-ionic-select-with-actionsheet-interface-ionic2

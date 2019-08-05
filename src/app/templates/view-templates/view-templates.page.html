@@ -64,8 +64,14 @@
 
               <ion-col size="6" *ngFor="let x of item.template; let i = index;">
                 <!--https://ionicframework.com/docs/api/grid-->
-                <img class="imgCircle" [src]="x.symptom.img || 'assets/empty.svg'" />
-                <p class="imgCircleText"> {{x.symptom.text}} </p>
+                <ion-row>
+                  <ion-col no-padding>
+                    <img class="imgCircle" style="width: 100%;" [src]="x.symptom.img || 'assets/empty.svg'" />
+                  </ion-col>
+                  <ion-col no-padding>
+                    <p class="imgCircleText"> {{x.symptom.text}} </p>
+                  </ion-col>
+                </ion-row>
               </ion-col>
 
             </ion-row>

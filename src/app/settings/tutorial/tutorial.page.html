@@ -39,7 +39,7 @@
 
 <ion-content>
 
-  <ion-segment color="originalPrimary" value="templates" [(ngModel)]="selectedTab">
+  <ion-segment color="originalPrimary" value="templates" [(ngModel)]="selectedTab" (ionSelect)="resetIndex()">
     <ion-segment-button value="templates">
       <ion-label>Templates</ion-label>
     </ion-segment-button>
@@ -48,7 +48,7 @@
     </ion-segment-button>
   </ion-segment>
 
-  <ion-slides pager="true" [options]="slideOpts">
+  <ion-slides pager="true" [options]="slideOpts" #slider>
 
     <ion-slide *ngFor="let item of selectedTab == 'templates' ? templateList : planList">
       <img [src]="item">

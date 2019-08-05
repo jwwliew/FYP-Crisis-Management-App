@@ -6,6 +6,7 @@ import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { TemplateService } from 'src/app/services/template.service';
 
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+import { File } from '@ionic-native/file/ngx';
 
 @Component({
   selector: 'app-edit-settings',
@@ -33,7 +34,7 @@ export class EditSettingsPage implements OnInit {
   })
 
   constructor(private activatedRoute: ActivatedRoute, private settingService: SymptomActionService, public formBuilder: FormBuilder, private router:Router, 
-    private templateService: TemplateService, private camera: Camera) { }
+    private templateService: TemplateService, private camera: Camera, private file:File) { }
 
   ngOnInit() {
     this.editID = this.activatedRoute.snapshot.paramMap.get("id");
@@ -64,7 +65,16 @@ export class EditSettingsPage implements OnInit {
   @ViewChild('englishInput') input;
   save(value) {
     console.log("clicked save " + JSON.stringify(value));
-    if (value.english.trim() == "") {
+    if (!this.contentDetails.icon && value.english.trim() == "") {
+      this.templateService.presentToastWithOptions("Please select an image and enter english name");
+      this.englishEmpty = true;
+      this.input.setFocus();
+      return false;
+    }
+    else if (!this.contentDetails.icon) {
+      this.templateService.presentToastWithOptions("Please select an image!")
+    }
+    else if (value.english.trim() == "") {
       this.templateService.presentToastWithOptions("English name is required!");
       this.englishEmpty = true;
       this.input.setFocus();
@@ -77,7 +87,7 @@ export class EditSettingsPage implements OnInit {
       chName: value.chinese.trim(),
       myName: value.malay.trim(),
       tmName: value.tamil.trim(),
-      icon: this.contentDetails.icon || "assets/empty.svg"
+      icon: this.contentDetails.icon
     }
     let functionToCall = this.editID == "add" ? 
       (this.settingService.addReusable(this.selectedTab, newValues), this.templateService.presentToastWithOptions("Added " + this.selectedTab.toLowerCase()))
@@ -108,7 +118,13 @@ export class EditSettingsPage implements OnInit {
     this.camera.getPicture(options).then((imageData) => {
       // console.error("application storage directory " + this.file.)
       let base64Image = 'data:image/jpeg;base64,' + imageData;
-      this.contentDetails.icon = base64Image;
+      // console.warn(atob(imageData).length);
+      if (atob(imageData).length > 1000000) {
+        this.templateService.presentToastWithOptions("File size too large!")
+      }
+      else {
+        this.contentDetails.icon = base64Image;
+      }
     }, (err) => {
       // Handle error
     });
