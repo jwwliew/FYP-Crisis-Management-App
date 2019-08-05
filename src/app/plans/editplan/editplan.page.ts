@@ -101,8 +101,9 @@ export class EditplanPage implements OnInit {
   pressEvent(type, thisObject, arrayID, combinedIndex) {
     this.mylist.closeSlidingItems();
     this.apptList.closeSlidingItems();
-    this.inputTriggered || this.templateService.pressEvent(type, thisObject, arrayID, combinedIndex);
-    this.inputTriggered = false;
+    !this.android ?
+      this.inputTriggered ? this.inputTriggered = false : this.templateService.pressEvent(type, thisObject, arrayID, combinedIndex)
+      : this.templateService.pressEvent(type, thisObject, arrayID, combinedIndex)
   }
   clickEvent(type, wholeItem, arrayID, combinedIndex) {
     this.templateService.clickEvent(type, wholeItem, arrayID, combinedIndex);

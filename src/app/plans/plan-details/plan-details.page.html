@@ -241,7 +241,7 @@
             <ion-card class="removeCardMargin">
               <ion-textarea rows="4" placeholder="Describe the required symptom in your own words."
                 [readonly]="checked.length > 0" [(ngModel)]="item.symptom.description"
-                [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}" (ionFocus)="inputFocus()">
+                [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}" (ionFocus)="!android && inputFocus()">
               </ion-textarea>
             </ion-card>
   
@@ -274,7 +274,7 @@
                   <ion-card class="removeCardMargin">
                     <ion-textarea rows="4" placeholder="Describe the action to take in your own words." 
                       [ngClass]="{'highlight': x.whatsapp && checked.length > 0}" [readonly]="checked.length > 0"
-                      [(ngModel)]="x.description" (ionFocus)="inputFocus()">
+                      [(ngModel)]="x.description" (ionFocus)="!android && inputFocus()">
                     </ion-textarea>
                   </ion-card>
 
@@ -365,7 +365,7 @@
             <ion-col [size]="checked.length > 0 ? 5.25 : 6" style="padding-bottom: 0px;" (click)="checked.length > 0 && clickEvent('appt', info, 4, apptIndex)">
               <ion-item no-padding appShadowCss [customCSS]="[info.whatsapp, 'planDetails']" [ngClass]="android ? 'planDetailItem' : 'minHeightIOS'">
                 <ion-label position="floating" text-wrap> Name of clinic</ion-label>
-                <ion-input [(ngModel)]="info.clinicName" [disabled]="checked.length > 0" type="text"></ion-input>
+                <ion-input [(ngModel)]="info.clinicName" [disabled]="checked.length > 0" type="text" (ionFocus)="!android && inputFocus()"></ion-input>
               </ion-item>
             </ion-col>
   

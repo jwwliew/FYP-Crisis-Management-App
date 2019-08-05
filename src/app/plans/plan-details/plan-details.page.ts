@@ -37,7 +37,7 @@ export class PlanDetailsPage implements OnInit {
     // this.datemy = moment(my).format('YYYY-MM-DD hh:mmA');
     //install -npm i moment===>to use moment().format
     // let time = new Date(my).toLocaleString('en-GB', {hour12: true});
-    let time = new Date().toLocaleString();
+    let time = new Date(my).toLocaleString();
     console.warn(time);
     appObj.appTime=time;
   }
@@ -141,8 +141,9 @@ export class PlanDetailsPage implements OnInit {
   pressEvent(type, thisObject, arrayID, combinedIndex) {
     this.mylist.closeSlidingItems();
     this.apptList.closeSlidingItems();
-    this.inputTriggered || this.templateService.pressEvent(type, thisObject, arrayID, combinedIndex);
-    this.inputTriggered = false;
+    !this.android ?
+      this.inputTriggered ? this.inputTriggered = false : this.templateService.pressEvent(type, thisObject, arrayID, combinedIndex)
+      : this.templateService.pressEvent(type, thisObject, arrayID, combinedIndex)
   }
 
   clickEvent(type, wholeItem, arrayID, combinedIndex) {

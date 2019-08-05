@@ -60,16 +60,9 @@ export class NewTemplatesPage implements OnInit {
   android: boolean;
   pressEvent(type, thisObject, arrayID, combinedIndex, ev) {
     this.mylist.closeSlidingItems();
-    console.warn("input triggered", this.inputTriggered);
-    if (!this.android) {
-      console.warn("NOT ANDROID")
-      this.inputTriggered || this.templateService.pressEvent(type, thisObject, arrayID, combinedIndex);
-      this.inputTriggered = false;
-    }
-    else {
-      console.error("ANDROID!!");
-      this.templateService.pressEvent(type, thisObject, arrayID, combinedIndex);
-    }
+    !this.android ?
+      this.inputTriggered ? this.inputTriggered = false : this.templateService.pressEvent(type, thisObject, arrayID, combinedIndex)
+      : this.templateService.pressEvent(type, thisObject, arrayID, combinedIndex)
   }
   dragAndCheckLongPress(slideItem: IonItemSliding) {
     slideItem.close();

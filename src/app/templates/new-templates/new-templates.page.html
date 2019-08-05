@@ -281,7 +281,7 @@ ion-content{
             <ion-card [class.cardIOS]="!android" class="removeCardMargin">
               <ion-textarea rows="4" placeholder="Describe the symptom in more details."
                 [readonly]="item.combined[0]?.whatsapp" [(ngModel)]="item.symptom.description"
-                [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}" (ionFocus)="inputFocus()">
+                [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}" (ionFocus)="!android && inputFocus()">
               </ion-textarea>
             </ion-card>
           </ion-col>
@@ -308,7 +308,7 @@ ion-content{
                   </ion-card>
                   <ion-card [class.cardIOS]="!android" class="removeCardMargin">
                     <ion-textarea rows="4" placeholder="Describe the action to take in your own words." [readonly]="checked.length > 0"
-                      [ngClass]="{'highlight': x.whatsapp && checked.length > 0}" [(ngModel)]="x.description"(ionFocus)="inputFocus()">
+                      [ngClass]="{'highlight': x.whatsapp && checked.length > 0}" [(ngModel)]="x.description" (ionFocus)="!android && inputFocus()">
                     </ion-textarea>
                   </ion-card>
                 </ion-item>
