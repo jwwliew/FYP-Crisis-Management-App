@@ -19,17 +19,17 @@ export class AppComponent {
     private statusBar: StatusBar,
     private storage: Storage
   ) {
-    for(let i =0; i<100; i++) {
+    for(let i = 100; i--;) {
       let globalPlanObj = {
           id: uuid(),
-          ccontact: "12345678" + i,
-          cname: "cname" + i,
+          ccontact: "10000" + (100 - i),
+          cname: "cname" + (100 - i),
           // createdDate: new Date().toLocaleString('en-GB', {hour12: true}), //https://angular.io/api/common/DatePipe
-          createdDate: new Date().toLocaleString(),
+          createdDate: new Date(Date.now() - (864e5 * i)).toLocaleString(), //https://stackoverflow.com/a/32301169, https://stackoverflow.com/a/13136778
           language: 0,
-          name: "nameplan" + i,
-          nric: "S1234567Z" + i,
-          planName: "planName" + i,
+          name: "nameplan" + (100 - i),
+          nric: "S1234567Z" + (100 - i),
+          planName: "planName" + (100 - i),
           appointment: [],
           templates: []
       }
