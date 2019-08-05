@@ -32,14 +32,15 @@ export class NewPlanPage implements OnInit {
 
   @ViewChild('input') thisInput;
   nextPage() {
-    let planName = this.slideOneForm.controls.firstName.value.trim();
-    if (!planName) {
+    let planName = this.slideOneForm.controls.firstName;
+    console.warn("Plan name", planName);
+    if (planName.invalid) {
       this.submitted = true;
       // this.templateService.presentToastWithOptions("Plan name cannot be empty!");
       this.thisInput.setFocus();
       return false;
     }
-    this.router.navigateByUrl('/tabs/plans/details/' + this.defaultLanguage + '/' + planName);
+    this.router.navigateByUrl('/tabs/plans/details/' + this.defaultLanguage + '/' + planName.value.trim());
   }
 
   cancel() {

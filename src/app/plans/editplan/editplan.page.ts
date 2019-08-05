@@ -226,7 +226,7 @@ export class EditplanPage implements OnInit {
     console.warn("saving details" + JSON.stringify(this.details,null,2));
     this.PlanService.editPlan(id, this.details).then(allPlan => {
       this.templateService.editPageUpdateArray(allPlan, id);
-      this.templateService.presentToastWithOptions("Saved plan successfully!");
+      this.templateService.presentToastWithOptions("Updated plan!");
       this.something.controls.detailname.setValue(this.details.name); //set again trim() value in case there is white space
       this.something.controls.detailtcs.setValue(this.details.cname);
       this.isDisabled = true;

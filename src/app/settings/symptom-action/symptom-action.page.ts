@@ -26,7 +26,7 @@ export class SymptomActionPage implements OnInit {
     this.templateService.delete(`Are you sure you want to delete this ${this.selectedTab.toLowerCase()}?`).then(() => {
       console.error("delete one item", thisItem);
       this.settingService.deleteIOS(this.selectedTab, thisItem).then(() => {
-        this.templateService.presentToastWithOptions(`Deleted one ${this.selectedTab.toLowerCase()}!`);
+        this.templateService.presentToastWithOptions(`Deleted ${this.selectedTab.toLowerCase()}!`);
         this.mylist.closeSlidingItems();
         this.loadItems();
       })

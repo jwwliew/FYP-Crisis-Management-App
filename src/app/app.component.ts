@@ -22,14 +22,14 @@ export class AppComponent {
     for(let i = 100; i--;) {
       let globalPlanObj = {
           id: uuid(),
-          ccontact: "10000" + (100 - i),
-          cname: "cname" + (100 - i),
+          ccontact: "100000" + i,
+          cname: "cname" + i,
           // createdDate: new Date().toLocaleString('en-GB', {hour12: true}), //https://angular.io/api/common/DatePipe
-          createdDate: new Date(Date.now() - (864e5 * i)).toLocaleString(), //https://stackoverflow.com/a/32301169, https://stackoverflow.com/a/13136778
+          createdDate: new Date(Date.now() - (864e5 * (100-i))).toLocaleString(), //https://stackoverflow.com/a/32301169, https://stackoverflow.com/a/13136778
           language: 0,
-          name: "nameplan" + (100 - i),
-          nric: "S1234567Z" + (100 - i),
-          planName: "planName" + (100 - i),
+          name: "nameplan" + i,
+          nric: "S1234567Z" + i,
+          planName: "planName" + i,
           appointment: [],
           templates: []
       }
@@ -45,9 +45,9 @@ export class AppComponent {
       this.statusBar.styleDefault();
       setTimeout(() => {
           this.splashScreen.hide();
-      }, 400); //https://stackoverflow.com/questions/54620514/why-white-screen-stuck-after-splash-screen-in-ionic-4
+      }, 400); //https://stackoverflow.com/questions/546100514/why-white-screen-stuck-after-splash-screen-in-ionic-4
       // this.splashScreen.hide();
-      //https://forum.ionicframework.com/t/after-splash-screen-display-white-screen-long-time/80162/20
+      //https://forum.ionicframework.com/t/after-splash-screen-display-white-screen-long-time/80162/100
       //https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-splashscreen/#preferences
       this.storage.length().then(length => {
         length == 0 && (

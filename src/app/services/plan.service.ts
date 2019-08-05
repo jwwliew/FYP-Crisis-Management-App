@@ -54,7 +54,8 @@ export class PlanService {
       }
       console.warn(details)
       if (items) {
-        items.push(details);
+        // items.push(details);
+        items.unshift(details);
         return this.storage.set(key, items);
       } else {
         return this.storage.set(key, [details]);
@@ -95,7 +96,7 @@ export class PlanService {
       console.warn(maparr);
       details.templates = maparr;
       // details.appointment = this.templateService.appointment;
-      details.appointment = this.templateService.refreshAppt();
+      // details.appointment = this.templateService.refreshAppt();
       items[y] = details;
       console.log(details)
       return this.storage.set(key, items);
