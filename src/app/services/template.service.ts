@@ -367,7 +367,7 @@ export class TemplateService {
           {
             text: 'CANCEL',
             role: 'cancel',
-            cssClass: 'secondary',
+            cssClass: 'cancelBlueBtn',
             handler: () => reject(false)
           },
           {
@@ -526,7 +526,7 @@ export class TemplateService {
         {
           text: 'CANCEL',
           role: 'cancel',
-          cssClass: 'secondary'
+          cssClass: 'cancelBlueBtn'
         },
         {
           text: 'OK',
@@ -679,6 +679,7 @@ export class TemplateService {
           {
           text: 'CANCEL',
           role: 'cancel',
+          cssClass: 'cancelBlueBtn',
           handler: () => reject(false)
         },
         {

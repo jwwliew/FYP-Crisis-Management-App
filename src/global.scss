@@ -120,9 +120,13 @@ ion-card-title {
     font-weight: 700 !important;
     color: red !important;
 }
+.cancelBlueBtn {
+    color: #007aff !important; 
+}
 .okBlueBtn {
     font-weight: 700 !important;
-    color: #3880FF !important;
+    // color: #3880FF !important;
+    color: #007aff !important; 
 }
 
 .list-ios {
@@ -141,7 +145,7 @@ ion-card-title {
     padding-bottom: 0px;
 }
 .labelFocused {
-    color:#3880ff !important;
+    color:#007aff !important;
 }
 
 
@@ -150,7 +154,7 @@ ion-card-title {
     color: grey;
 }
 .item-has-focus .label-floating.sc-ion-label-md-h, .item-has-focus .label-floating.sc-ion-label-ios-h {
-    color: #3880ff;
+    color: #007aff;
 }
 ion-item.item-has-focus, ion-item.ion-touched{
     // --border-color: #e7f5ed !important;
@@ -170,7 +174,7 @@ ion-item.item-has-focus, ion-item.ion-touched{
 }
 .minHeightIOS {
     --min-height: 66px !important;
-    // --inner-border-width: 0px 0px 1px 0px; //need for appointment line to appear
+    --inner-border-width: 0px 0px 1px 0px; //need for appointment line to appear
 }
 .planDetailItem {
     --min-height: 55px !important;
@@ -214,4 +218,8 @@ ion-item.item-has-focus, ion-item.ion-touched{
 
 .sc-ion-alert-md-h, .sc-ion-alert-ios-h { //needed when set focus on keyboard, the keyboard will not overlap the input
     position: absolute;
+}
+
+.alert-button-inner.sc-ion-alert-ios, .alert-tappable.sc-ion-alert-ios {
+    color: #007aff;
 }
