@@ -15,9 +15,9 @@ export class PlanDetailsPage implements OnInit {
 
   thisgroup = this.formBuilder.group({
     detailname: ['', Validators.compose([Validators.maxLength(30), Validators.pattern(/(?!\s*$)/), Validators.required])],
-    detailnric: ['', Validators.compose([Validators.maxLength(9), Validators.minLength(9), Validators.pattern('^(s|g|S|G|T|t)[0-9]{7}[a-z|A-Z]{1}$'), Validators.required])],
+    detailnric: ['', Validators.compose([Validators.minLength(5), Validators.pattern(/(?!\s*$)/), Validators.required])],
     detailtcs: ['', Validators.compose([Validators.maxLength(30), Validators.pattern(/(?!\s*$)/), Validators.required])],
-    detailcontact: ['', Validators.compose([Validators.maxLength(8), Validators.minLength(8), Validators.pattern('[0-9]*'), Validators.required])],
+    detailcontact: ['', Validators.compose([Validators.minLength(5), Validators.pattern(/^[0-9]+$/), Validators.required])],
   });
 
   constructor(private router: Router, private PlanService: PlanService, private activatedRoute: ActivatedRoute, 

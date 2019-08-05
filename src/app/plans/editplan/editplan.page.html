@@ -251,7 +251,7 @@
                   <ion-label position="floating"> NRIC </ion-label>
                   <ion-input formControlName="detailnric" type="text"></ion-input>
                 </ion-item>
-                <p *ngIf="!something.controls.detailnric.valid && submitted" style="color:red">Invalid NRIC</p>
+                <p *ngIf="!something.controls.detailnric.valid && submitted" style="color:red">NRIC required</p>
               </ion-col>
             </ion-row>
             <ion-row>
@@ -267,7 +267,7 @@
                   <ion-label position="floating"> TCS Contact </ion-label>
                   <ion-input formControlName="detailcontact" type="text"></ion-input>
                 </ion-item>
-                <p *ngIf="!something.controls.detailcontact.valid && submitted" style="color:red">Invalid Contact</p>
+                <p *ngIf="!something.controls.detailcontact.valid && submitted" style="color:red">Contact required</p>
               </ion-col>
             </ion-row>
 

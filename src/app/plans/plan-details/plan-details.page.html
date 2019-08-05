@@ -57,7 +57,7 @@
                 <ion-input formControlName="detailnric" type="text">
                 </ion-input>
               </ion-item>
-              <p *ngIf="!thisgroup.controls.detailnric.valid && submitted" style="color:red">Invalid NRIC</p>
+              <p *ngIf="!thisgroup.controls.detailnric.valid && submitted" style="color:red">NRIC required</p>
             </ion-col>
           </ion-row>
           <ion-row>
@@ -75,7 +75,7 @@
                 <ion-input formControlName="detailcontact" type="text">
                 </ion-input>
               </ion-item>
-              <p *ngIf="!thisgroup.controls.detailcontact.valid && submitted" style="color:red">Invalid Contact</p>
+              <p *ngIf="!thisgroup.controls.detailcontact.valid && submitted" style="color:red">Contact required</p>
             </ion-col>
           </ion-row>
   
