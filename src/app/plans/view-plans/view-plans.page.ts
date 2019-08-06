@@ -27,7 +27,8 @@ export class ViewPlansPage implements OnInit {
   ionViewWillEnter() {
     this.searchTerm = "";
     this.planService.getAllPlan().then(plandetails => {
-      console.warn("plan details = ", plandetails);
+      // console.warn("plan details = ", plandetails);
+      plandetails = plandetails || [];
       // plandetails.sort((a,b) => b.createdDate.localeCompare(a.createdDate)); //sort latest on top, dont need as used unshift() instead of push(), revert if needed
       this.details = plandetails;
       this.sortedDetails = plandetails; //https://stackoverflow.com/questions/53346885/how-to-efficiently-load-large-list-in-ionic/53347064#53347064

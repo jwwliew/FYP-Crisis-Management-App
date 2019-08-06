@@ -19,15 +19,15 @@
   <!----THIS IS SEARCH BAR---->
   <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="setFilteredItems()" animated margin-bottom (ionFocus)="ionFocus()" (ionBlur)="ionBlur()"></ion-searchbar>
 
-  <div *ngIf="searchTerm && sortedDetails && sortedDetails.length == 0" text-center padding> No search results found. Please try again.</div>
+  <div *ngIf="searchTerm && sortedDetails.length == 0" text-center padding> No search results found. Please try again.</div>
 
-  <div *ngIf="!searchTerm && sortedDetails && sortedDetails.length == 0" id="noPlanDiv">
+  <div *ngIf="!searchTerm && sortedDetails.length == 0" id="noPlanDiv">
       Click "New" at the right top of this screen to create a plan.
   </div>
 
   <ion-list lines="none" margin-bottom [style.padding-top]="'0px'" #mylist id="wholeList">
 
-    <ion-virtual-scroll [items]="sortedDetails" id="virtualScroll" [itemHeight]="itemHeightFn">
+    <ion-virtual-scroll [items]="sortedDetails" id="virtualScroll" [itemHeight]="itemHeightFn" [approxItemHeight]="'140px'">
       <!-- <div *virtualItem="let item; let index = index;"> -->
         <ion-item-sliding (ionSwipe)="swipeEvent(item.id)" *virtualItem="let item; let index = index;">
           <ion-item (click)="goEdit(item)" detail="false">
