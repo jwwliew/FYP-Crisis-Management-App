@@ -44,11 +44,14 @@
 <!-- Test my data yong rui -->
 <style>
   .imgCircle {
-    float: left;
+    /* float: left; */
     border-radius: 50%;
-    width: 50%;
+    width: 100%;
     /* height: 100%; */
+    /* height: 88px; */
     padding: 4%;
+    /* margin-top: 6px; */
+    /* height: 80px; */
     /* background-color:#000000 !important; */
     /* border: 1px solid black;  */
   }
@@ -154,7 +157,7 @@
   }
 
   ion-title.md.title-md.hydrated {
-    position: initial;
+    position: initial; /*to show overflow plan name as ... */
   }
 
   .sc-ion-input-md-h,
@@ -312,9 +315,14 @@
         <ion-row *ngFor="let item of getArray(globalItem.id)">
 
           <ion-col size="6">
-            <img class="imgCircle" [src]="item.symptom.img || 'assets/empty.svg'" />
-            <p class="imgCircleText"> {{item.symptom.description == "" ? item.symptom.text : item.symptom.description}}
-            </p>
+            <ion-row>
+              <ion-col no-padding size="5.25" align-self-center>
+                <img class="imgCircle" [src]="item.symptom.img || 'assets/empty.svg'" />
+              </ion-col>
+              <ion-col no-padding size="6.75" align-self-center>
+                <p class="imgCircleText"> {{item.symptom.description == "" ? item.symptom.text : item.symptom.description}}</p>
+              </ion-col>
+            </ion-row>
           </ion-col>
 
           <ion-col size="6" *ngIf="item.combined.length == 0" style="border-left: 2.5px solid #d3d3d3"></ion-col>
@@ -322,8 +330,14 @@
           <ng-container *ngFor="let x of item.combined; let actIndex = index;">
             <ion-col size="6" *ngIf="actIndex != 0"></ion-col>
             <ion-col size="6" style="border-left: 2.5px solid #d3d3d3">
-              <img class="imgCircle" [src]="x.img || 'assets/empty.svg'" />
-              <p class="imgCircleText"> {{x.description == "" ? x.text : x.description}} </p>
+              <ion-row>
+                <ion-col no-padding size="5.25" align-self-center>
+                  <img class="imgCircle" [src]="x.img || 'assets/empty.svg'" />
+                </ion-col>
+                <ion-col no-padding size="6.75" align-self-center>
+                  <p class="imgCircleText"> {{x.description == "" ? x.text : x.description}} </p>
+                </ion-col>
+              </ion-row>
             </ion-col>
           </ng-container>
 
@@ -346,15 +360,21 @@
           <!-- first column aka symptom -->
           <ion-col [size]="checked.length > 0 ? 5.25 : 6"
             [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}"
-            (press)="pressEvent('Symptom', item, globalItem.id, i);"
-            (click)="checked.length > 0 && clickEvent('Symptom', item, globalItem.id, i)">
+            (press)="pressEvent('Symptom', item, globalItem.id, item.symptom.id);"
+            (click)="checked.length > 0 && clickEvent('Symptom', item, globalItem.id, item.symptom.id)">
 
             <ion-card (click)="checked.length == 0 && presentActionSheet('Symptom', item, globalItem.id)"
               [ngClass]="{'highlight' : item.combined[0]?.whatsapp && checked.length > 0,'ion-activatable': checked.length == 0}"
               class="removeCardMargin">
               <ion-ripple-effect *ngIf="checked.length == 0"></ion-ripple-effect>
-              <img class="imgCircle" [src]="item.symptom.img || 'assets/empty.svg'" />
-              <p class="imgCircleText"> {{item.symptom.text}} </p>
+              <ion-row>
+                <ion-col no-padding size="5.25" align-self-center>
+                  <img class="imgCircle" [src]="item.symptom.img || 'assets/empty.svg'" />
+                </ion-col>
+                <ion-col no-padding size="6.75" align-self-center>
+                  <p class="imgCircleText"> {{item.symptom.text}} </p>
+                </ion-col>
+              </ion-row>
             </ion-card>
 
             <ion-card class="removeCardMargin">
@@ -370,13 +390,13 @@
           <ng-container *ngFor="let x of item.combined; let actIndex = index;">
 
             <ion-col [size]="checked.length > 0 ? 5.25 : 6" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}"
-              (press)="pressEvent('Action', x, globalItem.id, i, actIndex)"
-              (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id, i)" *ngIf="actIndex != 0">
+              (press)="pressEvent('Action', x, globalItem.id, item.symptom.id)"
+              (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id, item.symptom.id)" *ngIf="actIndex != 0">
             </ion-col>
 
             <ion-col [size]="checked.length > 0 ? 5.25 : 6" [ngClass]="{'highlight': x.whatsapp && checked.length > 0}"
-              (press)="actIndex == 0 ? pressEvent('Symptom', item, globalItem.id, i, actIndex) : pressEvent('Action', x, globalItem.id, i, actIndex);"
-              (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id, i)">
+              (press)="actIndex == 0 ? pressEvent('Symptom', item, globalItem.id, item.symptom.id) : pressEvent('Action', x, globalItem.id, item.symptom.id);"
+              (click)="checked.length > 0 && clickEvent('Action', x, globalItem.id, item.symptom.id)">
 
               <ion-item-sliding (ionSwipe)="checked.length == 0 && deleteIOS(x, globalItem.id, i, actIndex)"
                 (ionDrag)="checked.length > 0 && dragAndCheckLongPress(slidingItem)" #slidingItem>
@@ -384,8 +404,14 @@
 
                   <ion-card (click)="checked.length == 0 && presentActionSheet('Action', x)" class="removeCardMargin"
                     [ngClass]="{'highlight': x.whatsapp && checked.length > 0, 'ion-activatable': checked.length == 0}">
-                    <img class="imgCircle" [src]="x.img || 'assets/empty.svg'" />
-                    <p class="imgCircleText"> {{x.text}} </p>
+                    <ion-row>
+                      <ion-col no-padding size="5.25" align-self-center>
+                        <img class="imgCircle" [src]="x.img || 'assets/empty.svg'" />
+                      </ion-col>
+                      <ion-col no-padding size="6.75" align-self-center>
+                        <p class="imgCircleText"> {{x.text}} </p>
+                      </ion-col>
+                    </ion-row>
                     <ion-ripple-effect *ngIf="checked.length == 0"></ion-ripple-effect>
                   </ion-card>
 

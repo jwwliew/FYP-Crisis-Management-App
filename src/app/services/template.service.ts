@@ -95,6 +95,7 @@ export class TemplateService {
         // console.error("element == " + JSON.stringify(element,null,2));
         element.whatsapp = true;
         // element.arrayID = arrayID;
+        console.warn("combined index,", combinedIndex);
         this.checked.push({element, arrayID, combinedIndex});
       });
     }
@@ -152,9 +153,12 @@ export class TemplateService {
         this.appointment.splice(dynamicIndex, 1);
       } else {
         let thisArray = this.getArray(element.arrayID);
-        let arrayIndex = thisArray[element.combinedIndex].combined.findIndex(y => y.id == element.id);
-        thisArray[element.combinedIndex].combined.splice(arrayIndex, 1);
-        thisArray[element.combinedIndex].combined.length == 0 && thisArray.splice(element.combinedIndex, 1);
+        console.warn("thisarray --> " + JSON.stringify(thisArray,null,2));
+        let dynamicCombinedIndex = thisArray.findIndex(x => x.symptom.id == element.combinedIndex);
+        console.warn("dynamic combined index", dynamicCombinedIndex);
+        let arrayIndex = thisArray[dynamicCombinedIndex].combined.findIndex(y => y.id == element.id);
+        thisArray[dynamicCombinedIndex].combined.splice(arrayIndex, 1);
+        thisArray[dynamicCombinedIndex].combined.length == 0 && thisArray.splice(dynamicCombinedIndex, 1);
       }
       // thisArray[element.combinedIndex].combined.splice(arrayIndex, 1);
     });
@@ -380,6 +384,11 @@ export class TemplateService {
                 this.presentToastWithOptions("Name is required!");
                 return false;
               }
+              else if (alertData.nameInput.trim().length > 35) {
+                alert.message = "Name too long!";
+                this.presentToastWithOptions("Name too long!");
+                return false;
+              }
               resolve(alertData.nameInput.trim());
             }
           }
@@ -560,10 +569,10 @@ export class TemplateService {
     let thisArray = this.getArray(id);
     let radioBtns = [];
     // this.criticalArray.filter(word => word.symptom.text !== "Symptom").forEach(element => {
-    thisArray.filter(word => !this.globalSymptom.includes(word.symptom.text)).forEach(element => {
+    thisArray.filter(word => !this.globalSymptom.includes(word.symptom.text)).forEach((element, index) => {
       let radioBtn = {
         type: "radio",
-        label: element.symptom.text,
+        label: (index + 1) + ". " + element.symptom.text,
         // value: element.symptom.text
         value: element.symptom.id
       }

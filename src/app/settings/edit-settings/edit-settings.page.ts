@@ -118,8 +118,7 @@ export class EditSettingsPage implements OnInit {
     this.camera.getPicture(options).then((imageData) => {
       // console.error("application storage directory " + this.file.)
       let base64Image = 'data:image/jpeg;base64,' + imageData;
-      // console.warn(atob(imageData).length);
-      if (atob(imageData).length > 1000000) {
+      if (atob(imageData).length > 10485760) { //https://stackoverflow.com/a/47302575 https://stackoverflow.com/a/34166265
         this.templateService.presentToastWithOptions("File size too large!")
       }
       else {
@@ -130,6 +129,16 @@ export class EditSettingsPage implements OnInit {
     });
   }
 
+  formatBytes(bytes){
+    var kb = 1024;
+    var ndx = Math.floor( Math.log(bytes) / Math.log(kb) );
+    var fileSizeTypes = ["bytes", "kb", "mb", "gb", "tb", "pb", "eb", "zb", "yb"];
+  
+    return {
+      size: +(bytes / kb / kb).toFixed(2),
+      type: fileSizeTypes[ndx]
+    };
+  }
   focus(position) {
     let thisItem = this.thisForm.controls[position];
     console.warn("markAsTouched() and dirty", thisItem);

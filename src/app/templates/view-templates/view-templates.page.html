@@ -62,13 +62,13 @@
 
             <ion-row>
 
-              <ion-col size="6" *ngFor="let x of item.template; let i = index;">
+              <ion-col size="6" *ngFor="let x of item.template; let i = index;" style="display:flex;"> <!--https://stackoverflow.com/questions/4804581/css-expand-float-child-div-height-to-parents-height-->
                 <!--https://ionicframework.com/docs/api/grid-->
                 <ion-row>
-                  <ion-col no-padding>
-                    <img class="imgCircle" style="width: 100%;" [src]="x.symptom.img || 'assets/empty.svg'" />
+                  <ion-col no-padding size="5.25" align-self-center>
+                    <img class="imgCircle" [src]="x.symptom.img || 'assets/empty.svg'" />
                   </ion-col>
-                  <ion-col no-padding>
+                  <ion-col no-padding size="6.75" align-self-center>
                     <p class="imgCircleText"> {{x.symptom.text}} </p>
                   </ion-col>
                 </ion-row>

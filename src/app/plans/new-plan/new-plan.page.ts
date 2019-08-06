@@ -15,7 +15,7 @@ import { Events } from '@ionic/angular';
 export class NewPlanPage implements OnInit {
 
   slideOneForm = this.formBuilder.group({
-    firstName: ['', Validators.compose([Validators.maxLength(50), Validators.pattern(/(?!\s*$)/), Validators.required])], //https://stackoverflow.com/questions/45567341/regex-dont-match-if-it-is-an-empty-string
+    firstName: ['', Validators.compose([Validators.maxLength(35), Validators.pattern(/(?!\s*$)/), Validators.required])], //https://stackoverflow.com/questions/45567341/regex-dont-match-if-it-is-an-empty-string
   })
 
   submitted=false;

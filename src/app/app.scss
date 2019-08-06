@@ -30,15 +30,24 @@ ion-segment-button {
     font-weight: bold;
 }
 ion-alert .alert-radio-label{
-    white-space: normal !important;
+    // white-space: normal !important;
     padding-top: 0px !important;
     padding-bottom: 0px !important;
 }
 
-.alert-radio-group.sc-ion-alert-md, .alert-radio-group.sc-ion-alert-ios {
-    padding-bottom: 0px !important;
+// .alert-radio-group.sc-ion-alert-md, .alert-radio-group.sc-ion-alert-ios {
+//     padding-top: 12px;
+//     padding-bottom: 0px !important;
+// }
+// .alert-radio-label.sc-ion-alert-ios {
+//     padding-right: 0px; //to show full width of the symptom text for add action in checkbox
+// }
+// .alert-tappable.sc-ion-alert-ios {
+//     height: 50px;
+// }
+[aria-checked=true].sc-ion-alert-ios .alert-radio-label.sc-ion-alert-ios {
+    color: #007aff;
 }
-
-.alert-tappable.sc-ion-alert-ios {
-    height: 50px;
+[aria-checked=true].sc-ion-alert-ios .alert-radio-inner.sc-ion-alert-ios {
+    border-color: #007aff;
 }

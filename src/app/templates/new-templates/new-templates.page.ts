@@ -58,7 +58,7 @@ export class NewTemplatesPage implements OnInit {
 
   @ViewChild('mylist')mylist: IonList;
   android: boolean;
-  pressEvent(type, thisObject, arrayID, combinedIndex, ev) {
+  pressEvent(type, thisObject, arrayID, combinedIndex) {
     this.mylist.closeSlidingItems();
     !this.android ?
       this.inputTriggered ? this.inputTriggered = false : this.templateService.pressEvent(type, thisObject, arrayID, combinedIndex)
