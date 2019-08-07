@@ -32,20 +32,13 @@ export class NewTemplatesPage implements OnInit {
   constructor(private router: Router, private templateService: TemplateService, private alertCtrl: AlertController, 
     private event: Events, private file: File, private loadingController: LoadingController, private fileOpener: FileOpener) {
 
-      console.error("CONSTURCTOR CALLlED" + JSON.stringify(this.templateService.getAllArray(), null, 2));
       this.event.subscribe("view", item => { //or services https://stackoverflow.com/questions/54304481/ionic-4-angular-7-passing-object-data-to-another-page
         this.viewPage = true;
-        console.log("view page = " + this.viewPage + " edit page = " + this.editPage);
         this.templateName = item.name;
         this.templateID = item.id;
         this.defaultLanguage = item.language;
-        console.error("defalt lang == " + this.defaultLanguage);
         this.templateService.filterArray(item);
-        console.warn("item received --- " + JSON.stringify(item, null, 2));
-        console.log(item.template);
-        console.error("all view = " + JSON.stringify(this.templateService.getAllArray(), null, 2));
       })
-
       this.templateService.setGlobalSettings();
     }
 
@@ -69,7 +62,6 @@ export class NewTemplatesPage implements OnInit {
   }
   clickEvent(type, wholeItem, arrayID, combinedIndex) {
     this.templateService.clickEvent(type, wholeItem, arrayID, combinedIndex);
-    this.inputTriggered = false; //added to attempt to stop inputTriggered from being true when tap onto ion-textarea, hence need to long press 2nd time
   }
 
   clearArray() {
@@ -103,10 +95,7 @@ export class NewTemplatesPage implements OnInit {
       }
     }
     let maparr = this.templateService.cleansedArray();
-    console.error(JSON.stringify(maparr, null, 2));
     this.templateService.createTemplate(maparr, templateNameFromInput, this.templateID, this.templateName, this.defaultLanguage).then((val) => {
-      // this.event.publish("created", this.criticalArray);
-      console.error("VAL " + JSON.stringify(val,null,2))
       templateNameFromInput ?
         (this.router.navigateByUrl('/tabs/templates'), this.templateService.presentToastWithOptions("Created template!")) :
         (this.templateService.editPageUpdateArray(val, this.templateID), this.templateService.presentToastWithOptions("Updated template!"),this.editPage = false, this.viewPage = true)
@@ -130,7 +119,6 @@ export class NewTemplatesPage implements OnInit {
       (typeOfAction == "duplicate") ? "Enter name of the duplicated template" :
       (typeOfAction == "Create Crisis Plan") ? "Enter Crisis Plan name" : "Enter template name"
       this.templateService.alertInput(templateName).then((alertData: string) => {
-        console.warn("alert data here ==== " + alertData);
         if (typeOfAction == "rename") {
           this.templateService.renameTemplate(alertData, this.templateID).then(() => {
             this.templateName = alertData;
@@ -149,13 +137,12 @@ export class NewTemplatesPage implements OnInit {
         else {
           this.addTemplate(alertData);
         }
-      }).catch(() => {console.error("alert input cancelleleddedd")})
+      }).catch(() => {})
   }
 
   frontViewData: any;
 
   ionViewWillEnter() {
-    console.log("ng init + " + JSON.stringify(this.templateService.getAllArray(),null,2));
     this.android = this.templateService.checkPlatformAndroid();
     this.frontViewData = this.templateService.frontViewData;
   }
@@ -187,7 +174,6 @@ export class NewTemplatesPage implements OnInit {
     this.templateService.popOverController('popover', x, menuOptions).then(popover => {
       popover.present();
       popover.onDidDismiss().then((data) => { //method 2 ngOnInIt inside onDidDismiss()
-        console.log("popup dismiss data = " + data.data);
         data.data && this.callAction(data.data);
       });
     })
@@ -393,12 +379,10 @@ export class NewTemplatesPage implements OnInit {
     // });
 
   callEdit() {
-    console.log("edit is called " + this.templateID);
     this.templateService.getOneTemplate(this.templateID).then(thisTemplate => {
       this.templateService.callEdit(thisTemplate.language);
       this.editPage = true;
     });
-    return "hello"
   }
 
   delete() {
@@ -407,7 +391,7 @@ export class NewTemplatesPage implements OnInit {
         this.templateService.presentToastWithOptions("Deleted template!");
         this.router.navigate(["/tabs/templates"], {replaceUrl: true});
       });
-    }).catch(() => {console.log("delete canceled")})
+    }).catch(() => {})
   }
 
 }

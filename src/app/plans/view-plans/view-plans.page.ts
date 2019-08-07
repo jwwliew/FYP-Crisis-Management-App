@@ -27,14 +27,13 @@ export class ViewPlansPage implements OnInit {
   ionViewWillEnter() {
     this.searchTerm = "";
     this.planService.getAllPlan().then(plandetails => {
-      // console.warn("plan details = ", plandetails);
       plandetails = plandetails || [];
       // plandetails.sort((a,b) => b.createdDate.localeCompare(a.createdDate)); //sort latest on top, dont need as used unshift() instead of push(), revert if needed
       this.details = plandetails;
       this.sortedDetails = plandetails; //https://stackoverflow.com/questions/53346885/how-to-efficiently-load-large-list-in-ionic/53347064#53347064
-      console.error("sorted = ", this.sortedDetails)
     });
   }
+
   //search item(s)
   setFilteredItems() {
     this.sortedDetails = this.details.filter(result => result.planName.toLowerCase().indexOf(this.searchTerm.toLowerCase()) !== -1);
@@ -66,18 +65,13 @@ export class ViewPlansPage implements OnInit {
       this.details.splice(this.details.findIndex(x => x.id == id), 1);
       this.sortedDetails = [...this.details];
       this.planService.deletePlanByID(this.details); //default plans from old to new
-      // this.PlanService.deletePlanByID(id, this.sortedDetails).then(result => {
-        // this.details = result;
-        // this.sortedDetails = result;
-        this.templateService.presentToastWithOptions("Deleted plan!");
-        this.mylist.closeSlidingItems();
-        this.searchTerm = "";
-      // });
+      this.templateService.presentToastWithOptions("Deleted plan!");
+      this.mylist.closeSlidingItems();
+      this.searchTerm = "";
     }).catch(() => {})
   }
 
-  presentActionSheetDelayed() { //needed to prevent keyboard taking up white space when tap onto searchbar then tap onto filter button
-    console.error("start of 5000")
+  presentActionSheetDelayed() { //needed to prevent keyboard taking up white space bug when tap onto searchbar then tap onto filter button
     if (this.focused) {
       setTimeout(() => {
         this.presentActionSheet();
@@ -87,6 +81,7 @@ export class ViewPlansPage implements OnInit {
       this.presentActionSheet();
     }
   }
+
   focused: boolean;
   ionFocus() {
     this.focused = true;
@@ -100,6 +95,10 @@ export class ViewPlansPage implements OnInit {
   //Filter
   async presentActionSheet() {
     this.mylist.closeSlidingItems();
+    if (this.sortedDetails.length == 0) {
+      this.templateService.presentToastWithOptions("No plans to filter. Please click on 'New' at the top right to add a plan!");
+      return false;
+    }
     const actionSheet = await this.actionSheetController.create({
       header: 'Sort by',
       buttons: [{
@@ -166,7 +165,6 @@ export class ViewPlansPage implements OnInit {
 
   @ViewChild('content')content;
   scrollToItem() {
-    console.warn("clicked scroll");
     this.content.scrollToTop(1000);
     setTimeout(() => {
       this.buttonShown = false;
@@ -175,15 +173,6 @@ export class ViewPlansPage implements OnInit {
   buttonShown: boolean = false;
   scroll(ev) {
     let currentScrollHeight = ev.target.clientHeight + ev.detail.scrollTop;
-    let screenSize = ev.target.clientHeight;
-    // console.warn("sreen size", screenSize);
-    // console.warn("event + "+ dimension);
-    let totalHeight = document.getElementById("wholeList").clientHeight;
-    // let shownWhenHeight = totalHeight * 0.2;
-    // console.log(totalHeight)
-    // console.warn(shownWhenHeight);
-    // console.error(currentScrollHeight);
-    // console.log(this.sortedDetails.length)
     currentScrollHeight > 3000 ? //shown when more than 20 plans https://stackoverflow.com/questions/45880214/how-to-show-hide-button-dependent-on-the-position-of-content-scroll-in-ionic-2
       this.buttonShown = true 
       : this.buttonShown = false;

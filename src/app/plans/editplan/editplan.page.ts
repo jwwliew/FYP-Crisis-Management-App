@@ -47,7 +47,6 @@ export class EditplanPage implements OnInit {
         this.something.controls.detailnric.setValue(this.backUpPlanDetails[1]),
         this.something.controls.detailtcs.setValue(this.backUpPlanDetails[2]),
         this.something.controls.detailcontact.setValue(this.backUpPlanDetails[3]),
-        // this.something.markAsUntouched(),
         this.templateService.goToViewPageFromEdit(),
         this.router.navigateByUrl('/tabs/plans/editplan/' + id),
         this.isDisabled = true
@@ -57,7 +56,6 @@ export class EditplanPage implements OnInit {
   ionViewWillEnter() {
     this.android = this.templateService.checkPlatformAndroid();
     let id = this.activatedRoute.snapshot.paramMap.get('item');
-    console.warn("id = " + id);
     this.templateService.setGlobalSettings();
     this.PlanService.getEditDetails(id).then(everything => {
       [].concat(...everything.templates).forEach(eachArray => {
@@ -76,7 +74,6 @@ export class EditplanPage implements OnInit {
       this.templateService.filterArray(obj);
       this.details = everything;
       this.defaultLanguage = everything.language;
-      console.warn("EVERYTHING " + JSON.stringify(everything,null,2));
       this.templateService.appointment = everything.appointment;
       this.something.controls['detailname'].setValue(this.details.name);
       this.something.controls.detailnric.setValue(this.details.nric);
@@ -127,7 +124,6 @@ export class EditplanPage implements OnInit {
     this.templateService.presentToastWithOptions("Deleted items!");
   }
 
-
   popOverController(x) {
     let menuOptions = ["Edit", "Rename", "Export to PDF"];
     this.templateService.popOverController('popover', x, menuOptions).then(popover => {
@@ -174,7 +170,7 @@ export class EditplanPage implements OnInit {
       doc.addPage(millimeters.width * 2, millimeters.height * 1.95);
       doc.addImage(dataUrl, 'PNG', 0, 10, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST');
 
-      doc.save('pdfDocument.pdf'); //for website
+      // doc.save('pdfDocument.pdf'); //for website
 
       let pdfOutput = doc.output();
       // using ArrayBuffer will allow you to put image inside PDF
@@ -188,11 +184,10 @@ export class EditplanPage implements OnInit {
       const fileName = "CrisisPlan.pdf";
       //Writing File to Device  
       this.file.writeFile(directory, fileName, buffer, { replace: true }).then(success => { //https://ourcodeworld.com/articles/read/38/how-to-capture-an-image-from-a-dom-element-with-javascript
-        console.log("File created Succesfully" + JSON.stringify(success));
         this.loading.dismiss();
-        this.templateService.presentToastWithOptions("File created successfully!!!");
+        this.templateService.presentToastWithOptions("PDF file has been created!");
         this.fileOpener.open(success.nativeURL, "application/pdf").catch(() => this.templateService.presentToastWithOptions("Please install a PDF Viewer such as Acrobat!"));
-      }).catch((error) => console.log("Cannot Create File " + JSON.stringify(error)));
+      }).catch((error) => console.log("Cannot Create File " + JSON.stringify(error, null, 2)));
     })
   }
 
@@ -222,8 +217,7 @@ export class EditplanPage implements OnInit {
     this.details.nric = formValue.detailnric;
     this.details.cname = formValue.detailtcs.trim();
     this.details.ccontact = formValue.detailcontact;
-    // this.details.appointment = this.details.appointment.filter(x => x.clinicName);
-    console.warn("saving details" + JSON.stringify(this.details,null,2));
+
     this.PlanService.editPlan(id, this.details).then(allPlan => {
       this.templateService.editPageUpdateArray(allPlan, id);
       this.templateService.presentToastWithOptions("Updated plan!");
@@ -235,7 +229,6 @@ export class EditplanPage implements OnInit {
 
   askForName() {
     this.templateService.alertInput("Enter new name").then((alertData: string) => {
-      console.error("rename alert data plan!!" + alertData);
       this.PlanService.renamePlan(this.details.id, alertData).then(() => {
         this.details.planName = alertData;
         this.templateService.presentToastWithOptions("Renamed plan!");
@@ -244,10 +237,8 @@ export class EditplanPage implements OnInit {
   }
 
   dateChanged(my, appObj) {
-    // console.warn("my picker --> ", my);
     // let time = new Date(my).toLocaleString('en-GB'); //'en-GB' will crash as the system keeps returning 02/08 and 08/02 at same time when logged
     let time = new Date(my).toLocaleString(); 
-    // console.warn("time changed --", time);
     appObj.appTime = time;
   }
 

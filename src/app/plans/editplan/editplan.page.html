@@ -247,14 +247,15 @@
                   </ion-label>
                   <ion-input formControlName="detailname" type="text"></ion-input>
                 </ion-item>
-                <p *ngIf="!something.controls.detailname.valid && submitted" style="color:red">Name required</p>
+                <p *ngIf="something.controls['detailname'].invalid && submitted" style="color:red">Name required</p>
               </ion-col>
               <ion-col style="padding-top:0px;" [ngClass]="android ? 'minHeightAndroid' : 'planDetailItem'">
                 <ion-item no-padding>
                   <ion-label position="floating"> NRIC </ion-label>
                   <ion-input formControlName="detailnric" type="text"></ion-input>
                 </ion-item>
-                <p *ngIf="!something.controls.detailnric.valid && submitted" style="color:red">NRIC required</p>
+                <p *ngIf="something.controls['detailnric'].value.trim().length == 0 && submitted" style="color:red">NRIC required</p>
+                <p *ngIf="something.controls['detailnric'].value.trim().length > 0 && something.controls['detailnric'].invalid && submitted" style="color:red">Invalid NRIC</p>
               </ion-col>
             </ion-row>
             <ion-row>
@@ -263,14 +264,15 @@
                   <ion-label position="floating"> TCS Name </ion-label>
                   <ion-input formControlName="detailtcs" type="text"></ion-input>
                 </ion-item>
-                <p *ngIf="!something.controls.detailtcs.valid && submitted" style="color:red">TCS name required</p>
+                <p *ngIf="something.controls['detailtcs'].invalid && submitted" style="color:red">TCS name required</p>
               </ion-col>
               <ion-col style="padding-top:0px;">
                 <ion-item no-padding [ngClass]="android ? 'minHeightAndroid' : 'planDetailItem'">
                   <ion-label position="floating"> TCS Contact </ion-label>
                   <ion-input formControlName="detailcontact" type="text"></ion-input>
                 </ion-item>
-                <p *ngIf="!something.controls.detailcontact.valid && submitted" style="color:red">Contact required</p>
+                <p *ngIf="something.controls['detailcontact'].value.trim().length == 0 && submitted" style="color:red">Contact required</p>
+                <p *ngIf="something.controls['detailcontact'].value.trim().length > 0 && something.controls['detailcontact'].invalid && submitted" style="color:red">Invalid contact</p>
               </ion-col>
             </ion-row>
 

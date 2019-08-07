@@ -18,7 +18,6 @@ export class SymptomActionService {
 
   getType(type) {
     this.thisKey = type == "Symptom" ? STORAGE_KEY : ACTION_KEY
-    // console.log("this key is " + this.thisKey);
     return this.storage.get(this.thisKey);
   }
   
@@ -57,8 +56,6 @@ export class SymptomActionService {
         icon: item.icon
       }
     }
-    console.log("adding reusable item = " + JSON.stringify(item));
-    console.error(settingObj);
     return this.getType(type).then(result => {
       result = result || [];
       result.push(settingObj);
@@ -71,7 +68,6 @@ export class SymptomActionService {
   }
 
   getOneSetting(type, id) {
-    console.log("type = " + type);
     return this.getType(type).then((items: Setting[]) => {
       // console.error("items = " + JSON.stringify(items, null, 2));
       return items.find(item => item.id == id) //previously used filter returns array need [0] to access in editSettings page
@@ -81,9 +77,6 @@ export class SymptomActionService {
   updateOneSetting(type, newValues) {
     return this.getType(type).then((items: Setting[]) => {
       let itemIndex = items.findIndex(item => item.id === newValues.id);
-      console.log("item index to update = " + itemIndex);
-      console.log("this key in update = " + this.thisKey);
-      console.log("this type to update = " + type);
       items[itemIndex] = newValues;
       return this.storage.set(this.thisKey, items);
     })
@@ -92,7 +85,6 @@ export class SymptomActionService {
   deleteSetting(type, checkedArray) {
     return this.getType(type).then((items: Setting[]) => {
       checkedArray.forEach(element => {
-        console.log('eleemtn = ' + element);
         items.splice(items.findIndex(item => item.id === element.id), 1);
       });
       return this.storage.set(this.thisKey, items);

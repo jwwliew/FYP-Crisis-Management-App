@@ -6,7 +6,6 @@ import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { TemplateService } from 'src/app/services/template.service';
 
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
-import { File } from '@ionic-native/file/ngx';
 
 @Component({
   selector: 'app-edit-settings',
@@ -34,13 +33,11 @@ export class EditSettingsPage implements OnInit {
   })
 
   constructor(private activatedRoute: ActivatedRoute, private settingService: SymptomActionService, public formBuilder: FormBuilder, private router:Router, 
-    private templateService: TemplateService, private camera: Camera, private file:File) { }
+    private templateService: TemplateService, private camera: Camera) { }
 
   ngOnInit() {
     this.editID = this.activatedRoute.snapshot.paramMap.get("id");
-    // console.log("hello this page params = " + this.editID);
     this.selectedTab = this.activatedRoute.snapshot.paramMap.get("selectedTab");  
-    // console.log("this selected tab = " + this.selectedTab);
     if (this.editID == "add") {
       this.contentDetails.enName = "New " + this.selectedTab;
     }
@@ -64,7 +61,6 @@ export class EditSettingsPage implements OnInit {
   
   @ViewChild('englishInput') input;
   save(value) {
-    console.log("clicked save " + JSON.stringify(value));
     if (!this.contentDetails.icon && value.english.trim() == "") {
       this.templateService.presentToastWithOptions("Please select an image and enter english name");
       this.englishEmpty = true;
@@ -80,7 +76,6 @@ export class EditSettingsPage implements OnInit {
       this.input.setFocus();
       return false;
     }
-    console.error("content detail obj before saving = " + JSON.stringify(this.contentDetails, null, 2));
     let newValues: Setting = {
       id: this.editID,
       enName: value.english.trim(),
@@ -116,7 +111,6 @@ export class EditSettingsPage implements OnInit {
     }
 
     this.camera.getPicture(options).then((imageData) => {
-      // console.error("application storage directory " + this.file.)
       let base64Image = 'data:image/jpeg;base64,' + imageData;
       if (atob(imageData).length > 10485760) { //https://stackoverflow.com/a/47302575 https://stackoverflow.com/a/34166265
         this.templateService.presentToastWithOptions("File size too large!")
@@ -129,22 +123,10 @@ export class EditSettingsPage implements OnInit {
     });
   }
 
-  formatBytes(bytes){
-    var kb = 1024;
-    var ndx = Math.floor( Math.log(bytes) / Math.log(kb) );
-    var fileSizeTypes = ["bytes", "kb", "mb", "gb", "tb", "pb", "eb", "zb", "yb"];
-  
-    return {
-      size: +(bytes / kb / kb).toFixed(2),
-      type: fileSizeTypes[ndx]
-    };
-  }
   focus(position) {
     let thisItem = this.thisForm.controls[position];
-    console.warn("markAsTouched() and dirty", thisItem);
     this.thisForm.controls[position].markAsTouched();
     this.thisForm.controls[position].markAsDirty();
-    // this.thisForm.controls[position].markAsDirty();
   }
   defocus(position) {
     let thisItem = this.thisForm.controls[position];

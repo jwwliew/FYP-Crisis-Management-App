@@ -20,7 +20,7 @@ export class PlanDetailsPage implements OnInit {
     detailcontact: ['', Validators.compose([Validators.minLength(5), Validators.pattern(/^[0-9]+$/), Validators.required])],
   });
 
-  constructor(private router: Router, private PlanService: PlanService, private activatedRoute: ActivatedRoute, 
+  constructor(private router: Router, private PlanService: PlanService, private activatedRoute: ActivatedRoute,
     private templateService: TemplateService, public formBuilder: FormBuilder) {
   }
 
@@ -33,18 +33,16 @@ export class PlanDetailsPage implements OnInit {
   ngOnInit() { }
 
   dateChanged(my, appObj) {
-    //this.datemy = my;
     // this.datemy = moment(my).format('YYYY-MM-DD hh:mmA');
     //install -npm i moment===>to use moment().format
     // let time = new Date(my).toLocaleString('en-GB', {hour12: true});
     let time = new Date(my).toLocaleString();
-    console.warn(time);
-    appObj.appTime=time;
+    appObj.appTime = time;
   }
 
   submitted = false;
 
-  PlanDetails() { 
+  PlanDetails() {
     let arrayForm = [this.thisgroup.controls.detailcontact, this.thisgroup.controls.detailname, this.thisgroup.controls.detailtcs, this.thisgroup.controls.detailnric];
     !this.submitted && arrayForm.forEach(element => {
       if (!element.value) {
@@ -57,38 +55,22 @@ export class PlanDetailsPage implements OnInit {
       this.templateService.presentToastWithOptions("Please enter required plan details highlighted in red");
       return false;
     }
-    // if (this.thisgroup.controls["detailcontact"].invalid || this.thisgroup.controls["detailname"].invalid ||
-    //   this.thisgroup.controls["detailtcs"].invalid ||
-    //   this.thisgroup.controls["detailnric"].invalid) {
-    //     this.thisgroup.controls["detailname"].setValue("")
-    //     this.thisgroup.controls["detailname"].markAsTouched();
-    //   this.submitted = true;
-    //   this.templateService.presentToastWithOptions("Please enter required plan details highlighted in red");
-    //   return false;
-    // }
-    if (this.templateService.checkAllArrayEmpty("adding plan")) {
+    if (this.templateService.checkAllArrayEmpty("adding plan") || this.templateService.checkAppointmentEmpty()) {
       return false;
     }
-    let x = this.templateService.checkAppointmentEmpty();
-    console.warn("appoint x value = ", x);
-    if (x) {
-      return false;
-    }
-      //created Date**
-      // let date = new Date();
-      // let date1 = date.getDate().toString() + '/' + (date.getMonth() + 1).toString() + '/' + date.getFullYear().toString();
-      // let date1 = new Date().toLocaleString('en-GB', {hour12: true}); //02/08/2019, 2:09:09 pm, without 'en-GB' is 08/02 on my computer
-      let date1 = new Date().toLocaleString();
-      console.warn("DATE 1", date1);
-      let maparr = this.templateService.cleansedArray();
-      console.log(this.defaultLanguage, date1, this.planName);
-      this.PlanService.addPlanDetails(this.defaultLanguage, date1, this.planName, this.thisgroup.controls.detailname.value.trim(), this.thisgroup.controls.detailnric.value, 
-        this.thisgroup.controls.detailtcs.value.trim(), this.thisgroup.controls.detailcontact.value, maparr, this.appointment).then(() => {
-          this.templateService.resetArray();
-          this.router.navigateByUrl('/tabs/plans');
-          this.templateService.presentToastWithOptions("Created plan!")
-      });
+    //created Date**
+    // let date = new Date();
+    // let date1 = date.getDate().toString() + '/' + (date.getMonth() + 1).toString() + '/' + date.getFullYear().toString();
+    // let date1 = new Date().toLocaleString('en-GB', {hour12: true}); //02/08/2019, 2:09:09 pm, without 'en-GB' is 08/02 on my computer
+    let date1 = new Date().toLocaleString();
+    let maparr = this.templateService.cleansedArray();
 
+    this.PlanService.addPlanDetails(this.defaultLanguage, date1, this.planName, this.thisgroup.controls.detailname.value.trim(), this.thisgroup.controls.detailnric.value,
+      this.thisgroup.controls.detailtcs.value.trim(), this.thisgroup.controls.detailcontact.value, maparr, this.appointment).then(() => {
+        this.templateService.resetArray();
+        this.router.navigateByUrl('/tabs/plans');
+        this.templateService.presentToastWithOptions("Created plan!")
+      });
   }
 
   newAppt() {
@@ -110,8 +92,6 @@ export class PlanDetailsPage implements OnInit {
     this.android = this.templateService.checkPlatformAndroid();
     this.planName = this.activatedRoute.snapshot.paramMap.get('planName');
     this.defaultLanguage = +this.activatedRoute.snapshot.paramMap.get("languageID");
-    console.error("plan name = " + this.planName);
-    console.warn("default lang = " + this.defaultLanguage);
     this.templateService.callEdit(this.defaultLanguage);
     this.templateService.setGlobalSettings();
     this.thisInput.setFocus();
@@ -136,7 +116,7 @@ export class PlanDetailsPage implements OnInit {
   inputTriggered = false;
   inputFocus = () => this.inputTriggered = true;
 
-  @ViewChild('mylist')mylist: IonList;
+  @ViewChild('mylist') mylist: IonList;
 
   pressEvent(type, thisObject, arrayID, combinedIndex) {
     this.mylist.closeSlidingItems();
@@ -172,7 +152,7 @@ export class PlanDetailsPage implements OnInit {
     this.templateService.popUp(id, this.defaultLanguage);
   }
 
-  @ViewChild('apptList')apptList: IonList;
+  @ViewChild('apptList') apptList: IonList;
   deleteIOSAppointment(item) {
     this.templateService.deleteIOSAppointment(item);
     this.apptList.closeSlidingItems();

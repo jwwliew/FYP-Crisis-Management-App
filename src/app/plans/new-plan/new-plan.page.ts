@@ -33,7 +33,6 @@ export class NewPlanPage implements OnInit {
   @ViewChild('input') thisInput;
   nextPage() {
     let planName = this.slideOneForm.controls.firstName;
-    console.warn("Plan name", planName);
     if (planName.invalid) {
       this.submitted = true;
       // this.templateService.presentToastWithOptions("Plan name cannot be empty!");
@@ -54,23 +53,19 @@ export class NewPlanPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    console.error("will enter")
     this.android = this.templateService.checkPlatformAndroid();
-    // setTimeout(() => {
-      // this.thisInput.setFocus(); //does keyboard show up? //show keyboard using ionic native plugin? consult lzq https://stackoverflow.com/questions/39612653/set-focus-on-an-input-with-ionic-2
-      //https://forum.ionicframework.com/t/focus-input-programatically-scroll/103386/2 scroll to input?
-    // }, 150);
     this.event.subscribe("newPlan", () => {
       this.resetPlan();
       this.event.unsubscribe("newPlan");
     })
   }
+
   ionViewDidEnter() {
-    console.warn('did load');
     setTimeout(() => {
       this.thisInput.setFocus(); //does keyboard show up?
     }, 10)
   }
+  
   inputFocus() {
     this.slideOneForm.controls.firstName.markAsTouched();
     this.slideOneForm.controls.firstName.markAsDirty();

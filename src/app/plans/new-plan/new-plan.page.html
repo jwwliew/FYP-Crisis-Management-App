@@ -71,10 +71,10 @@
       <form [formGroup]="slideOneForm">
         <ion-item no-padding [ngClass]="android ? 'minHeightAndroid' : 'planDetailItem'">
           <ion-label position="floating"> Plan Name </ion-label>
-          <ion-input formControlName="firstName" type="text" (ionFocus)="inputFocus()" (ionBlur)="defocus()" #input></ion-input>
+          <ion-input formControlName="firstName" type="text" #input></ion-input>
         </ion-item>
 
-        <p *ngIf="!slideOneForm.controls['firstName'].valid && submitted" style="color: red">Please enter plan name</p>
+        <p *ngIf="slideOneForm.controls['firstName'].invalid && submitted" style="color: red">Please enter plan name</p>
       
       </form>
 

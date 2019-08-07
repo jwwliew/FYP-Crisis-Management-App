@@ -28,8 +28,6 @@ export class PlanService {
   //searchfunction
   getPlanFilter(searchTerm) {
     return this.storage.get(key).then(item => {
-      console.log(item);
-      console.log(searchTerm);
       //return item.filter(result => result.name === searchTerm);
       return item.filter(result => result.planName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1);
     });
@@ -52,7 +50,6 @@ export class PlanService {
         templates: maparr,
         appointment: appointment
       }
-      console.warn(details)
       if (items) {
         // items.push(details);
         items.unshift(details);
@@ -63,10 +60,10 @@ export class PlanService {
       }
     });
   }
+
   //new plan
   addNewPlan(newitem) {
     return this.storage.get(key).then((items) => {
-
       if (items) {
         items.push(newitem);
         return this.storage.set(key, items);
@@ -75,10 +72,10 @@ export class PlanService {
       }
     });
   }
+
   //add language
   addLanguage(newitem) {
     return this.storage.get(key).then((items) => {
-
       if (items) {
         items.push(newitem);
         return this.storage.set(key, items);
@@ -93,12 +90,8 @@ export class PlanService {
     return this.storage.get(key).then((items) => {
       let y = items.findIndex(item => item.id == id);
       let maparr = this.templateService.cleansedArray();
-      console.warn(maparr);
       details.templates = maparr;
-      // details.appointment = this.templateService.appointment;
-      // details.appointment = this.templateService.refreshAppt();
       items[y] = details;
-      console.log(details)
       return this.storage.set(key, items);
     })
   }
@@ -106,9 +99,7 @@ export class PlanService {
   renamePlan(id,planName) {
     return this.getAllPlan().then(data => {
       data.find(item => item.id ===id).planName = planName;
-      console.log(planName);
       return this.storage.set(key, data);
-
     })
   }
 

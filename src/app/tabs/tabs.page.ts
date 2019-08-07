@@ -24,7 +24,7 @@ export class TabsPage implements OnInit {
     this.templateService.resetArray();
   }
 
-  ionViewWillEnter() {
-    console.error("%cION VIEW WILL ENTER TABS PAGE ", this.styles);
-  }
+  // ionViewWillEnter() {
+  //   console.error("%cION VIEW WILL ENTER TABS PAGE ", this.styles);
+  // }
 }

@@ -19,9 +19,9 @@
   <!----THIS IS SEARCH BAR---->
   <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="setFilteredItems()" animated margin-bottom (ionFocus)="ionFocus()" (ionBlur)="ionBlur()"></ion-searchbar>
 
-  <div *ngIf="searchTerm && sortedDetails.length == 0" text-center padding> No search results found. Please try again.</div>
+  <div *ngIf="searchTerm && sortedDetails && sortedDetails.length == 0" text-center padding> No search results found. Please try again.</div>
 
-  <div *ngIf="!searchTerm && sortedDetails.length == 0" id="noPlanDiv">
+  <div *ngIf="!searchTerm && sortedDetails && sortedDetails.length == 0" id="noPlanDiv">
       Click "New" at the right top of this screen to create a plan.
   </div>
 

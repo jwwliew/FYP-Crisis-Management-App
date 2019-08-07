@@ -16,16 +16,11 @@ export class TemplateService {
     private toastCtrl: ToastController, private alertCtrl: AlertController, private popoverCtrl: PopoverController, private modalCtrl: ModalController, private plt: Platform) { }
 
   createTemplate(finalArray, templateNameFromInput, templateID, templateNameUpdate, defaultLanguage) {
-
     return this.getAllTemplate(ALL_KEY).then(data => {
-
       data = data || [];
       var result = {templates: finalArray, id: templateID || uuid(), name: templateNameFromInput || templateNameUpdate, language: defaultLanguage}; //https://stackoverflow.com/questions/42120358/change-property-in-array-with-spread-operator-returns-object-instead-of-array
-      templateNameFromInput ?
-        data.push(result) :
-        data[data.findIndex(item => item.id === templateID)] = result
-      console.log("RESULT WATAR " + JSON.stringify(result, null, 2));
-      console.warn("final data === " + JSON.stringify(data, null, 2))
+      templateNameFromInput ? data.push(result) 
+        : data[data.findIndex(item => item.id === templateID)] = result
       return this.storage.set(ALL_KEY, data)
     })
   } 
@@ -84,40 +79,25 @@ export class TemplateService {
   }
 
   pressEvent(type, thisObject, arrayID, combinedIndex) {
-    // console.warn("APPOINTMNET ", this.appointment);
-    // console.warn("COMBINED INDEX = " + combinedIndex);
     if (this.checked.length == 0) {
-      // console.error("type === " + type);
-      // console.error("this object full === " + JSON.stringify(thisObject,null,2));
       let dynamicObj = type == "Symptom" ? thisObject.combined : [thisObject];
-      // console.error("dynamic obj = " + JSON.stringify(dynamicObj,null, 2));
       dynamicObj.forEach(element => {
-        // console.error("element == " + JSON.stringify(element,null,2));
         element.whatsapp = true;
-        // element.arrayID = arrayID;
-        console.warn("combined index,", combinedIndex);
         this.checked.push({element, arrayID, combinedIndex});
       });
     }
-    // console.error("this.checked after pressed = " + JSON.stringify(this.checked, null, 2));
   }
 
   clickEvent(type, wholeItem, arrayID, combinedIndex) {
-    // console.error("whole item combined ???? " + JSON.stringify(wholeItem,null,2));
     let element = type == "Symptom" ? wholeItem.combined[0] : wholeItem
-    // console.warn("dynamic elemeent click event", element);
-    // console.error("this critical", this.criticalArray);
-    // console.error("this appt c", this.appointment);
     element.whatsapp = !element.whatsapp;
     let itemIndex = this.checked.findIndex(x => x.element.id == element.id);
     if (itemIndex !== -1) {
       this.checked.splice(itemIndex, 1);
     }
     else {
-      // itemConverted.arrayID = arrayID;
       this.checked.push({element, arrayID, combinedIndex});
     }
-    // console.error("spliced finish checked array = " + JSON.stringify(this.checked, null, 2));
   }
 
   clearArray() {
@@ -126,69 +106,25 @@ export class TemplateService {
   }
 
   deleteArray() {
-    // console.warn("appointment before ", appointmentArray);
     this.checked.forEach(element => {
-      console.error("deleting this element === " + JSON.stringify(element,null,2));
-      // let thisArray = element.arrayID == 4 ? this.appointment : this.getArray(element.arrayID);
-      // let thisArray = this.getArray(element.arrayID);
-      // let index = thisArray[0].combined.findIndex(x => x.id == element.id);
-      // let index = thisArray.findIndex(x => x.combined.findIndex(y => y.id == element.id));
-      // let index;
-      // thisArray.map((x, keyIndex) => {
-      //   console.error("deleteArray x = " + JSON.stringify(x,null,2));
-      //   var found = x.combined.some(y => y.id == element.id)
-      //   if (found) index = keyIndex;
-      // });
-      // console.error("index === " + index);
-      // let arrayIndex = thisArray[index].combined.findIndex(y => y.id == element.id);
-      // console.error("array index ---- " + arrayIndex);
-      // thisArray[index].combined.splice(arrayIndex, 1);
-      // let arrayIndex = thisArray[element.combinedIndex].combined.findIndex(y => y.id == element.id)
-      // console.warn("deleeting combined index " + element.obj.combinedIndex + " act index = " + element.obj.actIndex);
       if (element.arrayID == 4) {
-        // this.appointment = appointmentArray;
         let dynamicIndex = this.appointment.findIndex(x => x.id == element.element.id);
-        console.warn("dynamic index === " + dynamicIndex);
-        console.warn("appointment ", this.appointment);
         this.appointment.splice(dynamicIndex, 1);
       } else {
         let thisArray = this.getArray(element.arrayID);
-        console.warn("thisarray --> " + JSON.stringify(thisArray,null,2));
         let dynamicCombinedIndex = thisArray.findIndex(x => x.symptom.id == element.combinedIndex);
-        console.warn("dynamic combined index", dynamicCombinedIndex);
         let arrayIndex = thisArray[dynamicCombinedIndex].combined.findIndex(y => y.id == element.id);
         thisArray[dynamicCombinedIndex].combined.splice(arrayIndex, 1);
         thisArray[dynamicCombinedIndex].combined.length == 0 && thisArray.splice(dynamicCombinedIndex, 1);
       }
-      // thisArray[element.combinedIndex].combined.splice(arrayIndex, 1);
     });
-    console.error("after deleted loop critical array = " + JSON.stringify(this.criticalArray,null, 2));
-    console.warn("deleted appointment === " , this.appointment);
-    // this.criticalArray = this.criticalArray.filter(x => x.combined.length !== 0);
-    // this.warningArray = this.warningArray.filter(x => x.combined.length !== 0);
-    // this.goodArray = this.goodArray.filter(x => x.combined.length !== 0);
-    console.error("after del critical array = " + JSON.stringify(this.criticalArray,null, 2));
-    console.error("after del warning array = " + JSON.stringify(this.warningArray,null, 2));
     this.checked.length = 0;
   }
 
   deleteIOS(thisItem, arrayID, mainID, combinedID) {
-    console.warn("ARRAY ID", arrayID);
     let thisArray = this.getArray(arrayID);
-    // this.criticalArray === thisArray ? console.warn("equaal") : console.error("not eq");
-    // console.error("this array before ", JSON.stringify(thisArray,null,2));
-    // console.warn("criticla rray beforez", JSON.stringify(this.criticalArray,null,2));
     thisArray[mainID].combined.splice(combinedID, 1);
     thisArray[mainID].combined.length === 0 && thisArray.splice(mainID, 1);
-    // thisArray.forEach((x,index) => x.combined.length === 0 && thisArray.splice(index, 1));
-    // console.warn("this critical array" + JSON.stringify(this.criticalArray,null,2));
-    // console.warn("this array after " + JSON.stringify(thisArray, null, 2));
-    // this.criticalArray === thisArray ? console.warn("equal") : console.error("not eq");
-    // console.error("this item", thisItem);
-    // let index;
-    // thisArray.some((x, mainIndex) => x.combined.some((y, combinedIndex) => y.id == thisItem.id && (index = [mainIndex, combinedIndex])))
-    // console.warn("index =", index)
-    console.warn("main ID %s", mainID, "combined ID = ", combinedID);
   }
   
   deleteIOSAppointment(thisItem) {
@@ -244,9 +180,7 @@ export class TemplateService {
 
   selectRadio(defaultLanguage) {
     let completedArray = this.getAllArray();
-    console.error("selected " + defaultLanguage);
-    console.error("this setting symptom === " + JSON.stringify(this.settingSymptom, null, 2));
-    console.error("completed array ===== " + JSON.stringify(completedArray, null, 2));
+
     completedArray.forEach(eachArr => {
 
       eachArr.forEach(x => {
@@ -255,7 +189,6 @@ export class TemplateService {
         oneSetting ? 
           x.symptom.text = [oneSetting.enName, oneSetting.chName, oneSetting.myName, oneSetting.tmName][defaultLanguage] || oneSetting.enName
           : x.symptom.text = this.globalSymptom[defaultLanguage];
-        
         x.combined.forEach(element => {
           let oneAction = this.settingAction.find(thisSetting => thisSetting.id == element.actionID);
           oneAction ?
@@ -264,14 +197,12 @@ export class TemplateService {
         });
       })
     })
-    console.error("mapparrr ---> " + JSON.stringify(completedArray, null, 2));
   }
 
   filterArray(item) {
     this.criticalArray = item.template.filter(element =>  element.name == "criticalArray")
     this.warningArray = item.template.filter(element => element.name == "warningArray");
     this.goodArray = item.template.filter(element => element.name =="goodArray");
-    console.log("this critical array = " + JSON.stringify(this.criticalArray, null, 2))
   }
 
   resetArray() {
@@ -287,7 +218,6 @@ export class TemplateService {
     this.warningArray = val.find(x => x.id == templateID).templates[1];
     this.goodArray = val.find(x => x.id == templateID).templates[2];
     [this.criticalArray, this.warningArray, this.goodArray].forEach(eachArray => {
-      console.warn("each array + " + JSON.stringify(eachArray, null, 2));
       eachArray.forEach(element => {
         this.settingStorage.getOneImage("Symptom", element.symptom.symptomID).then(oneImg => {
           element.symptom.img = oneImg;
@@ -299,7 +229,6 @@ export class TemplateService {
         })
       })
     })
-    console.warn("after filter " + JSON.stringify(this.criticalArray,null,2))
   }
 
   getAllArray() {
@@ -313,17 +242,9 @@ export class TemplateService {
 
   callEdit(defaultLanguage) {
     this.backUpCriticalArray = JSON.parse(JSON.stringify(this.criticalArray)); //need to deep copy to remove reference
-    // this.backUpCriticalArray = [...this.criticalArray];
-    // this.backUpCriticalArray = this.criticalArray.slice(0);
-    // this.backUpCriticalArray = this.criticalArray.map(object => { return [...object]})
-    // this.backUpWarningArray = this.warningArray.slice();
     this.backUpWarningArray = JSON.parse(JSON.stringify(this.warningArray));
     this.backUpGoodArray = JSON.parse(JSON.stringify(this.goodArray));
     this.backUpAppointment = JSON.parse(JSON.stringify(this.appointment));
-    
-    console.log("critical array === " + JSON.stringify(this.backUpCriticalArray, null, 2));
-    console.warn("actual appt when called " + JSON.stringify(this.appointment,null,2));
-    console.log("backup appt-- " + JSON.stringify(this.backUpAppointment,null,2));
     let completedArray = this.getAllArray();
     completedArray.forEach(element => {
       element.forEach(array => {
@@ -348,10 +269,6 @@ export class TemplateService {
     this.warningArray = [...this.backUpWarningArray];
     this.goodArray = [...this.backUpGoodArray];
     this.appointment = [...this.backUpAppointment];
-    console.error("backupcriticalarray" + JSON.stringify(this.criticalArray, null, 2));
-    console.error("backupcriticalarray" + JSON.stringify(this.goodArray, null, 2));
-    console.log("going back to view page ... backupap " + JSON.stringify(this.backUpAppointment,null,2));
-    console.log("going back to view page ... " + JSON.stringify(this.appointment,null,2))
   }
 
 
@@ -378,7 +295,6 @@ export class TemplateService {
             text: 'OK',
             cssClass: 'okBlueBtn',
             handler: (alertData) => {
-              console.log("clicked ok " + alertData);
               if (alertData.nameInput.trim() === "") {
                 alert.message = "Name is required!"; //https://stackoverflow.com/questions/45969821/alert-controller-input-box-validation
                 this.presentToastWithOptions("Name is required!");
@@ -405,16 +321,13 @@ export class TemplateService {
   //https://stackoverflow.com/questions/48133216/custom-icons-on-ionic-select-with-actionsheet-interface-ionic2
    presentActionSheet(symptomOrAction, item, defaultLanguage) { //https://ionicframework.com/docs/api/action-sheet
     symptomOrAction = symptomOrAction == "updateAction" ? "Action" : symptomOrAction
-    console.warn("symptomOrAction = " + symptomOrAction);
     if (this.checkSymptomOrActionEmpty(symptomOrAction)) {
       return false;
     }
     let typeToCall = symptomOrAction == 'Symptom' ? this.settingSymptom: this.settingAction;
-
     this.popOverController('modal', '', typeToCall, defaultLanguage, symptomOrAction).then(callModal => {
       callModal.present();
       callModal.onDidDismiss().then(data => {
-        console.warn("data modal ", data);
         if (!data.data) return false;
         if (symptomOrAction == "Symptom") {
           item.symptom.text = this.returnLanguage(data.data, defaultLanguage);
@@ -491,10 +404,9 @@ export class TemplateService {
   }
 
   addNewCriticalArray(type, id, defaultLanguage) {
-    console.log("clicked " + type); //critical or caution or good
+    // console.log("clicked " + type); //critical or caution or good
     let thisArray = this.getArray(id);
     let newPair = {
-      // 'id': 1,
       symptom: {
         id: uuid(),
         // text: "Symptom",
@@ -517,7 +429,6 @@ export class TemplateService {
       ]
     }
     thisArray.push(newPair); //double push
-    console.log(thisArray);
   }
 
   
@@ -540,11 +451,7 @@ export class TemplateService {
         {
           text: 'OK',
           handler: (alertData => {
-            console.log("ok name1 = " + alertData);
-            // let x = this.criticalArray.find(x => x.symptom.text == alertData);
-            console.warn("this arr = " + JSON.stringify(thisArray, null, 2))
             let x = thisArray.find(x => x.symptom.id == alertData);
-            console.error("X + " + JSON.stringify(x,null,2));
             let newAction = {
               id: uuid(),
               // text: "Action",
@@ -556,8 +463,6 @@ export class TemplateService {
             }
             x.combined.push(newAction);
             this.presentActionSheet("updateAction", newAction, defaultLanguage)
-            // console.error("pushed after " + JSON.stringify(this.criticalArray));
-            console.error("pushed after " + JSON.stringify(thisArray));
           })
         }
       ]}).then(alert => {
@@ -585,19 +490,9 @@ export class TemplateService {
   async presentToastWithOptions(text) {
     const toast = await this.toastCtrl.create({
       header: text,
-      // message: 'Click to Close',
       duration: 3000,
       position: 'bottom',
-      buttons: [
-        // {
-        //   side: 'start',
-        //   icon: 'star',
-        //   text: 'Favorite',
-        //   handler: () => {
-        //     console.log('Favorite clicked');
-        //   }
-        // }, 
-      {
+      buttons: [{
         text: 'CLOSE',
         role: 'cancel'
       }]
@@ -608,22 +503,15 @@ export class TemplateService {
   cleansedArray() {
     let completedArray = this.getAllArray();
     let name = ["criticalArray", "warningArray", "goodArray"];
-    console.log("critical array = " + JSON.stringify(this.criticalArray));
-    console.log("warning array = " + JSON.stringify(this.warningArray));
-    //  console.log("critical array = " + JSON.stringify(this.completedArray[0]));
-    //  console.log("warning array = " + JSON.stringify(this.completedArray[1]));
     let maparr = completedArray.map((eachArr, index) => { //https://stackoverflow.com/questions/53817342/map-and-filter-mapped-array-in-javascript
       //  eachArr = eachArr.filter(data => data.symptom.text !== "Symptom");
       eachArr = eachArr.filter(data => !this.globalSymptom.includes(data.symptom.text));
       eachArr.map(x => {
-        console.error("x == " + JSON.stringify(x,null,2));
         x.symptom.img = null;
         //  x.combined = x.combined.filter(thisAction => thisAction.text !== "Action");
         x.combined = x.combined.filter(thisAction => !this.globalAction.includes(thisAction.text));
         x.combined.forEach(element => {
-          console.warn("inside each combined element " + JSON.stringify(element,null,2));
           delete element.whatsapp;
-          // delete element.arrayID;
           element.img = null;
         });
         x.id = uuid(); 
@@ -645,36 +533,16 @@ export class TemplateService {
 
   checkAppointmentEmpty() {
     let returnValue = false;
-    // if (this.appointment.some(x => !x.clinicName)) {
-    //   console.warn("clinic name not filled up");
-    //   this.presentToastWithOptions("Please ensure clinic name for appointment is filled up");
-    //   return false;
-    // }
     this.appointment.forEach(x => {
       if (!x.clinicName.trim() && !x.appTime) {this.presentToastWithOptions("Please ensure both clinic name and time for appointment is filled up"); returnValue=true;return false}
       else if (!x.clinicName.trim()) { this.presentToastWithOptions("Please ensure all the clinic name for appointment is filled up"); returnValue=true;return false}
       else if (!x.appTime) {this.presentToastWithOptions("Please ensure all the appointment time is filled up"); returnValue=true;return false}
     })
-    // let someFn = this.appointment.some(function(x) {
-    //   return !x.clinicName && !x.appTime 
-    //   ? this.presentToastWithOptions("Please ensure both clinic name and time for appointment is filled up") && this.validate(!x.clinicName, !x.appTime)
-    //   : !x.clinicName ? this.presentToastWithOptions("Please ensure clinic name for appointment is filled up") && this.validate(!x.clinicName)
-    //   : !x.appTime && this.presentToastWithOptions("Please ensure appointment time is filled up") && this.validate(!x.appTime)
-    // })
-    // console.error("value from.some()", someFn);
-    // if (!someFn) {
-    //   returnValue = true;
-    // }
-    console.warn("appointment false ---? ", returnValue);
     return returnValue;
   }
-  validate(...args) {
-    return args.length == 2 ? args[0] && args[1] : args[0]
-  }
+
   checkSymptomOrActionEmpty(type) {
-    console.warn("type = " + type);
     let thisList = type == "Action" ? this.settingAction : this.settingSymptom;
-    console.warn("this list length = " + thisList.length);
     thisList.length == 0 && this.presentToastWithOptions(`No ${type} found. Please add ${type} in settings!`);
     return thisList.length == 0
   }
@@ -711,6 +579,7 @@ export class TemplateService {
   checkPlatformAndroid() {
     return this.plt.is("android")
   }
+  
 } //end of class
 
 
