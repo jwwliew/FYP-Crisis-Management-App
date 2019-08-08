@@ -36,7 +36,7 @@ export class PlanDetailsPage implements OnInit {
     // this.datemy = moment(my).format('YYYY-MM-DD hh:mmA');
     //install -npm i moment===>to use moment().format
     // let time = new Date(my).toLocaleString('en-GB', {hour12: true});
-    let time = new Date(my).toLocaleString();
+    let time = new Date(my).toLocaleString('en-US');
     appObj.appTime = time;
   }
 
@@ -62,7 +62,7 @@ export class PlanDetailsPage implements OnInit {
     // let date = new Date();
     // let date1 = date.getDate().toString() + '/' + (date.getMonth() + 1).toString() + '/' + date.getFullYear().toString();
     // let date1 = new Date().toLocaleString('en-GB', {hour12: true}); //02/08/2019, 2:09:09 pm, without 'en-GB' is 08/02 on my computer
-    let date1 = new Date().toLocaleString();
+    let date1 = new Date().toLocaleString('en-US');
     let maparr = this.templateService.cleansedArray();
 
     this.PlanService.addPlanDetails(this.defaultLanguage, date1, this.planName, this.thisgroup.controls.detailname.value.trim(), this.thisgroup.controls.detailnric.value,

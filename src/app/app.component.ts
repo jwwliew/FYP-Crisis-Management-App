@@ -1,3 +1,4 @@
+import { Plan } from './models/plan';
 import { SettingAction, Setting } from './models/symptomaction';
 import { Component } from '@angular/core';
 
@@ -13,6 +14,28 @@ import {v4 as uuid} from 'uuid';
 
 
 export class AppComponent {
+
+  listOfContact = ["69741678", "81201934", "95582490", "82676075", "67090093", "81057528", "66998151", "63885988", "90129366", "86504357",
+                    "66489100", "85925983", "98852409", "82770593", "68910293", "85003922", "62005100", "64009220", "90119444", "80912345",
+                    "69321545", "82910293", "94123412", "86663322", "68881111", "85552221", "69405123", "68493123", "91156425", "84211552",
+                    "69218880", "89992134", "95348521", "81425621", "68221455", "81110922", "66603444", "67772333", "92234555", "81119231",
+                    "61113333", "84144325", "95552231", "81220099", "68772233", "83252234", "67992214", "68859001", "98425932", "84419922"]
+  listOfNameFirstLine = ["Gilberto Lim", "Susan Wong", "Natasha Lee", "Andrew Tan", "Timothy Ong", "Adam Khoo", "Wycliff Lee", "Tyson KM", "Donald Ng", "Lee Kim Huat",
+                        "John Tan", "Robert Goh", "Reagan Tay", "Albert Lau", "Billy Ong", "Silvester Chew", "Martin Koh", "Louis Yeo", "Nicole Choo", "Grace Phua",
+                        "Jeremy Toh", "Davis Tan", "Jasmine Lau", "Jermaine Chua", "Bryan Wong", "Desmond Lee", "Thierry Lim", "Hazel Lee", "Jackson Png", "Chan Lee",
+                        "Kenny Lo", "Augustine Ong", "Jeff Phua", "Kenneth Tay", "Johnson Koh", "Nicolas Ong", "Vincent Tan", "Sean Lee", "David MK", "Jonathan KLW",
+                        "Raphael Tan", "Terry Ong", "Tyler Soh", "Victoria Koo", "Wayne Lee", "Wesley Phua", "Amanda Ong", "Ryan Goh", "Raymond Ong", "Isabelle Yap"]
+  listOfNric = ["S4323518D", "S3849800B", "S7400310I", "S2062526J", "S9967974C", "S1117255E", "S8934307J", "S9956222F", "S3344529F", "S7329310C", 
+                "S4242789F", "S4602401Z", "S5097092B", "S1688952J", "S8918877F", "S4944132J", "S6659589G", "S5273909H", "S7256518E", "S2138435F",
+                "S4277286J", "S1968009F", "S9257797Z", "S9693677Z", "S9387804C", "S6885672H", "S9377561I", "S9660876D", "S3747930F", "S5981933Z",
+                "S5180294B", "S5024489Z", "S3926971F", "S1322990B", "S8562878Z", "S3351147G", "S9660052F", "S4550617G", "S2166511H", "S3636332J",
+                "S9976053B", "S2811635G", "S7711051H", "S8719740I", "S0859994G", "S6260910I", "S2129378D", "S9702694G", "S3725048A", "S3042412C"]
+  listOfPlanName = ["Bob Lee", "Ashley Ong", "Alvin Goh", "Cheryl Ng", "Marcus Choo", "Lucas Lim", "Kevin Tan", "Justin Phua", "Emma Lee", "Hazel Wong",
+                    "Timothy Tan", "Ryan Lee", "Joshua Wong", "Joseph Lee", "Jayden Ong", "Ivan Goh", "Gordon Tay", "Max Lee", "Eugene Tan", "Adeline Yap", 
+                    "Isabelle Ong", "Samuel Tan", "Fiona Goh", "Don Tan", "Desmond Tan", "Derrik Ong", "Darryl Ng", "Daniel Teo", "Caleb Koh", "Malcolom Chia", 
+                    "Asher Ong", "Alexendra Lee", "Debbie Goh", "Grace Liew", "Joyce Quek", "Lucy Wong", "Naomi Yap", "Rachel Ho", "Michelle Pang", "Nicole Lam",
+                    "Olivia Tan", "Sarah Lee", "Sharon Ng", "Valerie Tan", "Jason Lim", "Esther Ng", "Brandon Loo", "Benjamin Lee", "Angelica Yap", "Ernest Wong"]
+
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -35,11 +58,26 @@ export class AppComponent {
           // templates: []
       // }
       // this.globalPlan.push(globalPlanObj)
+      for (let i = 0; i < 50; i++) {
+        let planObj = {
+          id: uuid(),
+          ccontact: this.listOfContact[i],
+          cname: "Brandon Tan",
+          createdDate: new Date(Date.now() - (864e5 * (50-i))).toLocaleString('en-US'),
+          language: 0,
+          name: this.listOfNameFirstLine[i],
+          nric: this.listOfNric[i],
+          planName: this.listOfPlanName[i],
+          appointment: [],
+          templates: []
+        }
+        this.globalPlanObj.unshift(planObj)
+      }
     // }
     this.initializeApp();
   }
 
-  // globalPlan = [];
+  globalPlanObj = [];
 
   initializeApp() {
     this.platform.ready().then(() => {
@@ -52,8 +90,8 @@ export class AppComponent {
       //https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-splashscreen/#preferences
       this.storage.length().then(length => {
         length == 0 && (
-          this.storage.set("settingStorageKey", this.globalSettingObj), this.storage.set("actionKey", this.globalActionObj)
-          // this.storage.set("plan", this.globalPlan)
+          this.storage.set("settingStorageKey", this.globalSettingObj), this.storage.set("actionKey", this.globalActionObj),
+          this.storage.set("plan", this.globalPlanObj)
         );
       })
     });
@@ -136,4 +174,55 @@ export class AppComponent {
       icon: "assets/pdfrescue.png"
     }
   ]
+
+  // globalPlanObj = [
+  //   {
+  //     id: uuid(),
+  //     ccontact: "81201934", //show in plan
+  //     cname: "Brandon Tan",
+  //     createdDate: new Date(Date.now() - (86400000*10)).toLocaleString('en-US'), //show in plan
+  //     language: 0,
+  //     name: "Brandon Loo", //show on first line in plan
+  //     nric: "S3849800B",
+  //     planName: "Malcolm Lee", //show on header plan
+  //     appointment: [],
+  //     templates: []
+  //   },
+  //   {
+  //     id: uuid(),
+  //     ccontact: "95582490",
+  //     cname: "Ernest Lee",
+  //     createdDate:new Date(Date.now() - (86400000*5)).toLocaleString('en-US'),
+  //     language: 0,
+  //     name: "Ernest Tan",
+  //     nric: "S7400310I",
+  //     planName: "Ivan",
+  //     appointment: [],
+  //     templates: []
+  //   },
+  //   {
+  //     id: uuid(),
+  //     ccontact: "82676075",
+  //     cname: "Angelica",
+  //     createdDate:new Date(Date.now() - (86400000*9)).toLocaleString('en-US'),
+  //     language: 0,
+  //     name: "Amber Lim",
+  //     nric: "S2062526J",
+  //     planName: "John Koo",
+  //     appointment: [],
+  //     templates: []
+  //   },
+  //   {
+  //     id: uuid(),
+  //     ccontact: "91057528",
+  //     cname: "Zoe Tay",
+  //     createdDate: new Date(Date.now() - 86400000).toLocaleString('en-US'),
+  //     language: 0,
+  //     name: "Esther Zhang",
+  //     nric: "S2062526J",
+  //     planName: "Samuel Ang",
+  //     appointment: [],
+  //     templates: []
+  //   },
+  // ]
 }

@@ -68,7 +68,8 @@ export class EditSettingsPage implements OnInit {
       return false;
     }
     else if (!this.contentDetails.icon) {
-      this.templateService.presentToastWithOptions("Please select an image!")
+      this.templateService.presentToastWithOptions("Please select an image!");
+      return false;
     }
     else if (value.english.trim() == "") {
       this.templateService.presentToastWithOptions("English name is required!");

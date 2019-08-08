@@ -238,7 +238,7 @@ export class EditplanPage implements OnInit {
 
   dateChanged(my, appObj) {
     // let time = new Date(my).toLocaleString('en-GB'); //'en-GB' will crash as the system keeps returning 02/08 and 08/02 at same time when logged
-    let time = new Date(my).toLocaleString(); 
+    let time = new Date(my).toLocaleString('en-US'); 
     appObj.appTime = time;
   }
 
