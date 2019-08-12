@@ -132,7 +132,7 @@ export class NewTemplatesPage implements OnInit {
           })
         }
         else if (typeOfAction == "Create Crisis Plan") {
-          this.router.navigateByUrl("/tabs/plans/details/" + this.defaultLanguage + "/" + alertData);
+          this.router.navigateByUrl("/tabs/plans/details/" + this.defaultLanguage + "/" + alertData, {replaceUrl: true});
         }
         else {
           this.addTemplate(alertData);

@@ -35,7 +35,7 @@ export class SymptomActionService {
   }
 
 
-  async addReusable(type, item) {
+  addReusable(type, item) {
     if (type == "Symptom") {
       var settingObj: Setting = {
         id: uuid(),

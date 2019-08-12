@@ -64,10 +64,6 @@ export class TemplateService {
   checked = [];
   appointment = [];
 
-  refreshAppt() {
-    this.appointment = this.appointment.filter(x => x.clinicName);
-    return this.appointment;
-  }
   getApptArray = () => this.appointment;
   newAppt() {
     let apptObj = {

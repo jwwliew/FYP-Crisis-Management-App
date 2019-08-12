@@ -21,7 +21,7 @@ export class PlanDetailsPage implements OnInit {
   });
 
   constructor(private router: Router, private PlanService: PlanService, private activatedRoute: ActivatedRoute,
-    private templateService: TemplateService, public formBuilder: FormBuilder) {
+    private templateService: TemplateService, public formBuilder: FormBuilder, private planService: PlanService) {
   }
 
   planName: any;
@@ -89,6 +89,8 @@ export class PlanDetailsPage implements OnInit {
   @ViewChild('input') thisInput;
   ionViewWillEnter() {
     // this.frontViewData = this.templateService.getFrontViewData();
+    let obj = this.planService.getExtras("detailextras");
+    obj && (this.thisgroup.controls.detailname.setValue(obj.detailname), this.thisgroup.controls.detailnric.setValue(obj.detailnric), this.thisgroup.controls.detailtcs.setValue(obj.detailtcs), this.thisgroup.controls.detailcontact.setValue(obj.detailcontact));
     this.android = this.templateService.checkPlatformAndroid();
     this.planName = this.activatedRoute.snapshot.paramMap.get('planName');
     this.defaultLanguage = +this.activatedRoute.snapshot.paramMap.get("languageID");
@@ -97,8 +99,10 @@ export class PlanDetailsPage implements OnInit {
     this.thisInput.setFocus();
   }
 
-  goBackToTemplate() {
-    this.templateService.goToViewPageFromEdit();
+  goBackToNewPlan() {
+    this.PlanService.setExtras("extras", {"language": this.defaultLanguage, "name": this.planName});
+    this.PlanService.setExtras("detailextras", {"detailname": this.thisgroup.controls.detailname.value, "detailnric": this.thisgroup.controls.detailnric.value, "detailtcs": this.thisgroup.controls.detailtcs.value, "detailcontact": this.thisgroup.controls.detailcontact.value});
+    // this.templateService.goToViewPageFromEdit();
   }
 
   getArray(id) {

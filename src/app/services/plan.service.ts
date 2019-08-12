@@ -12,6 +12,20 @@ export class PlanService {
 
   constructor(private storage: Storage, private templateService: TemplateService) {
   }
+  
+  extras:any;
+  detailextras: any;
+
+  setExtras(type, data) {
+    type == "extras" ? this.extras = data : this.detailextras = data;
+  }
+  getExtras(type) {
+    return type == "extras" ? this.extras : this.detailextras
+  }
+  resetExtras() {
+    this.extras = null;
+    this.detailextras = null;
+  }
 
   getEditDetails(id) {
     return this.storage.get(key).then(result => {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { TemplateService } from '../services/template.service';
+import { PlanService } from '../services/plan.service';
 
 @Component({
   selector: 'app-tabs',
@@ -9,7 +10,7 @@ import { TemplateService } from '../services/template.service';
 })
 export class TabsPage implements OnInit {
 
-  constructor(private navCtrl: NavController, private templateService: TemplateService) { }
+  constructor(private navCtrl: NavController, private templateService: TemplateService, private planService: PlanService) { }
 
   styles = ['color: green', 'background: yellow'].join(";");
 
@@ -17,6 +18,7 @@ export class TabsPage implements OnInit {
 
   goToRoot(location) {
     let rootLocations = ["/tabs/plans", "/tabs/templates", "/tabs/settings"];
+    this.planService.resetExtras();
     this.navCtrl.navigateRoot(rootLocations[location]);
   }
 

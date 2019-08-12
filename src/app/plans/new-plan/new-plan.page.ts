@@ -1,3 +1,4 @@
+import { PlanService } from './../../services/plan.service';
 import { TemplateService } from 'src/app/services/template.service';
 import { Component, OnInit, Injectable, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
@@ -21,7 +22,7 @@ export class NewPlanPage implements OnInit {
   submitted=false;
   android: boolean;
 
-  constructor(private router: Router, private templateService: TemplateService, public formBuilder: FormBuilder, private event: Events) {
+  constructor(private router: Router, private templateService: TemplateService, public formBuilder: FormBuilder, private event: Events, private planService: PlanService) {
   }
 
   ngOnInit() {
@@ -43,6 +44,8 @@ export class NewPlanPage implements OnInit {
   }
 
   cancel() {
+    this.planService.resetExtras();
+    this.resetPlan();    
     this.router.navigateByUrl('/tabs/plans');
   }
 
@@ -50,14 +53,13 @@ export class NewPlanPage implements OnInit {
     this.defaultLanguage = 0;
     this.slideOneForm.reset();
     this.submitted = false;
+    this.templateService.resetArray();
   }
 
   ionViewWillEnter() {
+    let obj = this.planService.getExtras("extras");
+    obj && (this.slideOneForm.controls.firstName.setValue(obj.name), this.defaultLanguage = obj.language);
     this.android = this.templateService.checkPlatformAndroid();
-    this.event.subscribe("newPlan", () => {
-      this.resetPlan();
-      this.event.unsubscribe("newPlan");
-    })
   }
 
   ionViewDidEnter() {

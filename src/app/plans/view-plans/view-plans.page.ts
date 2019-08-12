@@ -36,7 +36,8 @@ export class ViewPlansPage implements OnInit {
 
   //search item(s)
   setFilteredItems() {
-    this.sortedDetails = this.details.filter(result => result.planName.toLowerCase().indexOf(this.searchTerm.toLowerCase()) !== -1);
+    this.sortedDetails = this.details.filter(result => 
+      result.planName.toLowerCase().indexOf(this.searchTerm.toLowerCase()) !== -1 || result.name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) !== -1);
     this.mylist.closeSlidingItems();
     // this.PlanService.getPlanFilter(this.searchTerm).then(sname => {
     //   this.mylist.closeSlidingItems();
@@ -48,7 +49,7 @@ export class ViewPlansPage implements OnInit {
 
   //redirect
   onClick() {
-    this.router.navigateByUrl('/tabs/plans/newPlan').then(() => this.event.publish("newPlan"))
+    this.router.navigateByUrl('/tabs/plans/newPlan');
   }
 
   goEdit(item) {

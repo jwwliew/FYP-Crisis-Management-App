@@ -85,12 +85,15 @@ export class EditSettingsPage implements OnInit {
       tmName: value.tamil.trim(),
       icon: this.contentDetails.icon
     }
-    let functionToCall = this.editID == "add" ? 
-      (this.settingService.addReusable(this.selectedTab, newValues), this.templateService.presentToastWithOptions("Added " + this.selectedTab.toLowerCase()))
-      : (this.settingService.updateOneSetting(this.selectedTab, newValues), this.templateService.presentToastWithOptions("Updated " + this.selectedTab.toLowerCase()))
-    functionToCall.then(() => {
-      this.goBack();
-    })
+    this.editID == "add" ? 
+      this.settingService.addReusable(this.selectedTab, newValues).then(() => {
+        this.templateService.presentToastWithOptions("Added " + this.selectedTab.toLowerCase());
+        this.router.navigate(['/tabs/settings/symptomAction']);
+      }) :
+      this.settingService.updateOneSetting(this.selectedTab, newValues).then(() => {
+        this.templateService.presentToastWithOptions("Updated " + this.selectedTab.toLowerCase());
+        this.router.navigate(['/tabs/settings/symptomAction']);
+      });
   }
 
   goBack() {

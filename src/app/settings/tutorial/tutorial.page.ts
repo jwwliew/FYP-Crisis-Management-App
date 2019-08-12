@@ -31,7 +31,7 @@ export class TutorialPage implements OnInit {
   getStarted() {
     this.selectedTab == "templates" ? 
       this.router.navigateByUrl("/tabs/templates/new") 
-      : this.router.navigateByUrl("/tabs/plans/newPlan").then(() => this.event.publish("newPlan"))
+      : this.router.navigateByUrl("/tabs/plans/newPlan")
   }
 
   @ViewChild('slider') slider;

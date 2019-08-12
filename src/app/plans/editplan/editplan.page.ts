@@ -28,7 +28,7 @@ export class EditplanPage implements OnInit {
   }
 
   something = this.formBuilder.group({
-    detailname: ['', Validators.compose([Validators.maxLength(30), Validators.pattern(/(?!\s*$)/), Validators.required])],
+    detailname: ['', Validators.compose([Validators.maxLength(30), Validators.pattern(/(?!\s*$)/), Validators.required])],  
     detailnric: ['', Validators.compose([Validators.minLength(5), Validators.pattern(/(?!\s*$)/), Validators.required])],
     detailtcs: ['', Validators.compose([Validators.maxLength(30), Validators.pattern(/(?!\s*$)/), Validators.required])],
     detailcontact: ['', Validators.compose([Validators.minLength(5), Validators.pattern(/^[0-9]+$/), Validators.required])],
@@ -164,7 +164,7 @@ export class EditplanPage implements OnInit {
 
     let scale = 2; //https://github.com/tsayen/dom-to-image/issues/69
     domtoimage.toPng(div, { height: div.offsetHeight * 2, width: div.offsetWidth * 2, style: { transform: `scale(${scale}) translate(${div.offsetWidth / 2 / scale}px, ${div.offsetHeight / 2 / scale}px)` } }).then(dataUrl => {
-
+    
       const doc = new jsPDF('p', 'mm', 'a4', true);
       doc.deletePage(1); //https://stackoverflow.com/questions/29578721/image-in-pdf-cut-off-how-to-make-a-canvas-fit-entirely-in-a-pdf-page/42295522#42295522
       doc.addPage(millimeters.width * 2, millimeters.height * 1.95);
@@ -187,7 +187,7 @@ export class EditplanPage implements OnInit {
         this.loading.dismiss();
         this.templateService.presentToastWithOptions("PDF file has been created!");
         this.fileOpener.open(success.nativeURL, "application/pdf").catch(() => this.templateService.presentToastWithOptions("Please install a PDF Viewer such as Acrobat!"));
-      }).catch((error) => console.log("Cannot Create File " + JSON.stringify(error, null, 2)));
+      }).catch((error) => this.templateService.presentToastWithOptions("An error has occured!!!"));
     })
   }
 

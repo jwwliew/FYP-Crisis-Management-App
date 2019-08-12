@@ -1,4 +1,3 @@
-import { Plan } from './models/plan';
 import { SettingAction, Setting } from './models/symptomaction';
 import { Component } from '@angular/core';
 
