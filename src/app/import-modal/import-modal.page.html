@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>{{theFiles[0]}}</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let oneFile of theFiles; index as i">
+      <ion-label>{{oneFile.name}}</ion-label>
+      <ion-button (click)="importSelectedCheck(oneFile)">Import</ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>

@@ -53,18 +53,18 @@ export class EditplanPage implements OnInit {
       )
   }
 
-  ionViewWillEnter() {
+  ionViewWillEnter() {    //triggered once entered editplan page
     this.android = this.templateService.checkPlatformAndroid();
-    let id = this.activatedRoute.snapshot.paramMap.get('item');
-    this.templateService.setGlobalSettings();
-    this.PlanService.getEditDetails(id).then(everything => {
-      [].concat(...everything.templates).forEach(eachArray => {
-        this.settingService.getOneImage("Symptom", eachArray.symptom.symptomID).then(oneImg => {
-          eachArray.symptom.img = oneImg;
+    let id = this.activatedRoute.snapshot.paramMap.get('item');   //get id from url
+    this.templateService.setGlobalSettings();     //set to default
+    this.PlanService.getEditDetails(id).then(everything => {    //retrieve item with id
+      [].concat(...everything.templates).forEach(eachArray => {     //templates refers to nested template array
+        this.settingService.getOneImage("Symptom", eachArray.symptom.symptomID).then(oneImg => {  //settingService = symptomaction.service
+          eachArray.symptom.img = oneImg;   //get image for symptom
         });
         eachArray.combined.forEach(oneCombined => {
           this.settingService.getOneImage("Action", oneCombined.actionID).then(actionImg => {
-            oneCombined.img = actionImg;
+            oneCombined.img = actionImg;    //get image for action
           })
         })
       });
@@ -124,8 +124,9 @@ export class EditplanPage implements OnInit {
     this.templateService.presentToastWithOptions("Deleted items!");
   }
 
+  //JW
   popOverController(x) {
-    let menuOptions = ["Edit", "Rename", "Export to PDF"];
+    let menuOptions = ["Edit", "Rename", "Export to PDF", "Export Plan"];
     this.templateService.popOverController('popover', x, menuOptions).then(popover => {
       popover.present();
       popover.onDidDismiss().then((data) => {
@@ -134,11 +135,13 @@ export class EditplanPage implements OnInit {
     })
   }
 
+  //JW
   callAction(type) { //https://ultimatecourses.com/blog/deprecating-the-switch-statement-for-object-literals
     var call = {
       'Edit': () => this.callEdit(),
       'Rename': () => this.askForName(),
-      "Export to PDF": () => this.exportToPDF()
+      "Export to PDF": () => this.exportToPDF(),
+      "Export Plan": () => this.exportSinglePlan()
     };
     call[type]();
   }
@@ -149,6 +152,14 @@ export class EditplanPage implements OnInit {
       message: msg
     });
     return await this.loading.present();
+  }
+
+  exportSinglePlan(){
+    this.presentLoading('Exporting Plan');
+    // TODO:
+    // get id of plan
+    // retrieve data from storage
+    // export as json file to external phone storage
   }
 
   exportToPDF() {

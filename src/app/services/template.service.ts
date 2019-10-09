@@ -84,8 +84,9 @@ export class TemplateService {
     }
   }
 
+  //JW PLS TAKE NOTE
   clickEvent(type, wholeItem, arrayID, combinedIndex) {
-    let element = type == "Symptom" ? wholeItem.combined[0] : wholeItem
+    let element = type == "Symptom" ? wholeItem.combined[0] : wholeItem     //if wholeItem is type is not symptom, element set to wholeItem
     element.whatsapp = !element.whatsapp;
     let itemIndex = this.checked.findIndex(x => x.element.id == element.id);
     if (itemIndex !== -1) {
@@ -497,10 +498,14 @@ export class TemplateService {
   }
 
   cleansedArray() {
-    let completedArray = this.getAllArray();
+    let completedArray = this.getAllArray();    //getAllArray returns 3 arrays: critical, warning, good
     let name = ["criticalArray", "warningArray", "goodArray"];
     let maparr = completedArray.map((eachArr, index) => { //https://stackoverflow.com/questions/53817342/map-and-filter-mapped-array-in-javascript
       //  eachArr = eachArr.filter(data => data.symptom.text !== "Symptom");
+
+      //eachArr is either critical, warning, good
+      //data is object within the array
+      //data contains an object named symptom, an array named combined
       eachArr = eachArr.filter(data => !this.globalSymptom.includes(data.symptom.text));
       eachArr.map(x => {
         x.symptom.img = null;

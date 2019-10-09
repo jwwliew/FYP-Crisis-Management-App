@@ -18,6 +18,8 @@ import { FileOpener } from '@ionic-native/file-opener/ngx';
 import * as Hammer from 'hammerjs';
 import { TemplatePopComponent } from './templates/template-pop/template-pop.component';
 
+import { ImportModalPageModule } from './import-modal/import-modal.module'
+
 
 export class CustomHammerConfig extends HammerGestureConfig {
   // overrides = {
@@ -36,7 +38,8 @@ export class CustomHammerConfig extends HammerGestureConfig {
 @NgModule({
   declarations: [AppComponent, TemplatePopComponent],
   entryComponents: [TemplatePopComponent],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, IonicStorageModule.forRoot()],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, IonicStorageModule.forRoot(),
+    ImportModalPageModule],   //JW importmodalpagemodule
   providers: [
     StatusBar,
     SplashScreen,

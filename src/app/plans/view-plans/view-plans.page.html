@@ -8,8 +8,14 @@
         <ion-icon name="funnel"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-buttons slot="end" (click)="onClick()">
-      <ion-button>New</ion-button>
+    <ion-buttons slot="end">
+      <ion-button (click)="onClick()">New</ion-button>
+      <ion-button (click)="chooseImport()">
+        <ion-icon name="arrow-down"></ion-icon>
+      </ion-button>
+      <ion-button (click)="exportPlanBtn()">
+        <ion-icon name="arrow-up"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
