@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { ModalController, NavController } from '@ionic/angular';
+import { ModalController, NavController, ToastController } from '@ionic/angular';
 import { NavParams } from '@ionic/angular';
 import { File } from '@ionic-native/file/ngx';
 import { Storage } from '@ionic/storage';
@@ -22,7 +22,7 @@ export class ImportModalPage implements OnInit {
 
   constructor(private modalController: ModalController, private navParams: NavParams,
     private file: File, private navController: NavController,
-    private router: Router, private storage: Storage) { }
+    private router: Router, private storage: Storage, private toastController: ToastController) { }
 
   ngOnInit() {
     this.theFiles = this.navParams.get('fileArr');
@@ -32,7 +32,7 @@ export class ImportModalPage implements OnInit {
     this.modalController.dismiss();
   }
 
-  importSelectedCheck(oneFile) {
+  importSelectedCheck(oneFile) {    //html btn
     this.importSelected(oneFile).then((check) => {
       //nothing
     })
@@ -42,39 +42,49 @@ export class ImportModalPage implements OnInit {
   }
 
   importSelected(oneFile) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.readFileToVar(oneFile.name).then((fileContents: string) => {
         this.checkJsonFileId(fileContents).then((fileContents: string) => {
-          if (fileContents === "false") {
-            reject();
-          }
-          else {            
-            this.whileloop(fileContents)
-          }
+            this.asyncwhileloop(fileContents).then(() => {
+              resolve();
+            })
+        })
+        .catch((err) => {
+          this.showToast("Invalid file");
         })
       })
-      //TODO: REFRESH  put in another function?
+    }).then(() => {   //wait for all files to be inserted into db before dismissing modal, onmodaldismissed, page is refreshed
       this.modalController.dismiss();
-      this.router.navigateByUrl('/tabs/plans');
+      this.showToast("Import successful")
     })
   }
 
-  async whileloop(fileContents){
-    var loop = true;
-    while (loop) {
-      console.log("INFINITE LOOP WOO")
-      await this.extractOneItemFromFileContent(fileContents).then(async(fileContents) => {
-        console.log("BASE => " + JSON.stringify(fileContents))
-        await this.insertOneItemIntoDb(fileContents).then(async() => {
-          await this.checkIfStillContainsItem(this.overrallFileContents).then((check) => {
-            if (check === false) {
-              console.log("EXITING LOOP. . .")
-              loop = false;                      
-            }
+  async asyncwhileloop(fileContents){
+    return new Promise(async(res) => {
+      var loop = true;
+      this.overrallFileContents = fileContents
+      while (loop) {
+        await this.extractOneItemFromFileContent(this.overrallFileContents).then(async(fileContents) => {
+          await this.insertOneItemIntoDb(fileContents).then(async() => {
+            await this.checkIfStillContainsItem(this.overrallFileContents).then((check) => {
+              if (check === true) {
+                //console.log("EXITING LOOP. . .")
+                loop = false;
+                res();
+              }
+            })
           })
         })
-      })
-    }
+  
+        //while loop safety, if more than 10secs, break loop
+        setTimeout(() => {
+          if(loop === true){
+            console.log("Activating safety measures. Breaking loop. . .")
+            loop = false;
+          }        
+        }, 10000);
+      }
+    })    
   }
 
   //read .json and store in var
@@ -100,52 +110,41 @@ export class ImportModalPage implements OnInit {
 
   checkJsonFileId(fileContent: string) {
     return new Promise((res, rej) => {
-      let check;
       let fileChecker: string = "";
       let newFileContent: string = "";
       fileChecker = fileContent.substr(1);   //take out opening array bracket
       if (fileChecker.indexOf("\"crisisApp\": \"true\"},") === -1) {
-        console.log("Not a valid file!");
-        check = "false"
-        rej(check);
+        console.log("Invalid file");
+        rej();
       }
       else {
         let pos = fileChecker.indexOf("\"crisisApp\": \"true\"},")   //find first separator, cut out
-        let position = pos + 21;
+        let position = pos + 22;
         fileChecker = fileChecker.substr(0, position);
 
         newFileContent = fileContent.substr(1);
         newFileContent = fileContent.slice(position, -1);
-        check = true
         res(newFileContent);
       }
     })
   }
 
   extractOneItemFromFileContent(fileContent: string) {
-    console.log("TEST 1")
     return new Promise((res) => {
       let oneItem: string = "";
       let newFileContent: string = "";
-      let resolveArr = []    //since promise res can only return 1 value, i return the resolveArr with 2 values inside
 
-      oneItem = fileContent.substr(1);      // remove first array bracket
-      oneItem = oneItem.substring(0, fileContent.indexOf(",{\"@\":\"~\"}") - 1)   //find first separator, cut out one item. -1 takes out comma
-      //console.log(oneItem);
+      oneItem = fileContent;
+      oneItem = oneItem.substring(0, oneItem.indexOf(",{\"@\":\"~\"}") )   //find first separator, cuts out separator
       oneItem = JSON.parse(oneItem);      //parse from string to object
 
       newFileContent = fileContent.slice(fileContent.indexOf(",{\"@\":\"~\"}") + 11);     //takes out first item
-      console.log("TEST TEST TEST => " + fileContent.slice(fileContent.indexOf(",{\"@\":\"~\"}") + 11))
       this.overrallFileContents = newFileContent;
-
-      //resolveArr = [oneItem, newFileContent];
       res(oneItem);
     })
   }
 
   insertOneItemIntoDb(theItem) {
-    console.log("TEST 2")
-    console.log("TEST 2 => " + JSON.stringify(theItem))
     return new Promise((res) => {
       const key = "plan";
       this.storage.get(key).then((result: any[]) => {
@@ -157,22 +156,25 @@ export class ImportModalPage implements OnInit {
   }
 
   checkIfStillContainsItem(overallFileContent) {
-    console.log("TEST 3")
     let check: boolean = false;
     return new Promise((res) => {
-      if (overallFileContent.length > 0 && overallFileContent !== "") {
-        check = true;
-        console.log("NOTHING IN THE VAR ANYMORE")
+      if (overallFileContent.length > 0 && overallFileContent !== "") {   //theres still things in var
         res(check)
       }
       else {
-        console.log("theres still something inside")
+        check = true;
         res(check)
       }
     })
   }
 
-  insertAllPlansToDb() {
+  //TOASTER
+  async showToast(msg) {
 
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 3000
+    });
+    toast.present();
   }
 }

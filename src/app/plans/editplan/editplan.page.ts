@@ -124,9 +124,8 @@ export class EditplanPage implements OnInit {
     this.templateService.presentToastWithOptions("Deleted items!");
   }
 
-  //JW
   popOverController(x) {
-    let menuOptions = ["Edit", "Rename", "Export to PDF", "Export Plan"];
+    let menuOptions = ["Edit", "Rename", "Export to PDF", "Export Plan"];   //JW
     this.templateService.popOverController('popover', x, menuOptions).then(popover => {
       popover.present();
       popover.onDidDismiss().then((data) => {
@@ -135,13 +134,12 @@ export class EditplanPage implements OnInit {
     })
   }
 
-  //JW
   callAction(type) { //https://ultimatecourses.com/blog/deprecating-the-switch-statement-for-object-literals
     var call = {
       'Edit': () => this.callEdit(),
       'Rename': () => this.askForName(),
       "Export to PDF": () => this.exportToPDF(),
-      "Export Plan": () => this.exportSinglePlan()
+      "Export Plan": () => this.exportSinglePlan()    //JW
     };
     call[type]();
   }

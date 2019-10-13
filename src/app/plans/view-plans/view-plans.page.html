@@ -3,73 +3,79 @@
     <ion-title>
       Plans
     </ion-title>
+
     <ion-buttons slot="start" (click)="presentActionSheetDelayed()">
       <ion-button>
         <ion-icon name="funnel"></ion-icon>
       </ion-button>
     </ion-buttons>
+
     <ion-buttons slot="end">
+
       <ion-button (click)="onClick()">New</ion-button>
-      <ion-button (click)="chooseImport()">
-        <ion-icon name="arrow-down"></ion-icon>
+
+      <ion-button (click)="popOverController($event)">
+        <ion-icon ios="ios-more" md="md-more"></ion-icon>
       </ion-button>
-      <ion-button (click)="exportPlanBtn()">
-        <ion-icon name="arrow-up"></ion-icon>
-      </ion-button>
+
     </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content #content (ionScroll)="scroll($event)" [scrollEvents]="true">
 
   <!----THIS IS SEARCH BAR---->
-  <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="setFilteredItems()" animated margin-bottom (ionFocus)="ionFocus()" (ionBlur)="ionBlur()"></ion-searchbar>
+  <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="setFilteredItems()" animated margin-bottom
+    (ionFocus)="ionFocus()" (ionBlur)="ionBlur()"></ion-searchbar>
 
-  <div *ngIf="searchTerm && sortedDetails && sortedDetails.length == 0" text-center padding> No search results found. Please try again.</div>
+  <div *ngIf="searchTerm && sortedDetails && sortedDetails.length == 0" text-center padding> No search results found.
+    Please try again.</div>
 
   <div *ngIf="!searchTerm && sortedDetails && sortedDetails.length == 0" id="noPlanDiv">
-      Click "New" at the right top of this screen to create a plan.
+    Click "New" at the right top of this screen to create a plan.
   </div>
 
   <ion-list lines="none" margin-bottom [style.padding-top]="'0px'" #mylist id="wholeList">
 
-    <ion-virtual-scroll [items]="sortedDetails" id="virtualScroll" [itemHeight]="itemHeightFn" [approxItemHeight]="'140px'">
+    <ion-virtual-scroll [items]="sortedDetails" id="virtualScroll" [itemHeight]="itemHeightFn"
+      [approxItemHeight]="'140px'">
       <!-- <div *virtualItem="let item; let index = index;"> -->
-        <ion-item-sliding (ionSwipe)="swipeEvent(item.id)" *virtualItem="let item; let index = index;">
-          <ion-item (click)="goEdit(item)" detail="false">
-            <ion-card button>
-              <ion-card-header color="tertiary">
-                <ion-card-title>{{item.planName}}</ion-card-title>
-              </ion-card-header>
-              <ion-card-content no-padding>
-                <ion-row style="border-bottom: 1px solid lightgrey;" padding-start>
-                  <ion-col>
-                    <h2>{{item.name}}</h2>
-                  </ion-col>
-                </ion-row>
-                  <ion-row padding-start>
-                    <ion-col>
-                      <h4>{{item.ccontact}}</h4>
-                    </ion-col>
-                    <ion-col text-right padding-end>
-                      <!-- <h6>{{item.createdDate | date: 'MM/dd/yyyy'}}</h6> -->
-                      <h4>{{item.createdDate | date: 'dd/MM/yyyy'}}</h4>
-                    </ion-col>
-                  </ion-row>
-                <!-- </ion-row> -->
-              </ion-card-content>
-              <ion-ripple-effect></ion-ripple-effect>
-            </ion-card>
-          </ion-item>
+      <ion-item-sliding (ionSwipe)="swipeEvent(item.id)" *virtualItem="let item; let index = index;">
+        <ion-item (click)="goEdit(item)" detail="false">
+          <ion-card button>
+            <ion-card-header color="tertiary">
+              <ion-card-title>{{item.planName}}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content no-padding>
+              <ion-row style="border-bottom: 1px solid lightgrey;" padding-start>
+                <ion-col>
+                  <h2>{{item.name}}</h2>
+                </ion-col>
+              </ion-row>
+              <ion-row padding-start>
+                <ion-col>
+                  <h4>{{item.ccontact}}</h4>
+                </ion-col>
+                <ion-col text-right padding-end>
+                  <!-- <h6>{{item.createdDate | date: 'MM/dd/yyyy'}}</h6> -->
+                  <h4>{{item.createdDate | date: 'dd/MM/yyyy'}}</h4>
+                </ion-col>
+              </ion-row>
+              <!-- </ion-row> -->
+            </ion-card-content>
+            <ion-ripple-effect></ion-ripple-effect>
+          </ion-card>
+        </ion-item>
 
-          <ion-item-options side="end">
-            <ion-item-option color="danger" (click)="swipeEvent(item.id)" expandable>
-              <ion-icon name="trash" slot="top" style="zoom:2.0"></ion-icon> DELETE
-            </ion-item-option>
-          </ion-item-options>
-        
-        </ion-item-sliding>
-        
+        <ion-item-options side="end">
+          <ion-item-option color="danger" (click)="swipeEvent(item.id)" expandable>
+            <ion-icon name="trash" slot="top" style="zoom:2.0"></ion-icon> DELETE
+          </ion-item-option>
+        </ion-item-options>
+
+      </ion-item-sliding>
+
       <!-- </div> -->
     </ion-virtual-scroll>
 

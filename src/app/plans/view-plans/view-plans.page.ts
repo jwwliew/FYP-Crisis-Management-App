@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { PlanService } from './../../services/plan.service';
-import { ActionSheetController, Events, IonList } from '@ionic/angular';
+import { ActionSheetController, Events, IonList, ToastController } from '@ionic/angular';
 import { TemplateService } from 'src/app/services/template.service';
 
 //JW
 import { File } from '@ionic-native/file/ngx';
 import { ModalController, PopoverController } from '@ionic/angular';
 import { ImportModalPage } from '../../import-modal/import-modal.page';
-import {v4 as uuid} from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { Storage } from '@ionic/storage';
 
 
@@ -21,7 +21,8 @@ export class ViewPlansPage implements OnInit {
 
   constructor(private router: Router, private planService: PlanService, public actionSheetController: ActionSheetController,
     private event: Events, private templateService: TemplateService, private file: File,
-    private modalController: ModalController, private storage: Storage) {
+    private modalController: ModalController, private storage: Storage, private toastController: ToastController,
+    private popoverController: PopoverController) {
 
   }
   details: any;
@@ -187,105 +188,74 @@ export class ViewPlansPage implements OnInit {
       : this.buttonShown = false;
   }
 
-  checkAppRootFolderExist() {    //works partially, catch error if dir not found!!
-    return new Promise((res, rej) => {
-      let path = this.file.externalRootDirectory;
-      this.file.checkDir(path, 'crisisApp').then((isThere) => {
-        if (isThere == true) {
-          console.log("App folder found!");
-          res(isThere);
+  //JW
+  chooseImport() {    //html btn
+    this.getImportFiles().then((filearr) => {
+      this.openModal(filearr);
+    });
+  }
+
+  getImportFiles() {
+    return new Promise((res) => {
+      this.checkAppRootFolderExist().then((check: boolean) => {
+        if (check === false) {
+          //console.log("Nothing to import");
+          this.showToast("No import files available")
         }
-        else if (isThere == false) {
-          console.log("App folder not found!");
-          rej(isThere);
+        else if (check === true) {
+          this.checkIfContainsFiles().then((isThere) => {
+            if (isThere === true) {
+              this.listJsonFiles(function (callbackResult) {
+                if (callbackResult.length >= 1) {
+                  res(callbackResult);
+                }
+              })
+            }
+            else if (isThere === false) {
+              this.showToast("No import files available")
+            }
+            else {
+              //catch error?
+              console.log("catch error?")
+            }
+          })
         }
       })
     })
   }
 
-  createAppRootFolder() {
-    let path = this.file.externalRootDirectory;
-    this.file.createDir(path, 'crisisApp', true).then((isCreated) => {
-      console.log("App folder created!");
-    })
-  }
-
-  idJsonFile() :string{     //create object to identify json file
-    let fileId:string = uuid();
-    let fileCheck: string = `{\"id\": \"${fileId}\", \"crisisApp\": \"true\"},`
-    return fileCheck;
-  }
-
-  nameJsonFile(){
-    //TODO: append number to json
-  }
-
-  exportAllPlans() {
-    this.planService.getAllPlan().then((plans) => {
-      //console.log("PLANS => " + JSON.stringify(plans));
-      let newPlansStr: string = "";
-      let that = this;
-
-      let fileCheck = this.idJsonFile();
-      newPlansStr = fileCheck + newPlansStr;    //add filecheck in front
-      //console.log("filechecker => " + newPlansStr)
-      newPlansStr = "[" + newPlansStr;
-
-      function looper(callback, newPlansStr, that) {
-        for(let a=0; a<plans.length; a++){
-          let onePlan = JSON.stringify(plans[a]);
-          onePlan += ",{\"@\":\"~\"},";
-          newPlansStr += onePlan;
-          if(a == plans.length -1){
-            newPlansStr = newPlansStr.substring(0, newPlansStr.length-1)    //remove last comma
-            newPlansStr = newPlansStr + "]";
-            //console.log("json stringify => " + newPlansStr)
-            callback(newPlansStr, that)
-          }
+  checkIfContainsFiles() {
+    return new Promise((res) => {
+      var isThere = false;
+      let path = this.file.externalRootDirectory
+      this.file.listDir(path, 'crisisApp').then((files) => {
+        if (files.length <= 0) {
+          res(isThere)
         }
-      }
-
-      function putIntoFile(newPlansStr, that){
-        let filename: string = "allPlans.json";
-        let data: string = newPlansStr;
-        let path = that.file.externalRootDirectory + "crisisApp/";
-        that.file.writeFile(path, filename, data, { replace: true });
-      }
-
-      looper(putIntoFile, newPlansStr, that);
+        else {
+          isThere = true;
+          res(isThere)
+        }
+      })
     })
   }
 
-  exportPlanBtn() {
-    this.checkAppRootFolderExist().then((isThere: boolean) => {
-      if (isThere == true) {
-        this.exportAllPlans();
-      }
-      else if (isThere == false) {
-        this.createAppRootFolder();
-      }
-    })
-  }
-
-  chooseImport() {
-    this.getRelevantFiles().then((filearr) => {
-      this.openModal(filearr);
-    });
-  }
-
-  async listJsonFiles(callback) {       //callback function
+  //list import files available in device storage
+  async listJsonFiles(callback) {       //callback function, returns a fileArr of json files
     let path = this.file.externalRootDirectory;
     let fileArr = [];
 
     function checkFile(theFile) {    //check if it is a folder, if false, dont push into fileArr
-      if (theFile.isFile === true) {
-        fileArr.push(theFile);
-        //console.log("CHECK: " + theFile.isFile);
-        //console.log("fileArr => " + JSON.stringify(fileArr));
-      }
-      else if (theFile.isFile === false) {
-        //console.log("CHECK: " + theFile.isFile);
-      }
+      return new Promise((res) => {
+        if (theFile.isFile === true) {
+          fileArr.push(theFile);
+          res()
+        }
+        else {
+          //do nothing
+          res()
+        }
+      })
     }
 
     this.file.listDir(path, 'crisisApp').then(async (files) => {
@@ -305,44 +275,254 @@ export class ViewPlansPage implements OnInit {
             callback(filteredResult);       //returns result to function call
           })
             .catch(err => {
-              console.log("Promise all error catch => " + JSON.stringify(err));
+              console.log("Error catch for Promise.all => " + JSON.stringify(err));
             })
         }
       })()
     })
   }
 
-  getRelevantFiles() {
-    return new Promise((res) => {
-      this.checkAppRootFolderExist().then((check: boolean) => {
-        if (check === false) {
-          console.log("app folder does not exist");
-        }
-        else if (check === true) {
-          this.listJsonFiles(function (callbackResult) {
-            if (callbackResult.length < 1) {
-              //do nothing
-            }
-            else if (callbackResult.length >= 1) {
-              res(callbackResult);
-              //console.log(JSON.stringify(callbackResult));
-            }
-          })
-        }
-      })
-    })
-  }
-
+  //open import selection page
   async openModal(filearr) {
     var newFileArr = [];
     newFileArr = filearr[0];      //since filearr is a [[]], im unwrapping the outer array
-    console.log("function openModal => " + JSON.stringify(newFileArr));
+    //console.log("function openModal => " + JSON.stringify(newFileArr));
     const modal = await this.modalController.create({
       component: ImportModalPage,
       componentProps: {
         fileArr: newFileArr
       }
     });
-    modal.present();
+    modal.onDidDismiss().then(()=> {
+      this.refreshPage()
+    })
+
+    modal.present()
   }
+
+  //refresh page after modal dismissed
+  refreshPage(){
+    this.ionViewWillEnter();
+  }
+
+  exportPlansBtn() {   //html btn
+    this.checkAppRootFolderExist().then((isThere: boolean) => {
+      if (isThere == true) {
+        this.exportAllPlans();
+      }
+      else if (isThere == false) {
+        this.showToast("App folder not found. Creating one for you. . .")
+        this.createAppRootFolder().then((isCreated: boolean) => {
+          if (isCreated === true) {
+            this.exportAllPlans();
+          }
+        })
+      }
+    })
+  }
+
+  //check device storage for app folder
+  checkAppRootFolderExist() {
+    return new Promise((res) => {
+      let path = this.file.externalRootDirectory;
+      this.file.checkDir(path, 'crisisApp').then((isThere) => {
+        if (isThere == true) {
+          //console.log("App folder found!");
+          res(isThere);
+        }
+      })
+        .catch((err) => {
+          if (err.code == 1) {    //code for file not found
+            let isThere = false;
+            //console.log("App folder not found!");
+            res(isThere);
+          }
+        })
+    })
+  }
+
+  //create app folder in device external storage
+  createAppRootFolder() {
+    var isCreated = false;
+    return new Promise((res) => {
+      let path = this.file.externalRootDirectory;
+      this.file.createDir(path, 'crisisApp', true).then((dirEntry) => {
+        console.log("App folder created!");
+        this.showToast("App folder created!");
+        if (dirEntry.isDirectory === true) {
+          isCreated = true
+          res(isCreated)
+        }
+      })
+    })
+  }
+
+  //retrieve all plans from db and put into file
+  exportAllPlans() {
+    var check = true;
+    return new Promise((res) => {
+      this.planService.getAllPlan().then((plans) => {
+
+        if(plans.length <= 0){    //if no plans in db
+          this.showToast("Nothing to export!")
+          check = false
+          res(check)
+        }
+  
+        let newPlansStr: string = "";
+        let that = this;
+  
+        let fileCheck = this.idJsonFile();
+        newPlansStr = fileCheck + newPlansStr;    //add filecheck in front
+        newPlansStr = "[" + newPlansStr;
+  
+        function looper(callback, newPlansStr, that) {
+          for (let a = 0; a < plans.length; a++) {
+            let onePlan = JSON.stringify(plans[a]);
+            onePlan += ",{\"@\":\"~\"},";     //add separator in btwn each plan
+            newPlansStr += onePlan;
+            if (a == plans.length - 1) {
+              newPlansStr = newPlansStr.substring(0, newPlansStr.length - 1)    //remove last comma
+              newPlansStr = newPlansStr + "]";
+              callback(newPlansStr, that)
+            }
+          }
+        }
+  
+        //put into file part
+        async function putIntoFile(newPlansStr, that) {
+          let filename = await that.nameJsonFile();
+          let data: string = newPlansStr;
+          let path = that.file.externalRootDirectory + "crisisApp/";
+          await that.file.writeFile(path, filename, data, { replace: true });
+          res(check)
+        }
+  
+        looper(putIntoFile, newPlansStr, that);
+      })
+    }).then((check) => {
+      if(check === true){
+        this.showToast("Export successful")
+      }
+    })
+    .catch((err) => {
+      //do nothing
+      //console.log("Error caught => " + JSON.stringify(err))
+    })
+  }
+
+  //create identifier to identify json file (files identified by regex => {id: crisisApp})
+  idJsonFile(): string {
+    let fileId: string = uuid();
+    let fileCheck: string = `{\"id\": \"${fileId}\", \"crisisApp\": \"true\"},`
+    return fileCheck;
+  }
+
+  //create and number filenames
+  nameJsonFile(): Promise<string> {
+    return new Promise(async (res) => {
+      this.checkIfContainsFiles().then((isThere) => {
+        if (isThere === true) {
+          let filename: string = "allPlans";
+          this.listJsonFiles(function (callbackResult) {
+            if (callbackResult.length >= 1) {
+              var files = callbackResult[0];
+
+              if(files.length <= 1){    //if theres only 1 file in app folder
+                files.forEach(element => {    //callback result is [[]], thus callbackResult[0]
+                  if (element.name.includes(filename)) {    //check if its "allPlans" file
+                    let fileNo = parseInt(element.name.slice(-2))   //extract number from file
+                    let fileNoString: string = "";
+                    fileNo = fileNo += 1      //increment file number
+  
+                    if(fileNo <= 9){      //if file number is less than 10, add 0 in front
+                      fileNoString = fileNo.toString()
+                      fileNoString = "0" + fileNoString
+                    }
+                    else{
+                      fileNoString = fileNo.toString();
+                    }
+                    filename = filename + fileNoString      //add number to filename, end result should be allPlans<number>
+                    console.log("filename => " + filename);
+                    res(filename)
+                  }
+                })
+              }
+              else{     //if theres more than one file in app folder
+                let numberArr = [];
+                (async function asyncloop(){
+                  files.forEach((element, index, array) => {
+                    if(element.name.includes(filename)){
+                      let fileNo = parseInt(element.name.slice(-2))
+                      numberArr.push(fileNo)
+                    }                    
+                    if (index == array.length -1) {        //checks if loop is finished, resolves promise if yes
+                      var promise = new Promise((res2) => {
+                        res2(numberArr);
+                      }).then((numberArr: number[]) => {
+                      numberArr = numberArr.sort((a:number, b:number) => b - a);    //sort by desc order
+                      let biggestNo: number = numberArr[0];     //get biggest number in arr
+                      let fileNo = biggestNo += 1;      //same as above^
+                      let fileNoString: string = "";
+
+                      if(fileNo <= 9){
+                        fileNoString = fileNo.toString()
+                        fileNoString = "0" + fileNoString
+                      }
+                      else{
+                        fileNoString = fileNo.toString();
+                      }
+                      filename = filename + fileNoString
+                      console.log("filename => " + filename);
+                      res(filename)
+                      })
+                    }
+                  });
+                })();
+              }
+              
+            }
+          })
+        }
+        else if (isThere === false) {     //first file in the app folder
+          console.log("This is the first file!")
+          let filename: string = "allPlans";
+          filename = filename + "01";
+          console.log("filename => " + filename)
+          res(filename)
+        }
+        else {
+          //catch error?
+        }
+      })
+    })
+  }
+
+  popOverController(x) {
+    let menuOptions = ["Import plans", "Export all plans"];
+    this.templateService.popOverController('popover', x, menuOptions).then(popover => {
+      popover.present();
+      popover.onDidDismiss().then((data) => {
+        data.data && this.callAction(data.data);
+      });
+    })
+  }
+
+  callAction(type) {
+    var call = {
+      'Import plans': () => this.chooseImport(),
+      'Export all plans': () => this.exportPlansBtn()
+    };
+    call[type]();
+  }
+
+  //TOASTER
+  async showToast(msg) {      //TODO: append/stack toaster, make sure msg wont overlap each other
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 3000
+    });
+    toast.present();
+  }
+
 }
