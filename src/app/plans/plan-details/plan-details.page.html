@@ -193,14 +193,17 @@
       }
     </style>
   
-    <!-- Test my data yong rui -->
-    <ion-card *ngFor="let globalItem of frontViewData; let first = first;">
-      <ion-card-header [color]="globalItem.colorCard">
+    <!-- Test my data yong rui    frontViewData是template.service.ts中frontViewData方法-->
+
+    <ion-card *ngFor="let globalItem of frontViewData; let first = first;"> 
+      <!--定义标题颜色-->>
+      <ion-card-header [color]="globalItem.colorCard"> 
         <ion-card-title>
-          {{globalItem.textCard}}
+          {{globalItem.textCard}} <!--新建的三个标题名称！Get Help Now  |  Caution: Symptom Management |I'm feeling well  -->
         </ion-card-title>
   
         <ion-content>
+          <!--三个按钮的位置 添加action的按钮-->>
           <ion-fab vertical="top" horizontal="end" edge slot="fixed">
             <!-- <ion-fab-button size="small" (click)="addNewCriticalArray('Critical')" class="btnAdd" color="redCard"> -->
             <ion-fab-button size="small" class="btnAdd" (click)="globalItem.toggle=!globalItem.toggle"
@@ -228,12 +231,12 @@
         <ion-row *ngFor="let item of getArray(globalItem.id); let i = index; let last = last" [style.border-bottom]="!last && '2px solid #A9A9A9'"
           [ngClass]="{'blur': globalItem.toggle}">
   
-          <!-- first column aka symptom -->
+          <!-- first column aka symptom 第一列又名症状 -->
           <ion-col [size]="checked.length > 0 ? 5.25 : 6"
             [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}"
             (press)="pressEvent('Symptom', item, globalItem.id, item.symptom.id);"
             (click)="checked.length > 0 && clickEvent('Symptom', item, globalItem.id, item.symptom.id)">
-  
+            <!--重做！！！！！！card   这是左边的symptom模块    presentActionSheet('Symptom', item, globalItem.id)这个就是生成页面symptom-->
             <ion-card (tap)="checked.length == 0 && presentActionSheet('Symptom', item, globalItem.id)"
               [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0, 'ion-activatable': checked.length == 0}" class="removeCardMargin">
               <ion-ripple-effect *ngIf="checked.length == 0"></ion-ripple-effect>
@@ -358,6 +361,7 @@
         <ion-card-title>
           Appointment (Optional)
         </ion-card-title>
+        <!--页面下文字容器里的文本输入和点击Appointment (Optional)-->
         <ion-content>
           <ion-fab vertical="top" horizontal="end" edge slot="fixed">
             <ion-fab-button (click)="newAppt()" size="small" class="btnAdd" [disabled]="checked.length > 0">
@@ -367,7 +371,7 @@
         </ion-content>
   
       </ion-card-header>
-  
+      <!--背景颜色样式！显示样式 Appointment (Optional) 文本样式以及添加样式-->>
       <ion-list style="background-color:white" #apptList 
         [style.padding-top]="appointment.length == 0 ? '24px' : checked.length > 0 ? '0px' : '16px'" [style.padding-bottom]="checked.length > 0 ? '0px': '24px'">
   
@@ -400,7 +404,7 @@
             </ion-col>
   
           </ion-item>
-  
+            <!--一直摁住，删除action-->>
           <ion-item-options side="end">
             <ion-item-option color="danger" expandable (click)="deleteIOSAppointment(info)">
               <ion-icon name="trash" slot="top" style="zoom:1.5"></ion-icon> DELETE

@@ -1,5 +1,6 @@
 export interface Setting {
     id: string;
+    id2: string;
     enName: string;
     chName?: string;
     myName?: string;
@@ -9,6 +10,7 @@ export interface Setting {
 
 export interface SettingAction {
     id: string;
+    id2: string;
     enName: string;
     chName?: string;
     myName?: string;

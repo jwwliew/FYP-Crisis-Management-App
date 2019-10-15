@@ -25,6 +25,7 @@ export class NewTemplatesPage implements OnInit {
 
   checked = this.templateService.checked;
 
+ 
   selectRadio() {
     this.templateService.selectRadio(this.defaultLanguage);
   }
@@ -232,9 +233,9 @@ export class NewTemplatesPage implements OnInit {
       //   console.error("window height = ", div.offsetHeight);
       //   console.error("window width = ", div.offsetHeight);
       //   //Initialize JSPDF
-        const doc = new jsPDF('p', 'mm', 'a4', true);
+        const doc = new jsPDF('p', 'mm', 'a4');
         doc.deletePage(1); //https://stackoverflow.com/questions/29578721/image-in-pdf-cut-off-how-to-make-a-canvas-fit-entirely-in-a-pdf-page/42295522#42295522
-        doc.addPage(millimeters.width * 2, millimeters.height * 1.95);
+        // doc.addPage(millimeters.width * 2, millimeters.height * 1.95);
         // doc.addPage(millimeters.width, millimeters.height);
         console.warn("internal page size width height", doc.internal.pageSize.width, doc.internal.pageSize.height);
         const imgHeight = (height * doc.internal.pageSize.width) / width;
@@ -259,7 +260,7 @@ export class NewTemplatesPage implements OnInit {
         //   heightLeft -= pageHeight;
         // }
 
-        doc.save('pdfDocument.pdf'); //for website
+        doc.save('pdfDocument.pdf'); //for website      --tangchangqing
         console.timeEnd();
         // if (leftHeight < pageHeight) {
         //   doc.addImage(dataUrl, "PNG", 0, 0, imgWidth, imgHeight);

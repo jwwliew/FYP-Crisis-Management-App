@@ -14,7 +14,7 @@ import { Events } from '@ionic/angular';
   styleUrls: ['./new-plan.page.scss'],
 })
 export class NewPlanPage implements OnInit {
-
+  public text1;
   slideOneForm = this.formBuilder.group({
     firstName: ['', Validators.compose([Validators.maxLength(35), Validators.pattern(/(?!\s*$)/), Validators.required])], //https://stackoverflow.com/questions/45567341/regex-dont-match-if-it-is-an-empty-string
   })
@@ -34,6 +34,8 @@ export class NewPlanPage implements OnInit {
   @ViewChild('input') thisInput;
   nextPage() {
     let planName = this.slideOneForm.controls.firstName;
+    //设置把值穿回text1
+    this.text1 = planName;
     if (planName.invalid) {
       this.submitted = true;
       // this.templateService.presentToastWithOptions("Plan name cannot be empty!");

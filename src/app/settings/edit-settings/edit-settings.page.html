@@ -4,7 +4,8 @@
       <ion-back-button defaultHref="/tabs/settings/symptomAction" (click)="goBack()"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      {{contentDetails.enName}}
+      <!-- {{contentDetails.enName}} -->
+      Create
     </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="save(thisForm.value)"> {{editID == 'add' ? 'Add' : 'Save'}} </ion-button>
@@ -75,7 +76,7 @@
     <!-- <h1>selected tab: {{selectedTab}} </h1>
     editSettings of {{editID}}
     <p> {{contentDetails.enName}} </p> 
-    -->
+    --> 
     
   <ion-img class="imgCircle" [src]="contentDetails.icon || 'assets/empty.svg'" (click)="takePhoto(0)"></ion-img>
 
@@ -84,7 +85,7 @@
   <form [formGroup]="thisForm" (ngSubmit)="save(thisForm.value);">
 
       <!-- <ion-item>
-        <ion-label position="floating" *ngIf="thisForm.controls['english'].touched || thisForm.controls['english'].valid"
+        <ion-label position="floating" *ngIf="thisForm.controls['english'].touched || thisForm.controls['english'].valid" 
         [class.labelFocused]="editID == 'add' ? (thisForm.controls['english'].touched || thisForm.controls['english'].valid) : thisForm.controls['english'].touched"> English </ion-label>
         <ion-input type="text" formControlName="english" required placeholder="{{thisForm.controls['english'].touched ? '' : 'Enter english name'}}" 
           (ionFocus)="inputFocus('english')" (ionBlur)="defocus('english')" [ngClass]="!thisForm.controls['english'].touched && 'paddingInput'"></ion-input>

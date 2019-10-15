@@ -5,13 +5,22 @@ import { Setting } from '../models/symptomaction';
 import { SymptomActionService } from './symptomaction.service';
 import { ActionSheetController, ToastController, AlertController, PopoverController, ModalController, Platform } from '@ionic/angular';
 import { TemplatePopComponent } from './../templates/template-pop/template-pop.component';
+import { computeStackId } from '@ionic/angular/dist/directives/navigation/stack-utils';
+
+// import { AnyMxRecord } from 'dns';
 
 const ALL_KEY = "allKey";
 @Injectable({
   providedIn: 'root'
 })
 export class TemplateService {
-
+public ite;
+public image;
+public titlea:number;
+public language1;
+public aa=[1];
+public tx1=[];
+public it; //设置重新复制1，2，3，4
   constructor(private storage: Storage, private settingStorage: SymptomActionService, private actionSheetCtrl: ActionSheetController, private zone: NgZone, 
     private toastCtrl: ToastController, private alertCtrl: AlertController, private popoverCtrl: PopoverController, private modalCtrl: ModalController, private plt: Platform) { }
 
@@ -84,9 +93,8 @@ export class TemplateService {
     }
   }
 
-  //JW PLS TAKE NOTE
   clickEvent(type, wholeItem, arrayID, combinedIndex) {
-    let element = type == "Symptom" ? wholeItem.combined[0] : wholeItem     //if wholeItem is type is not symptom, element set to wholeItem
+    let element = type == "Symptom" ? wholeItem.combined[0] : wholeItem
     element.whatsapp = !element.whatsapp;
     let itemIndex = this.checked.findIndex(x => x.element.id == element.id);
     if (itemIndex !== -1) {
@@ -216,8 +224,13 @@ export class TemplateService {
     this.goodArray = val.find(x => x.id == templateID).templates[2];
     [this.criticalArray, this.warningArray, this.goodArray].forEach(eachArray => {
       eachArray.forEach(element => {
+        //设置id 图
         this.settingStorage.getOneImage("Symptom", element.symptom.symptomID).then(oneImg => {
+          // console.log("element.symptom.img");
+          // console.log(element.symptom.img);
+          console.log("oneImg="+oneImg);
           element.symptom.img = oneImg;
+          console.log("element.symptom.img="+element.symptom.img);
         });
         element.combined.forEach(oneCombined => {
           this.settingStorage.getOneImage("Action", oneCombined.actionID).then(actionImg => {
@@ -268,7 +281,7 @@ export class TemplateService {
     this.appointment = [...this.backUpAppointment];
   }
 
-
+  
   alertInput(templateName) {
     return new Promise(async (resolve, reject) => {
       let alert = await this.alertCtrl.create({
@@ -316,28 +329,76 @@ export class TemplateService {
   }
 
   //https://stackoverflow.com/questions/48133216/custom-icons-on-ionic-select-with-actionsheet-interface-ionic2
-   presentActionSheet(symptomOrAction, item, defaultLanguage) { //https://ionicframework.com/docs/api/action-sheet
+
+  presentActionSheet(symptomOrAction, item, defaultLanguage) { //https://ionicframework.com/docs/api/action-sheet
+    this.aa.push(defaultLanguage);
     symptomOrAction = symptomOrAction == "updateAction" ? "Action" : symptomOrAction
-    if (this.checkSymptomOrActionEmpty(symptomOrAction)) {
-      return false;
+    console.log("symptomOrAction="+symptomOrAction);
+    if(symptomOrAction=="Symptom"){
+     console.log("1+1");
+      
+     
+        // callModal.present();
+        this.language1=defaultLanguage;
+        
+      
+      
+
     }
+
+    // if(symptomOrAction=='Action'){
+    //   let typeToCall = symptomOrAction == "Symptom" ? this.settingSymptom:this.settingAction;
+    //   this.popOverController('modal','',typeToCall,defaultLanguage,symptomOrAction).then(callModal =>{
+    //     callModal.present();
+    //     callModal.onDidDismiss().then(data=>{
+    //     console.log("检测到是Action");
+    //     item.text = this.returnLanguage(data.data,defaultLanguage);
+    //     item.img = data.data.icon;
+    //     item.actionID = data.data.id;
+    //   })
+    //   })
+     
+      
+    // }
+
+      
+      
+      // if(defaultLanguage==1){
+      //   console.log(this.aa[0]);
+        
+      //   // this.language1=this.aa[0];
+      //   // defaultLanguage=this.aa[0];
+      //   console.log("------------121--------------");
+      // }
+   
+    
+
+    console.log("--------------------------");
+    console.log(defaultLanguage)
+    console.log("--------------------------");
+    this.ite=item;
+    console.log("--------------------------");
+    console.log(defaultLanguage)
+    console.log("--------------------------");
+    
+   
     let typeToCall = symptomOrAction == 'Symptom' ? this.settingSymptom: this.settingAction;
+    if(this.aa[0]!=defaultLanguage){
+      console.log(this.aa[0]);
+      this.language1=defaultLanguage;
+      console.log("运行了嘛？？运行了！！！！");
+      // defaultLanguage=this.aa[0];
+       
+    }
+    else{
+      defaultLanguage=this.aa[0]; //不执行
+    }
+    if(symptomOrAction=='Symptom'||symptomOrAction=='Action'){
     this.popOverController('modal', '', typeToCall, defaultLanguage, symptomOrAction).then(callModal => {
       callModal.present();
-      callModal.onDidDismiss().then(data => {
-        if (!data.data) return false;
-        if (symptomOrAction == "Symptom") {
-          item.symptom.text = this.returnLanguage(data.data, defaultLanguage);
-          item.symptom.img = data.data.icon;
-          item.symptom.symptomID = data.data.id;
-        }
-        else {
-          item.text = this.returnLanguage(data.data, defaultLanguage);
-          item.img = data.data.icon;
-          item.actionID = data.data.id;
-        }
-      })
-    })
+    
+    })}
+    
     // const actionSheet = await this.actionSheetCtrl.create({
     //   header: "Select a " + symptomOrAction.toLowerCase() + " from below",
     //   cssClass: "wholeActionSheet",
@@ -346,13 +407,113 @@ export class TemplateService {
     // });
     // await actionSheet.present();
   }
+//新增数据+++++++++++++++++++++++++++++
+  //刷新方法
+  refresh(){
+    console.log();
+    location.reload();
+  }
+  chuanhui(symptomOrAction, item, defaultLanguage,data1){
+    console.log("--------------------------");
+    console.log("--------------------------");
+    console.log("--------------------------");
+    this.suoding(defaultLanguage)
+    
+  if(data1.id<=5){
+   item=this.ite;
+  }
+  if(data1.id>5){
+   item=this.ite;
+   console.log("action item:");
+   console.log(item);
+  }
+ 
+
+
+  
+    console.log("--------------------------");
+    // console.log(item);
+    console.log("--------------------------");
+   
+    //let typeToCall = symptomOrAction == 'Symptom' ? this.settingSymptom: this.settingAction;
+    // this.popOverController('modal', '', typeToCall, defaultLanguage, symptomOrAction).then(callModal => {
+      // console.log("callModal")
+      // console.log(callModal)
+      // console.log("callModal")
+      // callModal.present();
+      // callModal.onDidDismiss().then(data => {
+      //     data=data1;
+      
+        if (symptomOrAction == "Symptom") {
+          item.symptom.text = data1.enName;
+          item.symptom.img = data1.icon;
+          this.image = data1.icon;
+          console.log("this.image="+this.image);
+          console.log("data1.id");
+          console.log(data1.id);
+          item.symptom.symptomID = data1.id2;
+        }
+        if (symptomOrAction == "Action") {
+          item.text = data1.enName;
+          item.img = data1.icon;
+          item.id = data1.id;
+          item.actionID = data1.id2;
+        }
+        //  console.log("item.actionID");
+        //  console.log(item.actionID);
+        // console.log(item.symptom.img)
+        // console.log(data1)
+
+     
+      }
+      // 设置获取标题
+      settitlea(item){
+        this.titlea=item;
+        console.log("this.titlea");
+        console.log(this.titlea);
+      }
+      gettitlea(){
+       console.log("gettitlea this.titlea");
+       console.log(this.titlea);
+        return this.titlea;
+      }
+
+      language(){
+        //language1
+        return this.language1;
+      }
+      suoding(item){
+        console.log("执行锁定函数");
+          const a=item;
+          console.log("显示锁定函数");
+          console.log(a);
+          return a;
+      }
+    fanhuiyuyan(){
+      return this.language1;
+    }
+    zhenglishuju(element,Language){
+    this.tx1=element;
+    for(let a=1;a<=element.length;a++){
+console.log("zhenglishuju="+element.length);
+    this.tx1[a-1].enName=this.returnLanguage(element[a-1],Language);
+    this.tx1[a-1].icon=element[a-1].icon;
+    console.log("this.tx1[a-1].icon=",this.tx1[a-1].icon);
+  
+  }
+  return this.tx1;
+    }
+//新增数据+++++++++++++++++++++++++++++↑
+
+  
 
   returnLanguage(element, defaultLanguage) {
     let elementArray = [element.enName, element.chName, element.myName, element.tmName];
-    return elementArray[defaultLanguage] || element.enName;
+    return elementArray[defaultLanguage];
   }
 
   createButtons(itemToUpdate, type, defaultLanguage) {
+    console.log("执行createButtons");
     let buttons = [];
     let typeToCall = type == "Symptom" ? this.settingSymptom : this.settingAction
     typeToCall.forEach((element: Setting, index) => {
@@ -376,7 +537,9 @@ export class TemplateService {
           this.zone.run(() => {
             if (type == "Symptom") {
               itemToUpdate.symptom.text = nameLanguage;
+              //itemToUpdate.symptom.img = element.icon; 9.26 14：06分修改
               itemToUpdate.symptom.img = element.icon;
+              
               itemToUpdate.symptom.symptomID = element.id;
             }
             else {
@@ -498,14 +661,10 @@ export class TemplateService {
   }
 
   cleansedArray() {
-    let completedArray = this.getAllArray();    //getAllArray returns 3 arrays: critical, warning, good
+    let completedArray = this.getAllArray();
     let name = ["criticalArray", "warningArray", "goodArray"];
     let maparr = completedArray.map((eachArr, index) => { //https://stackoverflow.com/questions/53817342/map-and-filter-mapped-array-in-javascript
       //  eachArr = eachArr.filter(data => data.symptom.text !== "Symptom");
-
-      //eachArr is either critical, warning, good
-      //data is object within the array
-      //data contains an object named symptom, an array named combined
       eachArr = eachArr.filter(data => !this.globalSymptom.includes(data.symptom.text));
       eachArr.map(x => {
         x.symptom.img = null;
@@ -580,7 +739,14 @@ export class TemplateService {
   checkPlatformAndroid() {
     return this.plt.is("android")
   }
-  
+  setitem(item){
+    //设置item
+    this.it=item;
+  }
+  getitem(){
+    //设置item
+    return this.it;
+  }
 } //end of class
 
 

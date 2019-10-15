@@ -22,6 +22,7 @@ export class PlanDetailsPage implements OnInit {
 
   constructor(private router: Router, private PlanService: PlanService, private activatedRoute: ActivatedRoute,
     private templateService: TemplateService, public formBuilder: FormBuilder, private planService: PlanService) {
+      
   }
 
   planName: any;
@@ -29,8 +30,10 @@ export class PlanDetailsPage implements OnInit {
   datemy: string;
 
   appointment = this.templateService.appointment;
-
-  ngOnInit() { }
+  //templateService
+  ngOnInit() {
+    
+   }
 
   dateChanged(my, appObj) {
     // this.datemy = moment(my).format('YYYY-MM-DD hh:mmA');
@@ -49,6 +52,7 @@ export class PlanDetailsPage implements OnInit {
         element.setValue(""); //set value if empty
         element.markAsTouched(); // and touch so the red color underline ion-input will be shown
       }
+     
     });
     if (this.thisgroup.invalid) {
       this.submitted = true;
@@ -69,8 +73,12 @@ export class PlanDetailsPage implements OnInit {
       this.thisgroup.controls.detailtcs.value.trim(), this.thisgroup.controls.detailcontact.value, maparr, this.appointment).then(() => {
         this.templateService.resetArray();
         this.router.navigateByUrl('/tabs/plans');
+        //添加刷新！
+       
+        
         this.templateService.presentToastWithOptions("Created plan!")
       });
+     
   }
 
   newAppt() {
@@ -93,6 +101,11 @@ export class PlanDetailsPage implements OnInit {
     obj && (this.thisgroup.controls.detailname.setValue(obj.detailname), this.thisgroup.controls.detailnric.setValue(obj.detailnric), this.thisgroup.controls.detailtcs.setValue(obj.detailtcs), this.thisgroup.controls.detailcontact.setValue(obj.detailcontact));
     this.android = this.templateService.checkPlatformAndroid();
     this.planName = this.activatedRoute.snapshot.paramMap.get('planName');
+    //++++++++++++++++
+    console.log("this.planName");
+    console.log(this.planName);
+    this.templateService.settitlea(this.planName);
+     //++++++++++++++++
     this.defaultLanguage = +this.activatedRoute.snapshot.paramMap.get("languageID");
     this.templateService.callEdit(this.defaultLanguage);
     this.templateService.setGlobalSettings();
@@ -168,5 +181,7 @@ export class PlanDetailsPage implements OnInit {
     this.mylist.closeSlidingItems();
     this.templateService.presentToastWithOptions("Deleted action!");
   }
+  //语言获取锁定
+  
 
 }

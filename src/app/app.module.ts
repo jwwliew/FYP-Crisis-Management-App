@@ -21,6 +21,7 @@ import { TemplatePopComponent } from './templates/template-pop/template-pop.comp
 import { ImportModalPageModule } from './import-modal/import-modal.module'
 
 
+
 export class CustomHammerConfig extends HammerGestureConfig {
   // overrides = {
   //     'press': { time: 1000 },  //set press delay for 1 second, default is 300ms
@@ -38,8 +39,7 @@ export class CustomHammerConfig extends HammerGestureConfig {
 @NgModule({
   declarations: [AppComponent, TemplatePopComponent],
   entryComponents: [TemplatePopComponent],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, IonicStorageModule.forRoot(),
-    ImportModalPageModule],   //JW importmodalpagemodule
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, IonicStorageModule.forRoot(),ImportModalPageModule],
   providers: [
     StatusBar,
     SplashScreen,

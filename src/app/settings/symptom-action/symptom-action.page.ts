@@ -1,9 +1,10 @@
 import { SymptomActionService } from '../../services/symptomaction.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { Events, IonList, IonItemSliding } from '@ionic/angular';
 import { Router } from '@angular/router';
 
 import { TemplateService } from 'src/app/services/template.service';
+import { configFromSession } from '@ionic/core';
 
 @Component({
   selector: 'app-symptom-action',
@@ -11,15 +12,23 @@ import { TemplateService } from 'src/app/services/template.service';
   styleUrls: ['./symptom-action.page.scss'],
 })
 export class SymptomActionPage implements OnInit {
-
+  public add2;
   selectedTab = "Symptom";
   symptomList = [];
   actionList = [];
 
   checked = []
-  
+  @Input('ngModel') value:any;
   @ViewChild('mylist')mylist: IonList;
+  ngclick1(){
+    console.log("ngclick1");
+    this.add2=null;
+  }
+  ngclick2(){
+    console.log("ngclick2");
+    this.add2=null;
 
+  }
   deleteIOS(thisItem) {
     this.templateService.delete(`Are you sure you want to delete this ${this.selectedTab.toLowerCase()}?`).then(() => {
       this.settingService.deleteIOS(this.selectedTab, thisItem).then(() => {
@@ -79,7 +88,38 @@ export class SymptomActionPage implements OnInit {
   constructor(private settingService: SymptomActionService, public event: Events, private router: Router, private templateService: TemplateService) {}
 
   ngOnInit() {
+    // this.add2=this.myadd.value;'
+    console.log("model="+this.value);
   }
+  select(item){
+    // if (this.checked.length == 0) {
+    //    this.router.navigateByUrl('/tabs/settings/symptomAction/edit/' + this.selectedTab + "/" + item); //routing start from root level
+    //    }
+   var pubg=item;
+   
+    if(item.id==-10||item.id==-9||item.id==-8||item.id==-7||item.id==-6||item.id==-5||item.id==-4
+      ||item.id==-3||item.id==-2||item.id==-1||item.id==1||item.id==2||item.id==3||item.id==4||item.id==11||
+      item.id==12||item.id==13||item.id==14){
+    console.log("唐门="+item.id);
+    console.log("执行select函数");
+    item=item.id;
+    this.router.navigate(['/text2'], {
+      queryParams: {
+
+        item
+          //console.log(JSON.stringify(params))
+      },
+     
+    });
+    console.log("item="+item);
+  }
+  else{
+    console.log("唐门2="+item);
+    this.selectedTab="Action";
+    console.log("pubg.id="+pubg.id);
+    this.router.navigateByUrl('/tabs/settings/symptomAction/edit/' + this.selectedTab + "/" + pubg.id); //routing start from root level
+  }
+}
 
   ionViewWillEnter() {
     this.loadItems();
@@ -106,14 +146,22 @@ export class SymptomActionPage implements OnInit {
   }
 
   selectedSymptom(id) {
-    if (this.checked.length == 0) {
-      this.router.navigateByUrl('/tabs/settings/symptomAction/edit/' + this.selectedTab + "/" + id); //routing start from root level
-    }
+    //  if (this.checked.length == 0) {
+    //   this.router.navigateByUrl('/tabs/settings/symptomAction/edit/' + this.selectedTab + "/" + id); //routing start from root level
+    //  }
   }
   
   goToAddPage() {
+    console.log("this.add2="+this.add2);
+    
+  if(this.add2=="add"){
     this.router.navigateByUrl('/tabs/settings/symptomAction/edit/' + this.selectedTab + "/" + "add"); //routing start from root level
   }
+  else{
+    return false;
+  }
+
+}
 
 
   renderDividers(record : any, recordIndex : number, records : any)  : any
