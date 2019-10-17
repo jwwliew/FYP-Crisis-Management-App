@@ -5,7 +5,7 @@ import { Setting } from '../models/symptomaction';
 import { SymptomActionService } from './symptomaction.service';
 import { ActionSheetController, ToastController, AlertController, PopoverController, ModalController, Platform } from '@ionic/angular';
 import { TemplatePopComponent } from './../templates/template-pop/template-pop.component';
-import { computeStackId } from '@ionic/angular/dist/directives/navigation/stack-utils';
+import { computeStackId, isTabSwitch } from '@ionic/angular/dist/directives/navigation/stack-utils';
 
 // import { AnyMxRecord } from 'dns';
 
@@ -21,6 +21,7 @@ public language1;
 public aa=[1];
 public tx1=[];
 public it; //设置重新复制1，2，3，4
+public def;
   constructor(private storage: Storage, private settingStorage: SymptomActionService, private actionSheetCtrl: ActionSheetController, private zone: NgZone, 
     private toastCtrl: ToastController, private alertCtrl: AlertController, private popoverCtrl: PopoverController, private modalCtrl: ModalController, private plt: Platform) { }
 
@@ -219,6 +220,7 @@ public it; //设置重新复制1，2，3，4
   }
 
   editPageUpdateArray(val, templateID) {
+    console.log("editPageUpdateArray=");
     this.criticalArray = val.find(x => x.id == templateID).templates[0];
     this.warningArray = val.find(x => x.id == templateID).templates[1];
     this.goodArray = val.find(x => x.id == templateID).templates[2];
@@ -331,6 +333,8 @@ public it; //设置重新复制1，2，3，4
   //https://stackoverflow.com/questions/48133216/custom-icons-on-ionic-select-with-actionsheet-interface-ionic2
 
   presentActionSheet(symptomOrAction, item, defaultLanguage) { //https://ionicframework.com/docs/api/action-sheet
+    this.def=defaultLanguage;
+    console.log("this.def="+this.def);
     this.aa.push(defaultLanguage);
     symptomOrAction = symptomOrAction == "updateAction" ? "Action" : symptomOrAction
     console.log("symptomOrAction="+symptomOrAction);
@@ -340,12 +344,23 @@ public it; //设置重新复制1，2，3，4
      
         // callModal.present();
         this.language1=defaultLanguage;
-        
+        console.log("www="+this.language1);
       
       
 
     }
-
+    if(symptomOrAction=="Action"){
+      console.log("1+1");
+       
+      
+         // callModal.present();
+         this.language1=defaultLanguage;
+         console.log("www="+this.language1);
+       
+       
+ 
+     }
+ 
     // if(symptomOrAction=='Action'){
     //   let typeToCall = symptomOrAction == "Symptom" ? this.settingSymptom:this.settingAction;
     //   this.popOverController('modal','',typeToCall,defaultLanguage,symptomOrAction).then(callModal =>{
@@ -394,7 +409,10 @@ public it; //设置重新复制1，2，3，4
       defaultLanguage=this.aa[0]; //不执行
     }
     if(symptomOrAction=='Symptom'||symptomOrAction=='Action'){
-    this.popOverController('modal', '', typeToCall, defaultLanguage, symptomOrAction).then(callModal => {
+      console.log("露露="+this.def);
+      this.def=defaultLanguage;
+      console.log("露露2="+this.aa[0]);
+    this.popOverController('modal', '', typeToCall,  this.language1, symptomOrAction).then(callModal => {
       callModal.present();
     
     })}
@@ -445,16 +463,17 @@ public it; //设置重新复制1，2，3，4
       //     data=data1;
       
         if (symptomOrAction == "Symptom") {
-          item.symptom.text = data1.enName;
+          item.symptom.text = this.returnLanguage(data1,this.language1);
           item.symptom.img = data1.icon;
           this.image = data1.icon;
           console.log("this.image="+this.image);
           console.log("data1.id");
           console.log(data1.id);
           item.symptom.symptomID = data1.id2;
+          
         }
         if (symptomOrAction == "Action") {
-          item.text = data1.enName;
+          item.text = this.returnLanguage(data1,this.language1);
           item.img = data1.icon;
           item.id = data1.id;
           item.actionID = data1.id2;
@@ -464,7 +483,7 @@ public it; //设置重新复制1，2，3，4
         // console.log(item.symptom.img)
         // console.log(data1)
 
-     
+    
       }
       // 设置获取标题
       settitlea(item){
@@ -492,17 +511,17 @@ public it; //设置重新复制1，2，3，4
     fanhuiyuyan(){
       return this.language1;
     }
-    zhenglishuju(element,Language){
-    this.tx1=element;
-    for(let a=1;a<=element.length;a++){
-console.log("zhenglishuju="+element.length);
-    this.tx1[a-1].enName=this.returnLanguage(element[a-1],Language);
-    this.tx1[a-1].icon=element[a-1].icon;
-    console.log("this.tx1[a-1].icon=",this.tx1[a-1].icon);
+//     zhenglishuju(element,Language){
+//     this.tx1=element;
+// //     for(let a=1;a<=element.length;a++){
+// // console.log("zhenglishuju="+element.length);
+// //     this.tx1[a-1].enName=this.returnLanguage(element[a-1],Language);
+// //     this.tx1[a-1].icon=element[a-1].icon;
+// //     console.log("this.tx1[a-1].icon=",this.tx1[a-1].icon);
   
-  }
-  return this.tx1;
-    }
+//   }
+//   return this.tx1;
+//     }
 //新增数据+++++++++++++++++++++++++++++↑
 
   

@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { PlanService } from './../../services/plan.service';
 import { TemplateService } from 'src/app/services/template.service';
 import { FormBuilder, Validators } from '@angular/forms';
-import { IonList, IonItemSliding } from '@ionic/angular';
+import { IonList, IonItemSliding ,Events} from '@ionic/angular';
 
 @Component({
   selector: 'app-plan-details',
@@ -12,7 +12,8 @@ import { IonList, IonItemSliding } from '@ionic/angular';
 })
 
 export class PlanDetailsPage implements OnInit {
-
+public lang;
+public defaultLanguage1;
   thisgroup = this.formBuilder.group({
     detailname: ['', Validators.compose([Validators.maxLength(30), Validators.pattern(/(?!\s*$)/), Validators.required])],
     detailnric: ['', Validators.compose([Validators.minLength(5), Validators.pattern(/(?!\s*$)/), Validators.required])],
@@ -21,8 +22,13 @@ export class PlanDetailsPage implements OnInit {
   });
 
   constructor(private router: Router, private PlanService: PlanService, private activatedRoute: ActivatedRoute,
-    private templateService: TemplateService, public formBuilder: FormBuilder, private planService: PlanService) {
-      
+    private templateService: TemplateService, public formBuilder: FormBuilder, private planService: PlanService,public eve:Events) {
+      this.eve.subscribe("view", item => { //or services https://stackoverflow.com/questions/54304481/ionic-4-angular-7-passing-object-data-to-another-page
+        this.defaultLanguage1 = item.language;
+        
+      })
+     
+    
   }
 
   planName: any;
@@ -74,8 +80,8 @@ export class PlanDetailsPage implements OnInit {
         this.templateService.resetArray();
         this.router.navigateByUrl('/tabs/plans');
         //添加刷新！
-       
-        
+        this.templateService.language1=null;
+        // this.templateService.aa[0]=0;
         this.templateService.presentToastWithOptions("Created plan!")
       });
      
@@ -107,13 +113,14 @@ export class PlanDetailsPage implements OnInit {
     this.templateService.settitlea(this.planName);
      //++++++++++++++++
     this.defaultLanguage = +this.activatedRoute.snapshot.paramMap.get("languageID");
-    this.templateService.callEdit(this.defaultLanguage);
+    this.lang=this.defaultLanguage
+    this.templateService.callEdit(this.lang);
     this.templateService.setGlobalSettings();
     this.thisInput.setFocus();
   }
 
   goBackToNewPlan() {
-    this.PlanService.setExtras("extras", {"language": this.defaultLanguage, "name": this.planName});
+    this.PlanService.setExtras("extras", {"language": this.lang, "name": this.planName});
     this.PlanService.setExtras("detailextras", {"detailname": this.thisgroup.controls.detailname.value, "detailnric": this.thisgroup.controls.detailnric.value, "detailtcs": this.thisgroup.controls.detailtcs.value, "detailcontact": this.thisgroup.controls.detailcontact.value});
     // this.templateService.goToViewPageFromEdit();
   }
@@ -158,15 +165,23 @@ export class PlanDetailsPage implements OnInit {
 
   //https://stackoverflow.com/questions/48133216/custom-icons-on-ionic-select-with-actionsheet-interface-ionic2
   presentActionSheet(symptomOrAction, item) { //https://ionicframework.com/docs/api/action-sheet
-    this.templateService.presentActionSheet(symptomOrAction, item, this.defaultLanguage);
+    if(this.templateService.language1==1){
+    this.lang='1';
+    console.log("this.lang=1");
+  }
+  if(this.templateService.language1==0){
+    this.lang='0';
+    console.log("this.lang=0");
+  }
+    this.templateService.presentActionSheet(symptomOrAction, item, this.lang);
   }
 
   addNewCriticalArray(type, id) {
-    this.templateService.addNewCriticalArray(type, id, this.defaultLanguage);
+    this.templateService.addNewCriticalArray(type, id, this.lang);
   }
 
   popUp(id) {
-    this.templateService.popUp(id, this.defaultLanguage);
+    this.templateService.popUp(id, this.lang);
   }
 
   @ViewChild('apptList') apptList: IonList;

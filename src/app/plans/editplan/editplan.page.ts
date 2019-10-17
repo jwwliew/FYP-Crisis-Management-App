@@ -189,7 +189,7 @@ export class EditplanPage implements OnInit {
       // const doc = new jsPDF('p', 'mm', 'a4', true);
       //创建 jsppdf
       const doc = new jsPDF('', 'pt','a4')
-      console.log(dataUrl);
+      console.log("dataUrl="+dataUrl);
       console.log(imgWidth+'    '+imgHeight)
       console.log(leftHeight+'    '+pageHeight)
       // 判断 是否要分页
@@ -204,7 +204,9 @@ export class EditplanPage implements OnInit {
                 //  doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
                 doc.addImage(dataUrl, 'PNG', 0, position,imgWidth,imgHeight)
                  leftHeight -= pageHeight;
-                 position -= 841.89;
+                 console.log("position="+position);
+                 position -= 841.89; 
+                //  position -= 300.89
                  console.log(leftHeight+'    '+pageHeight)
                  //避免添加空白页
                  if(leftHeight > 0) {
