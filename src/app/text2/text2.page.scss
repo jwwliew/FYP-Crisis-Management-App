@@ -1,0 +1,11 @@
+ion-title{
+    font-size: 15px;
+}
+ion-item {
+    --min-height: 66px;
+}
+
+ion-avatar { //use ion-avatar because when long press ion-thumbnail, the image when crop from PDF shows white background outside of the circle border
+    width: 55px;
+    height: 55px;
+}

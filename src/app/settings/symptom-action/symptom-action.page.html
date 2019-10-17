@@ -7,10 +7,12 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/settings"></ion-back-button>
     </ion-buttons>
-
     <ion-buttons slot="end">
-      <ion-button (click)="goToAddPage()"> New </ion-button>
+      <ion-button defaultHref="/tabs/settings" (click)="goToAddPage()">{{add2}}</ion-button>
     </ion-buttons>
+    <!-- <ion-buttons slot="end">
+      <ion-button (click)="goToAddPage()"> New </ion-button>
+    </ion-buttons> -->
 
   </ion-toolbar>
 </ion-header>
@@ -38,10 +40,10 @@
 <ion-content #content (ionScroll)="scroll($event)" [scrollEvents]="true">
   <!-- Segment with default selection -->
   <ion-segment (ionChange)="segmentChanged()" [(ngModel)]="selectedTab" value="Symptom" color="originalPrimary">
-    <ion-segment-button value="Symptom">
+    <ion-segment-button value="Symptom" (click)="ngclick1()">
       <ion-label>Symptom</ion-label>
     </ion-segment-button>
-    <ion-segment-button value="Action">
+    <ion-segment-button value="Action" (click)="ngclick2()">
       <ion-label>Action</ion-label>
     </ion-segment-button>
   </ion-segment>
@@ -50,13 +52,13 @@
     <ion-virtual-scroll [items]="selectedTab == 'Symptom' ? symptomList : actionList" id="virtualScroll">
 
         <ion-item-sliding *virtualItem="let item" (ionSwipe)="deleteIOS(item)" class="ion-activatable">
-          <ion-item (tap)="selectedSymptom(item.id)" detail>
-            <ion-thumbnail slot="start">
+          <ion-item (tap)="select(item)"  detail class="txt">
+            <!-- <ion-thumbnail slot="start">
               <img [src]="item.icon" width="45" height="45" margin-end/> 
-              <!-- <ion-img [src]="item.icon" cache="true"></ion-img> -->
-            </ion-thumbnail>
+              <ion-img [src]="item.icon" cache="true"></ion-img>
+            </ion-thumbnail> -->
             <!-- <ion-img style="width:80px; height:100px" [src]="item.icon"></ion-img> -->
-            <ion-label text-wrap>
+            <ion-label text-wrap >
               {{item.enName}}
             </ion-label>
         

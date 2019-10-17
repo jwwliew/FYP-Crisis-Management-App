@@ -281,6 +281,7 @@
     </ion-card>
 
 
+            
 
     <!-- Test my data yong rui -->
     <ion-card *ngFor="let globalItem of frontViewData;">
@@ -300,18 +301,18 @@
         </ion-content>
 
       </ion-card-header>
-
       <ion-row style="background-color: grey; color: white;" *ngIf="getArray(globalItem.id).length > 0">
         <ion-col text-center>
           Symptom
         </ion-col>
+        <!-- What to do  的样式-->
         <ion-col [ngStyle]="{'text-align': isDisabled ? 'center' : 'initial'}">
           <span [ngStyle]="{'margin-left': isDisabled ? '0%' : '6%'}"> What to do </span>
         </ion-col>
       </ion-row>
 
 
-      <!-- view page when click on one plan... show icon and text only -->
+      <!-- view page when click on one plan... show icon and text only 创建好的查看图和文字 -->
       <ion-list style="background-color: #FFF" *ngIf="isDisabled" [style.padding]="isDisabled && '0%'">
         <ion-row *ngFor="let item of getArray(globalItem.id)">
 
@@ -342,23 +343,23 @@
             </ion-col>
           </ng-container>
 
-        </ion-row>
+        </ion-row>  
 
         <ion-row style="height:45px;" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!checkType(globalItem.id)">
           <p text-center style="width:100%"> No symptoms and actions added </p>
         </ion-row>
-
+       
       </ion-list>
 
-
-      <!-- shown when pressed edit-->
-      <ion-list style="background-color: #d3d3d3" #mylist
+      <div class="kb"></div>
+      <!-- shown when pressed edit 按下按钮时显示-->
+      <ion-list style="background-color: #d3d3d3" #mylist 
         [ngClass]="globalItem.toggle ? 'addPaddingTopBottom' : 'removePaddingTopBottom'" *ngIf="!isDisabled">
 
         <ion-row *ngFor="let item of getArray(globalItem.id); let i = index; let last = last" [style.border-bottom]="!last && '2px solid #A9A9A9'"
           [ngClass]="{'blur': globalItem.toggle}">
 
-          <!-- first column aka symptom -->
+          <!-- first column aka symptom 第一列又名症状！ -->
           <ion-col [size]="checked.length > 0 ? 5.25 : 6"
             [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}"
             (press)="pressEvent('Symptom', item, globalItem.id, item.symptom.id);"
@@ -376,17 +377,18 @@
                   <p class="imgCircleText"> {{item.symptom.text}} </p>
                 </ion-col>
               </ion-row>
+              
             </ion-card>
-
+           
             <ion-card class="removeCardMargin">
               <ion-textarea rows="4" placeholder="Describe the required symptom in your own words."
                 [readonly]="checked.length > 0" [(ngModel)]="item.symptom.description"
                 [ngClass]="{'highlight': item.combined[0]?.whatsapp && checked.length > 0}" (ionFocus)="!android && inputFocus()">
               </ion-textarea>
             </ion-card>
-
+           
           </ion-col>
-
+      
           <!-- for each second column aka action -->
           <ng-container *ngFor="let x of item.combined; let actIndex = index;">
 
@@ -402,7 +404,7 @@
               <ion-item-sliding (ionSwipe)="checked.length == 0 && deleteIOS(x, globalItem.id, i, actIndex)"
                 (ionDrag)="checked.length > 0 && dragAndCheckLongPress(slidingItem)" #slidingItem>
                 <ion-item appShadowCss [customCSS]="[x.whatsapp, 'newTemplate']" class="removeBorder">
-
+                  
                   <ion-card (click)="checked.length == 0 && presentActionSheet('Action', x)" class="removeCardMargin"
                     [ngClass]="{'highlight': x.whatsapp && checked.length > 0, 'ion-activatable': checked.length == 0}">
                     <ion-row>
@@ -415,6 +417,7 @@
                     </ion-row>
                     <ion-ripple-effect *ngIf="checked.length == 0"></ion-ripple-effect>
                   </ion-card>
+                  
 
                   <ion-card class="removeCardMargin">
                     <ion-textarea rows="4" placeholder="Describe the action to take in your own words."
@@ -432,20 +435,19 @@
                     <ion-icon name="trash" slot="top" style="zoom:2.0"></ion-icon> DELETE
                   </ion-item-option>
                 </ion-item-options>
-
               </ion-item-sliding>
-
+      
             </ion-col>
+            
 
             <ion-col size="1.5" *ngIf="checked.length > 0" [ngClass]="{'highlight': x.whatsapp}"
               style="display:flex;align-items:center;" (click)="clickEvent('Action', x, globalItem.id, i, actIndex)">
               <ion-checkbox [checked]="x.whatsapp" mode="ios" color="success"></ion-checkbox>
             </ion-col>
-
           </ng-container>
-
+         
         </ion-row>
-
+        
 
         <ion-row style="height:150px;" [ngClass]="{'blur': globalItem.toggle}" *ngIf="!checkType(globalItem.id)">
         </ion-row>
@@ -467,7 +469,7 @@
             </ion-col>
             <ion-ripple-effect></ion-ripple-effect>
           </ion-row>
-
+         
           <ion-row *ngIf="checkType(globalItem.id)"
             (click)="globalItem.toggle=!globalItem.toggle; popUp(globalItem.id);" [style.position]="'relative'"
             class="ion-activatable">
@@ -488,7 +490,7 @@
 
     </ion-card>
 
-
+<div class="kb"></div>
 
     <ion-card style="margin-bottom: 6%">
       <ion-card-header color="tertiary">

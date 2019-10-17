@@ -6,9 +6,10 @@ import { SymptomActionService } from 'src/app/services/symptomaction.service';
 import { LoadingController, IonList, IonItemSliding } from '@ionic/angular';
 import * as jsPDF from 'jspdf';
 import domtoimage from 'dom-to-image';
-import { File } from '@ionic-native/file/ngx';
+import { File,IWriteOptions} from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import * as  html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-editplan',
@@ -53,18 +54,20 @@ export class EditplanPage implements OnInit {
       )
   }
 
-  ionViewWillEnter() {    //triggered once entered editplan page
+  ionViewWillEnter() {
     this.android = this.templateService.checkPlatformAndroid();
-    let id = this.activatedRoute.snapshot.paramMap.get('item');   //get id from url
-    this.templateService.setGlobalSettings();     //set to default
-    this.PlanService.getEditDetails(id).then(everything => {    //retrieve item with id
-      [].concat(...everything.templates).forEach(eachArray => {     //templates refers to nested template array
-        this.settingService.getOneImage("Symptom", eachArray.symptom.symptomID).then(oneImg => {  //settingService = symptomaction.service
-          eachArray.symptom.img = oneImg;   //get image for symptom
+    let id = this.activatedRoute.snapshot.paramMap.get('item');
+    this.templateService.setGlobalSettings();
+    this.PlanService.getEditDetails(id).then(everything => {
+      [].concat(...everything.templates).forEach(eachArray => {
+        console.log("eachArray.symptom.id2="+eachArray.symptom.symptomID);
+        this.settingService.getimg("Symptom", eachArray.symptom.symptomID,eachArray.symptom.text).then(oneImg => {
+          console.log("oneimg="+oneImg);
+          eachArray.symptom.img = oneImg;
         });
         eachArray.combined.forEach(oneCombined => {
-          this.settingService.getOneImage("Action", oneCombined.actionID).then(actionImg => {
-            oneCombined.img = actionImg;    //get image for action
+          this.settingService.getimg("Action", oneCombined.actionID,oneCombined.text).then(actionImg => {
+            oneCombined.img = actionImg;
           })
         })
       });
@@ -125,26 +128,25 @@ export class EditplanPage implements OnInit {
   }
 
   popOverController(x) {
-    let menuOptions = ["Edit", "Rename", "Export to PDF", "Export Plan"];   //JW
+    let menuOptions = ["Edit", "Rename", "Export to PDF"];
     this.templateService.popOverController('popover', x, menuOptions).then(popover => {
       popover.present();
-      popover.onDidDismiss().then((data) => {
-        data.data && this.callAction(data.data);
-      });
+       popover.onDidDismiss().then((data) => {
+      data.data && this.callAction(data.data);
+     });
     })
   }
 
-  callAction(type) { //https://ultimatecourses.com/blog/deprecating-the-switch-statement-for-object-literals
+ callAction(type) { //https://ultimatecourses.com/blog/deprecating-the-switch-statement-for-object-literals
     var call = {
       'Edit': () => this.callEdit(),
       'Rename': () => this.askForName(),
-      "Export to PDF": () => this.exportToPDF(),
-      "Export Plan": () => this.exportSinglePlan()    //JW
+      'Export to PDF': () => this.exportToPDF()
     };
     call[type]();
   }
 
-  loading: any;
+  public loading: any;
   async presentLoading(msg) {
     this.loading = await this.loadingController.create({
       message: msg
@@ -152,53 +154,91 @@ export class EditplanPage implements OnInit {
     return await this.loading.present();
   }
 
-  exportSinglePlan(){
-    this.presentLoading('Exporting Plan');
-    // TODO:
-    // get id of plan
-    // retrieve data from storage
-    // export as json file to external phone storage
-  }
-
-  exportToPDF() {
-    this.presentLoading('Creating PDF file...');
-    const directory = this.file.dataDirectory;
-    const div = document.getElementById('Html2PDF'); //https://github.com/MarouaneSH/Ionic-jsPdf-Html2Canvas, https://stackoverflow.com/questions/43730612/opening-pdf-file-in-ionic-2-app
-
+  exportToPDF(){
+    // this.presentLoading('Creating PDF file...');
+    const directory = this.file.externalRootDirectory;
+    console.log("directory的值="+directory); //directory=null
+    // ****获取id = html2PDF dom对象
+    const div = document.getElementById('Html2PDF');
+    console.log("my")
+    console.log("div的值="+div); //div的值=[object HTMLDivElement]
     let width = div.clientWidth * 3;
+    console.log("width的值="+width); //width的值=1374
+     // ****一页pdf显示html页面生成的canvas高度;
+     var pageHeight = div.scrollWidth / 592.28 * 841.89; 
+     console.log("pageHeight的值="+pageHeight); //pageHeight的值=651.0191463496994
+     // ****未生成pdf的html页面高度
+     var leftHeight = div.scrollHeight; 
+     console.log("leftHeight的值="+leftHeight);//leftHeight的值=1522 整个数据的宽度、包括不可见的
     let height = div.clientHeight * 3;
+    console.log("height的值="+height); //height的值=4242
     let millimeters = { width, height };
-    millimeters.width = Math.floor(width * 0.264583);
-    millimeters.height = Math.floor(height * 0.264583);
-
-    let scale = 2; //https://github.com/tsayen/dom-to-image/issues/69
-    domtoimage.toPng(div, { height: div.offsetHeight * 2, width: div.offsetWidth * 2, style: { transform: `scale(${scale}) translate(${div.offsetWidth / 2 / scale}px, ${div.offsetHeight / 2 / scale}px)` } }).then(dataUrl => {
     
-      const doc = new jsPDF('p', 'mm', 'a4', true);
-      doc.deletePage(1); //https://stackoverflow.com/questions/29578721/image-in-pdf-cut-off-how-to-make-a-canvas-fit-entirely-in-a-pdf-page/42295522#42295522
-      doc.addPage(millimeters.width * 2, millimeters.height * 1.95);
-      doc.addImage(dataUrl, 'PNG', 0, 10, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST');
+    var position = 0;
+    millimeters.width = Math.floor(width * 0.264583); //返回最大整数四舍五入
+    millimeters.height = Math.floor(height * 0.264583);//返回最大整数四舍五入
+    // ****a4纸的尺寸
+    let imgWidth = 595.28;
+    let imgHeight = 592.28/div.scrollWidth * div.scrollHeight
+    console.log("imgHeight的值="+imgHeight); //imgHeight的值=1968.231790393013
+    let scale = 2; //https://github.com/tsayen/dom-to-image/issues/69
+    domtoimage.toPng(div, { 
+      height: div.offsetHeight * 2, width: div.offsetWidth * 1.95, style: 
+      { transform: `scale(${scale}) translate(${div.offsetWidth / 2.1 / scale}px, ${div.offsetHeight / 2 / scale}px)` } }).then(dataUrl => {
+    
+      // const doc = new jsPDF('p', 'mm', 'a4', true);
+      //创建 jsppdf
+      const doc = new jsPDF('', 'pt','a4')
+      console.log("dataUrl="+dataUrl);
+      console.log(imgWidth+'    '+imgHeight)
+      console.log(leftHeight+'    '+pageHeight)
+      // 判断 是否要分页
+      if(leftHeight < pageHeight) {
+      //doc.deletePage(1); //https://stackoverflow.com/questions/29578721/image-in-pdf-cut-off-how-to-make-a-canvas-fit-entirely-in-a-pdf-page/42295522#42295522
+      //doc.addPage(millimeters.width * 2, millimeters.height * 1.95);
+      doc.addImage(dataUrl, 'PNG', 0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST');
+      // doc.addImage(dataUrl, 'PNG', 0, 0, imgWidth, imgHeight);
 
-      // doc.save('pdfDocument.pdf'); //for website
+      }else {
+             while(leftHeight > 0) {
+                //  doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+                doc.addImage(dataUrl, 'PNG', 0, position,imgWidth,imgHeight)
+                 leftHeight -= pageHeight;
+                 console.log("position="+position);
+                 position -= 841.89; 
+                //  position -= 300.89
+                 console.log(leftHeight+'    '+pageHeight)
+                 //避免添加空白页
+                 if(leftHeight > 0) {
+                  doc.addPage();
+                 }
+             }
+         }
+     
+       doc.save('pdfDocument.pdf'); //for website
 
       let pdfOutput = doc.output();
       // using ArrayBuffer will allow you to put image inside PDF
+      // 使用ArrayBuffer将允许您将图像放入PDF
       let buffer = new ArrayBuffer(pdfOutput.length);
       let array = new Uint8Array(buffer);
       for (var i = 0; i < pdfOutput.length; i++) {
         array[i] = pdfOutput.charCodeAt(i);
       }
-
+      console.log(buffer);
       // Name of pdf
       const fileName = "CrisisPlan.pdf";
-      //Writing File to Device  
+      //Writing File to Device  将文件写入设备
       this.file.writeFile(directory, fileName, buffer, { replace: true }).then(success => { //https://ourcodeworld.com/articles/read/38/how-to-capture-an-image-from-a-dom-element-with-javascript
+        console.log("文件已写入");
         this.loading.dismiss();
         this.templateService.presentToastWithOptions("PDF file has been created!");
-        this.fileOpener.open(success.nativeURL, "application/pdf").catch(() => this.templateService.presentToastWithOptions("Please install a PDF Viewer such as Acrobat!"));
+       this.fileOpener.open(success.nativeURL, "application/pdf").catch(() => this.templateService.presentToastWithOptions("Please install a PDF Viewer such as Acrobat!"));
       }).catch((error) => this.templateService.presentToastWithOptions("An error has occured!!!"));
     })
   }
+
+
 
   callEdit() {
     this.backUpPlanDetails = [this.details.name, this.details.nric, this.details.cname, this.details.ccontact];

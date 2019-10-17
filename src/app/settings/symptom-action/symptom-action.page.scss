@@ -6,3 +6,12 @@ ion-avatar { //use ion-avatar because when long press ion-thumbnail, the image w
     width: 55px;
     height: 55px;
 }
+.enName{
+    text-align: center;
+    text-size-adjust: 1000px;
+}
+.txt{
+    ion-label{
+        text-align: center;
+    }
+}

@@ -14,12 +14,21 @@ export class TabsPage implements OnInit {
 
   styles = ['color: green', 'background: yellow'].join(";");
 
-  ngOnInit() {}
+  ngOnInit() {
+    // for(var i=0;i<=1;i++){
+    // this.templateService.refresh();
+    // break;
+    // }
 
+  }
+  // shuaxin(){
+  // this.templateService.refresh();
+  // }
   goToRoot(location) {
     let rootLocations = ["/tabs/plans", "/tabs/templates", "/tabs/settings"];
     this.planService.resetExtras();
     this.navCtrl.navigateRoot(rootLocations[location]);
+  
   }
 
   resetGlobalArray() {
