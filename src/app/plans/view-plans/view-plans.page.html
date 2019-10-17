@@ -4,19 +4,22 @@
       Plans
     </ion-title>
 
-    <ion-buttons slot="start" (click)="presentActionSheetDelayed()">
-      <ion-button>
+    <ion-buttons slot="start">
+      <ion-button *ngIf="!checkboxHidden" (click)="presentActionSheetDelayed()">
         <ion-icon name="funnel"></ion-icon>
       </ion-button>
+      <ion-button *ngIf="checkboxHidden" (click)="disableCheckbox()">Cancel</ion-button>
     </ion-buttons>
 
     <ion-buttons slot="end">
 
-      <ion-button (click)="onClick()">New</ion-button>
+      <ion-button *ngIf="!checkboxHidden" (click)="onClick()">New</ion-button>
 
-      <ion-button (click)="popOverController($event)">
+      <ion-button *ngIf="!checkboxHidden" (click)="popOverController($event)">
         <ion-icon ios="ios-more" md="md-more"></ion-icon>
       </ion-button>
+
+      <ion-button *ngIf="checkboxHidden" (click)="selectedPlansBtn()">Export plans</ion-button>
 
     </ion-buttons>
 
@@ -41,8 +44,9 @@
     <ion-virtual-scroll [items]="sortedDetails" id="virtualScroll" [itemHeight]="itemHeightFn"
       [approxItemHeight]="'140px'">
       <!-- <div *virtualItem="let item; let index = index;"> -->
-      <ion-item-sliding (ionSwipe)="swipeEvent(item.id)" *virtualItem="let item; let index = index;">
-        <ion-item (click)="goEdit(item)" detail="false">
+      <ion-item-sliding (ionSwipe)="swipeEvent(item.id)" *virtualItem="let item; let index = index;" [disabled]="checkboxHidden">
+        <ion-item (click)="goEdit(item)" detail="false" (press)="pressEvent($event, item)">
+          <ion-checkbox *ngIf="checkboxHidden" [(ngModel)]="item.isChecked" (click)="$event.stopPropagation()"></ion-checkbox>          
           <ion-card button>
             <ion-card-header color="tertiary">
               <ion-card-title>{{item.planName}}</ion-card-title>
@@ -75,9 +79,10 @@
         </ion-item-options>
 
       </ion-item-sliding>
-
       <!-- </div> -->
     </ion-virtual-scroll>
+
+    
 
   </ion-list>
 
