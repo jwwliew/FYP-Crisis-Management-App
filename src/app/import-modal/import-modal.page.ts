@@ -187,12 +187,14 @@ export class ImportModalPage implements OnInit {
 
   updateCheckAllFields(onePlan) {   //returns true/false?
     return new Promise((res) => {
-      this.planService.getAllPlan().then((allPlans) => {        
+      this.planService.getAllPlan().then((allPlans) => {
         var newAllPlans = allPlans.pop()    //remove array brackets []
-  
+        delete newAllPlans.id
+        delete onePlan.id
+
         console.log("allplans => " + JSON.stringify(newAllPlans))
         console.log("onePlan => " + JSON.stringify(onePlan))
-  
+
         var check = _.isEqual(onePlan, newAllPlans)
         console.log(check)
         res(check)
@@ -202,10 +204,10 @@ export class ImportModalPage implements OnInit {
 
   updateCheckUUID(onePlan) {    //return true/false?
     return new Promise((res) => {
-      this.planService.getAllPlan().then((allPlans) => {  
+      this.planService.getAllPlan().then((allPlans) => {
         console.log("allplans => " + JSON.stringify(allPlans[0].id))
         console.log("onePlan => " + JSON.stringify(onePlan.id))
-  
+
         var check = _.isEqual(onePlan.id, allPlans[0].id)
         console.log(check)
         res(check)
@@ -213,9 +215,138 @@ export class ImportModalPage implements OnInit {
     })
   }
 
-  //check all
-  updateCheckIndivFields() {
+  //hi whoever is reading this, im sorry for hardcoding this part hahaha
+  //check which fields not same
+  getValueOfEachField(onePlan) {
+    var valueArr = []
 
+    // var planid
+    // var planname
+    // var name
+    // var nric
+    // var cname
+    // var ccontact
+    // //var createDate
+    // //var langauge
+
+    // var templatesid
+    // var templatesname
+
+    // var csymptomtext
+    // //var csymptomtype
+    // //var csymptomimg
+    // var csymptomdesc
+    // var csymptomid
+
+    // var combinedid
+    // var combinedtext
+    // //var comibinedtype
+    // //var combinedimg
+    // var combineddesc
+    // var combinedid
+
+    // var apptid
+    // var apptclinicname
+    // var appttime
+
+    for (var key in onePlan) {
+      if (onePlan.hasOwnProperty(key)) {
+        // console.log(key + " => " + onePlan[key])
+
+        if (key === "id") {
+          console.log(key + " => " + onePlan[key])
+          valueArr.push(onePlan[key])
+        }
+        if (key === "planName") {
+          console.log(key + " => " + onePlan[key])
+          valueArr.push(onePlan[key])
+        }
+        if (key === "name") {
+          console.log(key + " => " + onePlan[key])
+          valueArr.push(onePlan[key])
+        }
+        if (key === "nric") {
+          console.log(key + " => " + onePlan[key])
+          valueArr.push(onePlan[key])
+        }
+        if (key === "cname") {
+          console.log(key + " => " + onePlan[key])
+          valueArr.push(onePlan[key])
+        }
+        if (key === "ccontact") {
+          console.log(key + " => " + onePlan[key])
+          valueArr.push(onePlan[key])
+        }
+
+        if (key === "templates") {
+          console.log("this is templates array, with the 3 nested arrays")
+          var templatesArr = onePlan[key]    // [[{}][{}][{}]]
+          //var tcriticalArr = templatesArr[0]    // [{}]
+          //var criticalObj = tcriticalArr[0]   // {{}}
+          
+          var criticalObj = templatesArr[0][0]
+          var warningObj = templatesArr[0][0]
+          var goodObj = templatesArr[0][0]
+
+          for (var kkey in criticalObj) {
+            if (criticalObj.hasOwnProperty(kkey)) {
+
+              if (kkey === "symptom") {
+                console.log("this is symptom object")
+                var symptom = criticalObj[kkey]     //{}
+
+                for (var kkkey in symptom) {
+                  if (symptom.hasOwnProperty(kkkey)) {
+                    // console.log(kkkey + " => " + symptom[kkkey])
+
+                    if(kkkey === "id"){
+                      console.log(kkkey + " => " + symptom[kkkey])
+                      valueArr.push(symptom[kkkey])
+                    }
+                    if(kkkey === "text"){
+                      console.log(kkkey + " => " + symptom[kkkey])
+                      valueArr.push(symptom[kkkey])
+                    }
+                    if(kkkey === "description"){
+                      console.log(kkkey + " => " + symptom[kkkey])
+                      valueArr.push(symptom[kkkey])
+                    }
+                    // if(kkkey === "symptomID"){
+                    //   console.log(kkkey + " => " + symptom[kkkey])
+                    //   valueArr.push(symptom[kkkey])
+                    // }
+                  }
+                }
+              }
+
+              if (kkey === "combined") {
+                console.log("this is combined array")
+                var combinedArr = criticalObj[kkey]    //[{}]
+                var combinedObj = combinedArr[0]     //{}
+
+                for (var kkkey in combinedObj) {
+                  if (combinedObj.hasOwnProperty(kkkey)) {
+                    console.log(kkkey + " => " + combinedObj[kkkey])
+                  }
+                }
+
+              }
+            }
+          }
+        }
+        if (key === "appointment") {
+          console.log("this is appointment array")
+          var apptArr = onePlan[key]  // [{}]
+          var apptObj = apptArr[0]    // {}
+          for (var kkey in apptObj) {
+            if (apptObj.hasOwnProperty(kkey)) {
+              console.log(kkey + " => " + apptObj[kkey])
+            }
+          }
+        }
+      }
+    }
+    console.log("value arr => " + JSON.stringify(valueArr))
   }
 
   //TODO
@@ -229,10 +360,12 @@ export class ImportModalPage implements OnInit {
         this.checkJsonFileId(fileContents).then((fileContents: string) => {
           this.overrallFileContents = fileContents
           this.extractOneItemFromFileContent(this.overrallFileContents).then((fileContents: string) => {
-            this.updateCheckAllFields(fileContents)
-            this.updateCheckUUID(fileContents)
+            //this.updateCheckAllFields(fileContents)
+            //this.updateCheckUUID(fileContents)
+            this.getValueOfEachField(fileContents)
 
             //TODO
+            //compare old and new arr using index of and includes
             //use promise all to see if any returns false
           })
         })
