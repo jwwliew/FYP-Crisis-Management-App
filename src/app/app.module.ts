@@ -23,12 +23,9 @@ import { ImportModalPageModule } from './import-modal/import-modal.module'
 
 
 export class CustomHammerConfig extends HammerGestureConfig {
-  // overrides = {
-  //     'press': { time: 1000 },  //set press delay for 1 second, default is 300ms
-  //     'swipe': {
-  //       direction: Hammer.DIRECTION_ALL
-  //     },
-  // }
+  overrides = {
+      'press': { time: 1000 },  //set press delay for 1 second, default is 300ms
+  }
   buildHammer(element: HTMLElement) {
     let mc = new Hammer(element, {touchAction: "pan-y"});
     mc.get("press").set({time:666});

@@ -22,9 +22,12 @@ public aa=[1];
 public tx1=[];
 public it; //设置重新复制1，2，3，4
 public def;
+<<<<<<< HEAD
 public planid;
 public setcgiditem:any;
 
+=======
+>>>>>>> a29745e80941e7055c67e963ab6d2964362cf06d
   constructor(private storage: Storage, private settingStorage: SymptomActionService, private actionSheetCtrl: ActionSheetController, private zone: NgZone, 
     private toastCtrl: ToastController, private alertCtrl: AlertController, private popoverCtrl: PopoverController, private modalCtrl: ModalController, private plt: Platform) { }
 

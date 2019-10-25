@@ -11,12 +11,16 @@ import { ImportModalPage } from '../../import-modal/import-modal.page';
 import { v4 as uuid } from 'uuid';
 import { Storage } from '@ionic/storage';
 
-
 @Component({
   selector: 'app-view-plans',
   templateUrl: './view-plans.page.html',
   styleUrls: ['./view-plans.page.scss'],
 })
+
+// @Directive({
+//   selector: '[disableControl]'
+// })
+
 export class ViewPlansPage implements OnInit {
 
   constructor(private router: Router, private planService: PlanService, public actionSheetController: ActionSheetController,
@@ -29,6 +33,8 @@ export class ViewPlansPage implements OnInit {
   plan: any;
   searchTerm: string = "";
   sortedDetails: any;
+  //JW
+  checkboxHidden: boolean = false;
 
   ngOnInit() {
   }
@@ -293,7 +299,7 @@ export class ViewPlansPage implements OnInit {
         fileArr: newFileArr
       }
     });
-    modal.onDidDismiss().then(()=> {
+    modal.onDidDismiss().then(() => {
       this.refreshPage()
     })
 
@@ -301,20 +307,24 @@ export class ViewPlansPage implements OnInit {
   }
 
   //refresh page after modal dismissed
-  refreshPage(){
+  refreshPage() {
     this.ionViewWillEnter();
   }
 
   exportPlansBtn() {   //html btn
     this.checkAppRootFolderExist().then((isThere: boolean) => {
       if (isThere == true) {
-        this.exportAllPlans();
+        this.exportAllPlans().then(() => {
+          this.showToast("Export successful")
+        })
       }
       else if (isThere == false) {
         this.showToast("App folder not found. Creating one for you. . .")
         this.createAppRootFolder().then((isCreated: boolean) => {
           if (isCreated === true) {
-            this.exportAllPlans();
+            this.exportAllPlans().then(() => {
+              this.showToast("Export successful")
+            })
           }
         })
       }
@@ -363,19 +373,19 @@ export class ViewPlansPage implements OnInit {
     return new Promise((res) => {
       this.planService.getAllPlan().then((plans) => {
 
-        if(plans.length <= 0){    //if no plans in db
+        if (plans.length <= 0) {    //if no plans in db
           this.showToast("Nothing to export!")
           check = false
           res(check)
         }
-  
+
         let newPlansStr: string = "";
         let that = this;
-  
+
         let fileCheck = this.idJsonFile();
         newPlansStr = fileCheck + newPlansStr;    //add filecheck in front
         newPlansStr = "[" + newPlansStr;
-  
+
         function looper(callback, newPlansStr, that) {
           for (let a = 0; a < plans.length; a++) {
             let onePlan = JSON.stringify(plans[a]);
@@ -388,7 +398,7 @@ export class ViewPlansPage implements OnInit {
             }
           }
         }
-  
+
         //put into file part
         async function putIntoFile(newPlansStr, that) {
           let filename = await that.nameJsonFile();
@@ -397,18 +407,18 @@ export class ViewPlansPage implements OnInit {
           await that.file.writeFile(path, filename, data, { replace: true });
           res(check)
         }
-  
+
         looper(putIntoFile, newPlansStr, that);
       })
     }).then((check) => {
-      if(check === true){
+      if (check === true) {
         this.showToast("Export successful")
       }
     })
-    .catch((err) => {
-      //do nothing
-      //console.log("Error caught => " + JSON.stringify(err))
-    })
+      .catch((err) => {
+        //do nothing
+        //console.log("Error caught => " + JSON.stringify(err))
+      })
   }
 
   //create identifier to identify json file (files identified by regex => {id: crisisApp})
@@ -428,59 +438,66 @@ export class ViewPlansPage implements OnInit {
             if (callbackResult.length >= 1) {
               var files = callbackResult[0];
 
-              if(files.length <= 1){    //if theres only 1 file in app folder
+              if (files.length <= 1) {    //if theres only 1 file in app folder
                 files.forEach(element => {    //callback result is [[]], thus callbackResult[0]
                   if (element.name.includes(filename)) {    //check if its "allPlans" file
                     let fileNo = parseInt(element.name.slice(-2))   //extract number from file
                     let fileNoString: string = "";
                     fileNo = fileNo += 1      //increment file number
-  
-                    if(fileNo <= 9){      //if file number is less than 10, add 0 in front
+
+                    if (fileNo <= 9) {      //if file number is less than 10, add 0 in front
                       fileNoString = fileNo.toString()
                       fileNoString = "0" + fileNoString
                     }
-                    else{
+                    else {
                       fileNoString = fileNo.toString();
                     }
                     filename = filename + fileNoString      //add number to filename, end result should be allPlans<number>
                     console.log("filename => " + filename);
                     res(filename)
                   }
+                  else {
+                    console.log("This is the first file!")
+                    let filename: string = "allPlans";
+                    filename = filename + "01";
+                    console.log("filename => " + filename)
+                    res(filename)
+                  }
                 })
               }
-              else{     //if theres more than one file in app folder
+              else {     //if theres more than one file in app folder
                 let numberArr = [];
-                (async function asyncloop(){
+                (async function asyncloop() {
                   files.forEach((element, index, array) => {
-                    if(element.name.includes(filename)){
+                    if (element.name.includes(filename)) {
                       let fileNo = parseInt(element.name.slice(-2))
                       numberArr.push(fileNo)
-                    }                    
-                    if (index == array.length -1) {        //checks if loop is finished, resolves promise if yes
+                    }
+                    if (index == array.length - 1) {        //checks if loop is finished, resolves promise if yes
                       var promise = new Promise((res2) => {
                         res2(numberArr);
                       }).then((numberArr: number[]) => {
-                      numberArr = numberArr.sort((a:number, b:number) => b - a);    //sort by desc order
-                      let biggestNo: number = numberArr[0];     //get biggest number in arr
-                      let fileNo = biggestNo += 1;      //same as above^
-                      let fileNoString: string = "";
+                        numberArr = numberArr.sort((a: number, b: number) => b - a);    //sort by desc order
+                        let biggestNo: number = numberArr[0];     //get biggest number in arr
+                        let fileNo = biggestNo += 1;
+                        let fileNoString: string = "";
 
-                      if(fileNo <= 9){
-                        fileNoString = fileNo.toString()
-                        fileNoString = "0" + fileNoString
-                      }
-                      else{
-                        fileNoString = fileNo.toString();
-                      }
-                      filename = filename + fileNoString
-                      console.log("filename => " + filename);
-                      res(filename)
+                        if (fileNo <= 9) {
+                          fileNoString = fileNo.toString()
+                          fileNoString = "0" + fileNoString
+                        }
+                        else {
+                          fileNoString = fileNo.toString();
+                        }
+                        filename = filename + fileNoString
+                        console.log("filename => " + filename);
+                        res(filename)
                       })
                     }
                   });
                 })();
               }
-              
+
             }
           })
         }
@@ -514,6 +531,93 @@ export class ViewPlansPage implements OnInit {
       'Export all plans': () => this.exportPlansBtn()
     };
     call[type]();
+  }
+
+  //on hold, show checkboxes
+  pressEvent(e, item){
+    this.checkboxHidden = true;
+  }
+
+  //hide checkboxes
+  disableCheckbox(){
+    this.checkboxHidden = false;
+    this.sortedDetails.forEach(element => {     //reset checkbox to false
+      element.isChecked = false
+    });
+  }
+
+  selectedPlansBtn(){   //html btn
+    this.selectedPlans().then((selectedPlans:any) => {
+      if(selectedPlans.length === this.sortedDetails.length){
+        this.exportAllPlans().then(() => {
+          this.checkboxHidden = false;
+          this.showToast("Export successful")
+        })
+      }
+      else if(selectedPlans.length <= 0){
+        this.showToast("Nothing was selected")
+      }
+      else{
+        this.exportSelectedPlans(selectedPlans).then(() => {
+          this.checkboxHidden = false;
+          this.showToast("Export successful")
+        })
+      }
+    })
+  }
+
+  selectedPlans(){
+    return new Promise((res) => {
+      var selectedPlans = []
+      this.sortedDetails.forEach((onePlan, index) => {
+        if(onePlan.isChecked === true){
+          onePlan.isChecked = false;    //uncheck the selected plan
+          selectedPlans.push(onePlan)
+        }
+        else{
+          //continue
+        }
+        if(index === this.sortedDetails.length-1){
+          res(selectedPlans)
+        }
+      });
+    })    
+  }
+
+  exportSelectedPlans(selectedPlans){
+    var check = true;
+    return new Promise((res) => {
+      let newPlansStr: string = "";
+      let that = this;
+
+      let fileCheck = this.idJsonFile();
+      newPlansStr = fileCheck + newPlansStr;    //add filecheck in front
+      newPlansStr = "[" + newPlansStr;
+
+      function looper(callback, newPlansStr, that) {
+        for (let a = 0; a < selectedPlans.length; a++) {
+          let onePlan = JSON.stringify(selectedPlans[a]);
+          onePlan += ",{\"@\":\"~\"},";     //add separator in btwn each plan
+          newPlansStr += onePlan;
+          if (a == selectedPlans.length - 1) {
+            newPlansStr = newPlansStr.substring(0, newPlansStr.length - 1)    //remove last comma
+            newPlansStr = newPlansStr + "]";
+            callback(newPlansStr, that)
+          }
+        }
+      }
+
+      //put into file part
+      async function putIntoFile(newPlansStr, that) {
+        let filename = await that.nameJsonFile();
+        let data: string = newPlansStr;
+        let path = that.file.externalRootDirectory + "crisisApp/";
+        await that.file.writeFile(path, filename, data, { replace: true });
+        res(check)
+      }
+
+      looper(putIntoFile, newPlansStr, that);
+    })
   }
 
   //TOASTER

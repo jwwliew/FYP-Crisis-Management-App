@@ -50,8 +50,12 @@ export class PlanService {
 
   //insert
   //newitem= pname, Details--->
+<<<<<<< HEAD
   addPlanDetails(indexL, date1, planName, pname, pnric, tcsname, tcscontact, maparr, appointment) {
     
+=======
+  addPlanDetails(indexL, date1, planName, pname, pnric, tcsname, tcscontact, maparr, appointment, ischecked=false) {
+>>>>>>> a29745e80941e7055c67e963ab6d2964362cf06d
     return this.storage.get(key).then((items) => {
       let details = {
         id: uuid(),
@@ -62,6 +66,7 @@ export class PlanService {
         ccontact: tcscontact,
         createdDate: date1,
         language: indexL,
+        isChecked: ischecked,   //JW
         templates: maparr,
         appointment: appointment
       }

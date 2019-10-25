@@ -6,6 +6,10 @@
         <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="test()">test</ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -14,6 +18,7 @@
     <ion-item *ngFor="let oneFile of theFiles; index as i">
       <ion-label>{{oneFile.name}}</ion-label>
       <ion-button (click)="importSelectedCheck(oneFile)">Import</ion-button>
+      <ion-button (click)="testbtn(oneFile)">test</ion-button>
     </ion-item>
   </ion-list>
 </ion-content>
