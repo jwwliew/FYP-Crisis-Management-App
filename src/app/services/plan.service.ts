@@ -51,6 +51,7 @@ export class PlanService {
   //insert
   //newitem= pname, Details--->
   addPlanDetails(indexL, date1, planName, pname, pnric, tcsname, tcscontact, maparr, appointment) {
+    
     return this.storage.get(key).then((items) => {
       let details = {
         id: uuid(),
