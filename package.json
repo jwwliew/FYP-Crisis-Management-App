@@ -29,11 +29,7 @@
     "@ionic-native/toast": "^5.15.0",
     "@ionic/angular": "^4.1.0",
     "@ionic/storage": "^2.2.0",
-<<<<<<< HEAD
     "@types/bootstrap": "^4.3.1",
-=======
-    "@types/lodash": "^4.14.144",
->>>>>>> a29745e80941e7055c67e963ab6d2964362cf06d
     "cordova-android": "^8.0.0",
     "cordova-ios": "^5.0.1",
     "cordova-plugin-camera": "4.0.3",

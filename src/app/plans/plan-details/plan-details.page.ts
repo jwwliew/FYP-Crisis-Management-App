@@ -4,10 +4,7 @@ import { PlanService } from './../../services/plan.service';
 import { TemplateService } from 'src/app/services/template.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { IonList, IonItemSliding ,Events} from '@ionic/angular';
-<<<<<<< HEAD
 import { equal } from 'assert';
-=======
->>>>>>> a29745e80941e7055c67e963ab6d2964362cf06d
 
 @Component({
   selector: 'app-plan-details',
@@ -88,7 +85,6 @@ public defaultLanguage1;
         //添加刷新！
         this.templateService.language1=null;
         // this.templateService.aa[0]=0;
-<<<<<<< HEAD
         // setTimeout(() => {}
         //   location.reload();
         // }, 100);
@@ -96,8 +92,6 @@ public defaultLanguage1;
           // this.router.navigateByUrl('/tabs/plans');
           location.replace('#/tabs/plans'); //新跳转方式20191019
           
-=======
->>>>>>> a29745e80941e7055c67e963ab6d2964362cf06d
         this.templateService.presentToastWithOptions("Created plan!")
      
       });
@@ -131,7 +125,7 @@ public defaultLanguage1;
       console.log("是空的");
       var aob1=this.templateService.getcgid();
       console.log("接收的对象是:"+aob1);
-   
+      
       this.thisgroup.controls.detailname.setValue(aob1.name);
       this.thisgroup.controls.detailnric.setValue(aob1.nric);
       this.thisgroup.controls.detailtcs.setValue(aob1.cname);

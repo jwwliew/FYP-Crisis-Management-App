@@ -160,7 +160,6 @@ export class EditplanPage implements OnInit {
     return await this.loading.present();
   }
 
-<<<<<<< HEAD
 
   exportToPDF() {
     //获取点击id为：
@@ -980,7 +979,7 @@ export class EditplanPage implements OnInit {
 
               doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
 
-              leftHeight -= codheight3;
+              leftHeight -= pageHeight;
               position -= 841.89;
               if (leftHeight > 0) {
                 doc.addPage();
@@ -1345,76 +1344,22 @@ export class EditplanPage implements OnInit {
 
           if (aaa1 >=4|| aaa2 >=4 || aaa3 >=4) {
 
+            while(leftHeight > 0) {
 
-            while (leftHeight > 0) {
 
-              doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
-              leftHeight -= pageHeight;
-                position -= 841.89;
-                // if(position<=-800&&position>=-1600){
-                //   imgHeight+=;
-                // }
-            
-                //  position -= 841.89;
-=======
-  exportToPDF(){
-    // this.presentLoading('Creating PDF file...');
-    const directory = this.file.externalRootDirectory;
-    console.log("directory的值="+directory); //directory=null
-    // ****获取id = html2PDF dom对象
-    const div = document.getElementById('Html2PDF');
-    console.log("my")
-    console.log("div的值="+div); //div的值=[object HTMLDivElement]
-    let width = div.clientWidth * 3;
-    console.log("width的值="+width); //width的值=1374
-     // ****一页pdf显示html页面生成的canvas高度;
-     var pageHeight = div.scrollWidth / 592.28 * 841.89; 
-     console.log("pageHeight的值="+pageHeight); //pageHeight的值=651.0191463496994
-     // ****未生成pdf的html页面高度
-     var leftHeight = div.scrollHeight; 
-     console.log("leftHeight的值="+leftHeight);//leftHeight的值=1522 整个数据的宽度、包括不可见的
-    let height = div.clientHeight * 3;
-    console.log("height的值="+height); //height的值=4242
-    let millimeters = { width, height };
-    
-    var position = 0;
-    millimeters.width = Math.floor(width * 0.264583); //返回最大整数四舍五入
-    millimeters.height = Math.floor(height * 0.264583);//返回最大整数四舍五入
-    // ****a4纸的尺寸
-    let imgWidth = 595.28;
-    let imgHeight = 592.28/div.scrollWidth * div.scrollHeight
-    console.log("imgHeight的值="+imgHeight); //imgHeight的值=1968.231790393013
-    let scale = 2; //https://github.com/tsayen/dom-to-image/issues/69
-    domtoimage.toPng(div, { 
-      height: div.offsetHeight * 2, width: div.offsetWidth * 1.95, style: 
-      { transform: `scale(${scale}) translate(${div.offsetWidth / 2.1 / scale}px, ${div.offsetHeight / 2 / scale}px)` } }).then(dataUrl => {
-    
-      // const doc = new jsPDF('p', 'mm', 'a4', true);
-      //创建 jsppdf
-      const doc = new jsPDF('', 'pt','a4')
-      console.log("dataUrl="+dataUrl);
-      console.log(imgWidth+'    '+imgHeight)
-      console.log(leftHeight+'    '+pageHeight)
-      // 判断 是否要分页
-      if(leftHeight < pageHeight) {
-      //doc.deletePage(1); //https://stackoverflow.com/questions/29578721/image-in-pdf-cut-off-how-to-make-a-canvas-fit-entirely-in-a-pdf-page/42295522#42295522
-      //doc.addPage(millimeters.width * 2, millimeters.height * 1.95);
-      doc.addImage(dataUrl, 'PNG', 0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST');
-      // doc.addImage(dataUrl, 'PNG', 0, 0, imgWidth, imgHeight);
-
-      }else {
-             while(leftHeight > 0) {
-                //  doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
-                doc.addImage(dataUrl, 'PNG', 0, position,imgWidth,imgHeight)
-                 leftHeight -= pageHeight;
-                 console.log("position="+position);
-                 position -= 841.89; 
-                //  position -= 300.89
->>>>>>> a29745e80941e7055c67e963ab6d2964362cf06d
-                 console.log(leftHeight+'    '+pageHeight)
-                 //避免添加空白页
-                 if(leftHeight > 0) {
-                  doc.addPage();
+                          //  doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+                          doc.addImage(dataUrl, 'PNG', 0, position,imgWidth,imgHeight)
+                          position -= 841.89;
+                          // if(position<=-800&&position>=-1600){
+                          //   imgHeight+=;
+                          // }
+                           leftHeight -= pageHeight;
+                          //  position -= 841.89;
+                           console.log(leftHeight+'    '+pageHeight)
+                           //避免添加空白页
+                           if(leftHeight > 0) {
+                            doc.addPage();
+                            // doc.print();
                   // doc.print();
               }
 
@@ -1549,8 +1494,23 @@ export class EditplanPage implements OnInit {
 
     console.log("1");
     this.isDisabled = false;
-    console.log("2");
-    this.templateService.callEdit(this.defaultLanguage);
+    // alert(this.details.id);
+    var shuu;
+    this.PlanService.getEditDetails(this.details.id).then(everything => {
+      [].concat(...everything.templates).forEach(eachArray => {
+        shuu=eachArray.symptom.text;
+        
+      }
+        )})
+        setTimeout(() => {
+          // alert(shuu);
+         var cf = this.templateService.pdzwyw(shuu); //判断是否为中文
+        //  alert(cf);
+        this.defaultLanguage=cf;
+        this.templateService.callEdit(this.defaultLanguage);
+        }, 300);
+       
+    
     console.log("3");
   }
 

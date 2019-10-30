@@ -22,12 +22,9 @@ public aa=[1];
 public tx1=[];
 public it; //设置重新复制1，2，3，4
 public def;
-<<<<<<< HEAD
 public planid;
 public setcgiditem:any;
 
-=======
->>>>>>> a29745e80941e7055c67e963ab6d2964362cf06d
   constructor(private storage: Storage, private settingStorage: SymptomActionService, private actionSheetCtrl: ActionSheetController, private zone: NgZone, 
     private toastCtrl: ToastController, private alertCtrl: AlertController, private popoverCtrl: PopoverController, private modalCtrl: ModalController, private plt: Platform) { }
 
@@ -279,6 +276,7 @@ getcgid(){
   backUpAppointment = [];
 
   callEdit(defaultLanguage) {
+
     this.backUpCriticalArray = JSON.parse(JSON.stringify(this.criticalArray)); //need to deep copy to remove reference
     this.backUpWarningArray = JSON.parse(JSON.stringify(this.warningArray));
     this.backUpGoodArray = JSON.parse(JSON.stringify(this.goodArray));
@@ -522,7 +520,15 @@ getcgid(){
        console.log(this.titlea);
         return this.titlea;
       }
+pdzwyw(str){   //判断中文英文
+ 
+    if (/.*[\u4e00-\u9fa5]+.*/.test(str)) {
+        return 1;
+    } else {
+      return 0;
+    }
 
+}
       language(){
         //language1
         return this.language1;
