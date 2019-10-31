@@ -130,4 +130,57 @@ export class PlanService {
     // sortedList.splice(sortedList.findIndex(x => x.id == id), 1);
     return this.storage.set(key, sortedList);
   }
+
+  //JW: used for my import function, feel free to use it
+  //pass in plan id, and it will delete plan by id
+  deletePlanById(id){
+    return new Promise((res) => {
+      this.storage.get(key).then((items) => {
+        var itemsToKeep = [];
+
+        if(items.length === 1){
+          if(id === items[0].id){
+            this.storage.set(key, itemsToKeep)
+            res()
+          }
+        }
+
+        else{
+          items.forEach((element, index, arr) => {
+            if(element.id !== id){
+              itemsToKeep.push(element)
+  
+              if(index === arr.length-1){
+                this.storage.set(key, itemsToKeep)
+                res()
+              }
+            }
+            else{
+              if(index === arr.length-1){
+                this.storage.set(key, itemsToKeep)
+                res()
+              }
+            }
+          })
+        }             
+      })
+    })
+  }
+
+  //JW
+  //add new plan, pass in the new plan
+  importAddNewPlan(thePlan){
+    return new Promise((res) => {
+      this.storage.get(key).then((allPlans) => {
+        if (allPlans) {
+          allPlans.push(thePlan);
+          this.storage.set(key, allPlans);
+          res();
+        } else {
+          this.storage.set(key, [thePlan]);
+          res();
+        }
+      });
+    })    
+  }
 }

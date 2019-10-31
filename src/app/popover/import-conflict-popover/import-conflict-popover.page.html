@@ -1,0 +1,28 @@
+<style>
+  .popoverContent {
+    --min-height: 100%;
+    --min-width: 100%;
+  }
+
+  .header {
+    background-color: #414A53;
+    color: white;
+    align-content: center;
+    padding: 10px;
+  }
+
+</style>
+<ion-header class="header">
+  Import file contains plan(s) that exists in the current version. Please select
+  the plans you want to replace
+</ion-header>
+<ion-content class="popoverContent">
+  <ion-list>
+    <ion-item *ngFor="let oneFile of storageSide; index as i">
+      <ion-checkbox [(ngModel)]="oneFile.isChecked"></ion-checkbox>
+      <ion-label>{{oneFile.planName}}</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-button (click)="updateBtn()" expand="block">Import</ion-button>
+</ion-content>

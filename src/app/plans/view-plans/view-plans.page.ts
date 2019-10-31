@@ -288,7 +288,7 @@ export class ViewPlansPage implements OnInit {
     })
   }
 
-  //open import selection page
+  //open import file selection page
   async openModal(filearr) {
     var newFileArr = [];
     newFileArr = filearr[0];      //since filearr is a [[]], im unwrapping the outer array
@@ -416,8 +416,7 @@ export class ViewPlansPage implements OnInit {
       }
     })
       .catch((err) => {
-        //do nothing
-        //console.log("Error caught => " + JSON.stringify(err))
+        console.log("Error caught => " + JSON.stringify(err))
       })
   }
 
@@ -428,6 +427,7 @@ export class ViewPlansPage implements OnInit {
     return fileCheck;
   }
 
+  //TODO: LET USER NAME FILES, USE THIS PART TO NUMBER THEM IF FILENAME IS THE SAME
   //create and number filenames
   nameJsonFile(): Promise<string> {
     return new Promise(async (res) => {

@@ -57,21 +57,22 @@ export class AppComponent {
           // templates: []
       // }
       // this.globalPlan.push(globalPlanObj)
-      for (let i = 0; i < 50; i++) {
-        let planObj = {
-          id: uuid(),
-          ccontact: this.listOfContact[i],
-          cname: "Brandon Tan",
-          createdDate: new Date(Date.now() - (864e5 * (50-i))).toLocaleString('en-US'),
-          language: 0,
-          name: this.listOfNameFirstLine[i],
-          nric: this.listOfNric[i],
-          planName: this.listOfPlanName[i],
-          appointment: [],
-          templates: []
-        }
-        this.globalPlanObj.unshift(planObj)
-      }
+      // for (let i = 0; i < 50; i++) {
+      //   let planObj = {
+      //     id: uuid(),
+      //     ccontact: this.listOfContact[i],
+      //     cname: "Brandon Tan",
+      //     createdDate: new Date(Date.now() - (864e5 * (50-i))).toLocaleString('en-US'),
+      //     language: 0,
+      //     name: this.listOfNameFirstLine[i],
+      //     nric: this.listOfNric[i],
+      //     planName: this.listOfPlanName[i],
+      //     appointment: [],
+      //     templates: []
+      //   }
+      //   this.globalPlanObj.unshift(planObj)
+      // }
+      // JW COMMENTED THIS PART TO STOP LOADING PLACEHOLDER DATA ON INITIALIZE :)
     // }
     this.initializeApp();
   }
