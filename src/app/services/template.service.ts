@@ -22,6 +22,9 @@ public aa=[1];
 public tx1=[];
 public it; //设置重新复制1，2，3，4
 public def;
+public planid;
+public setcgiditem:any;
+
   constructor(private storage: Storage, private settingStorage: SymptomActionService, private actionSheetCtrl: ActionSheetController, private zone: NgZone, 
     private toastCtrl: ToastController, private alertCtrl: AlertController, private popoverCtrl: PopoverController, private modalCtrl: ModalController, private plt: Platform) { }
 
@@ -227,7 +230,8 @@ public def;
     [this.criticalArray, this.warningArray, this.goodArray].forEach(eachArray => {
       eachArray.forEach(element => {
         //设置id 图
-        this.settingStorage.getOneImage("Symptom", element.symptom.symptomID).then(oneImg => {
+        console.log("element.symptom.symptomID="+element.symptom.symptomID);
+        this.settingStorage.getOneImage("glo", element.symptom.symptomID).then(oneImg => {
           // console.log("element.symptom.img");
           // console.log(element.symptom.img);
           console.log("oneImg="+oneImg);
@@ -235,14 +239,33 @@ public def;
           console.log("element.symptom.img="+element.symptom.img);
         });
         element.combined.forEach(oneCombined => {
-          this.settingStorage.getOneImage("Action", oneCombined.actionID).then(actionImg => {
+          this.settingStorage.getOneImage("glo", oneCombined.actionID).then(actionImg => {
             oneCombined.img = actionImg;
           })
         })
       })
     })
   }
+ 
+ //分别设置值
 
+
+//获取plan的数据id
+setcgid(item){
+  this.setcgiditem=null;
+  this.setcgiditem=item;
+ 
+}
+setplanid(id){
+  this.planid=null;
+  this.planid=id;
+}
+getplanid(){
+  return this.planid;
+}
+getcgid(){
+  return this.setcgiditem;
+}
   getAllArray() {
     return [this.criticalArray, this.warningArray, this.goodArray];
   }
@@ -253,6 +276,7 @@ public def;
   backUpAppointment = [];
 
   callEdit(defaultLanguage) {
+
     this.backUpCriticalArray = JSON.parse(JSON.stringify(this.criticalArray)); //need to deep copy to remove reference
     this.backUpWarningArray = JSON.parse(JSON.stringify(this.warningArray));
     this.backUpGoodArray = JSON.parse(JSON.stringify(this.goodArray));
@@ -496,7 +520,15 @@ public def;
        console.log(this.titlea);
         return this.titlea;
       }
+pdzwyw(str){   //判断中文英文
+ 
+    if (/.*[\u4e00-\u9fa5]+.*/.test(str)) {
+        return 1;
+    } else {
+      return 0;
+    }
 
+}
       language(){
         //language1
         return this.language1;

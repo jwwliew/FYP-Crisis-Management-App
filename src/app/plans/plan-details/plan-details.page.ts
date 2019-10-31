@@ -4,6 +4,7 @@ import { PlanService } from './../../services/plan.service';
 import { TemplateService } from 'src/app/services/template.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { IonList, IonItemSliding ,Events} from '@ionic/angular';
+import { equal } from 'assert';
 
 @Component({
   selector: 'app-plan-details',
@@ -74,15 +75,25 @@ public defaultLanguage1;
     // let date1 = new Date().toLocaleString('en-GB', {hour12: true}); //02/08/2019, 2:09:09 pm, without 'en-GB' is 08/02 on my computer
     let date1 = new Date().toLocaleString('en-US');
     let maparr = this.templateService.cleansedArray();
-
+    if(this.planName==='undefined'){
+      this.planName=this.templateService.getcgid().planName;
+    }
     this.PlanService.addPlanDetails(this.defaultLanguage, date1, this.planName, this.thisgroup.controls.detailname.value.trim(), this.thisgroup.controls.detailnric.value,
       this.thisgroup.controls.detailtcs.value.trim(), this.thisgroup.controls.detailcontact.value, maparr, this.appointment).then(() => {
         this.templateService.resetArray();
-        this.router.navigateByUrl('/tabs/plans');
+      
         //添加刷新！
         this.templateService.language1=null;
         // this.templateService.aa[0]=0;
+        // setTimeout(() => {}
+        //   location.reload();
+        // }, 100);
+        
+          // this.router.navigateByUrl('/tabs/plans');
+          location.replace('#/tabs/plans'); //新跳转方式20191019
+          
         this.templateService.presentToastWithOptions("Created plan!")
+     
       });
      
   }
@@ -109,6 +120,19 @@ public defaultLanguage1;
     this.planName = this.activatedRoute.snapshot.paramMap.get('planName');
     //++++++++++++++++
     console.log("this.planName");
+    //修复修改后数据丢失的问题
+    if(this.planName==='undefined'){
+      console.log("是空的");
+      var aob1=this.templateService.getcgid();
+      console.log("接收的对象是:"+aob1);
+      
+      this.thisgroup.controls.detailname.setValue(aob1.name);
+      this.thisgroup.controls.detailnric.setValue(aob1.nric);
+      this.thisgroup.controls.detailtcs.setValue(aob1.cname);
+      this.thisgroup.controls.detailcontact.setValue(aob1.ccontact);
+    
+      
+    }
     console.log(this.planName);
     this.templateService.settitlea(this.planName);
      //++++++++++++++++
