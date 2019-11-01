@@ -10,8 +10,8 @@ import { PlanService } from 'src/app/services/plan.service';
 })
 export class ImportConflictPopoverPage implements OnInit {
 
-  fileSide = null;      //plans on import file
-  storageSide = null;   //plans from app (local)
+  fileSide = [];      //plans on import file
+  storageSide = [];   //plans from app (local)
   toDelete = [];        //plans to delete are filtered into this array
   toAdd = [];           //plans to add are filtered into this array
   check = false;        //to check if popover dismissed by backdrop
@@ -21,8 +21,12 @@ export class ImportConflictPopoverPage implements OnInit {
 
   ngOnInit() {
     let values = this.navParams.get('conflictedPlans')
-    this.fileSide = values[0]
-    this.storageSide = values[1]
+    if(this.fileSide.length <= 0){
+      this.fileSide = values[0]
+    }
+    if(this.storageSide.length <= 0){
+      this.storageSide = values[1]
+    }
     this.toDelete = [];
     this.toAdd = [];
   }
@@ -101,7 +105,7 @@ export class ImportConflictPopoverPage implements OnInit {
   dismiss(check) {
     this.resetIsChecked().then(() => {
       this.popoverController.dismiss(check);
-    })    
+    })
   }
 
   resetIsChecked() {    //set all isChecked back to false

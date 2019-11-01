@@ -6,7 +6,6 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Storage } from '@ionic/storage';
 import {v4 as uuid} from 'uuid';
-import * as $ from 'jquery';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'

@@ -9,9 +9,6 @@ import domtoimage from 'dom-to-image';
 import { File, IWriteOptions } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import * as  html2canvas from 'html2canvas';
-import { computeStackId } from '@ionic/angular/dist/directives/navigation/stack-utils';
-import * as jquery from 'jquery';
 declare var $: any;
 // declare var jquery:any;
 @Component({

@@ -194,6 +194,12 @@ export class ViewPlansPage implements OnInit {
       : this.buttonShown = false;
   }
 
+  //TODO:
+  //check if downloads folder empty
+  //loop through downloads folder and store files
+  //send to openModal()
+
+
   //JW
   chooseImport() {    //html btn
     this.getImportFiles().then((filearr) => {
@@ -202,20 +208,68 @@ export class ViewPlansPage implements OnInit {
   }
 
   getImportFiles() {
+    return new Promise((Mres) => {
+      var promise1 = new Promise((res1) => {
+        this.listFiles(function (callbackResult){
+          if(callbackResult.length >= 1){
+            res1(callbackResult)
+          }
+        }, "Download")
+      })
+      var promise2 = new Promise((res2) => {
+        this.listFiles(function (callbackResult){
+          if(callbackResult.length >= 1){
+            res2(callbackResult)
+          }
+        }, "Bluetooth")
+      })
+      var promise3 = new Promise((res3) => {
+        this.checkAppRootFolderExist().then((check: boolean) => {
+          if (check === false) {
+            this.showToast("No import files available")
+          }
+          else if (check === true) {
+            this.checkIfContainsFiles().then((isThere) => {
+              if (isThere === true) {
+                this.listFiles(function (callbackResult) {
+                  if (callbackResult.length >= 1) {
+                    res3(callbackResult);
+                  }
+                }, "crisisApp")
+              }
+              else if (isThere === false) {
+                this.showToast("No import files available")
+              }
+              else {
+                //catch error?
+                //console.log("catch error?")
+              }
+            })
+          }
+        })
+      })
+
+      Promise.all([promise1, promise2, promise3]).then((filesArr) => {
+        Mres(filesArr)
+      })
+    })
+  }
+
+  //OUTDATED, NOT USED
+  getImportFiles2() {
     return new Promise((res) => {
       this.checkAppRootFolderExist().then((check: boolean) => {
         if (check === false) {
-          //console.log("Nothing to import");
           this.showToast("No import files available")
         }
         else if (check === true) {
           this.checkIfContainsFiles().then((isThere) => {
             if (isThere === true) {
-              this.listJsonFiles(function (callbackResult) {
+              this.listFiles(function (callbackResult) {
                 if (callbackResult.length >= 1) {
                   res(callbackResult);
                 }
-              })
+              }, "crisisApp")
             }
             else if (isThere === false) {
               this.showToast("No import files available")
@@ -246,8 +300,8 @@ export class ViewPlansPage implements OnInit {
     })
   }
 
-  //list import files available in device storage
-  async listJsonFiles(callback) {       //callback function, returns a fileArr of json files
+  //list files in external storage ONLY. pass in folder name
+  async listFiles(callback, foldername: string) {       //callback function, returns a fileArr of json files
     let path = this.file.externalRootDirectory;
     let fileArr = [];
 
@@ -264,7 +318,7 @@ export class ViewPlansPage implements OnInit {
       })
     }
 
-    this.file.listDir(path, 'crisisApp').then(async (files) => {
+    this.file.listDir(path, foldername).then(async (files) => {
       (async function asyncloop() {     //loop through files in folder
         for (let a = 0; a < files.length; a++) {
           await checkFile(files[a])     //function checkFile pushes json files into fileArr, returns fileArr
@@ -290,13 +344,13 @@ export class ViewPlansPage implements OnInit {
 
   //open import file selection page
   async openModal(filearr) {
-    var newFileArr = [];
-    newFileArr = filearr[0];      //since filearr is a [[]], im unwrapping the outer array
+    //var newFileArr = [];
+    //newFileArr = filearr[0];      //since filearr is a [[]], im unwrapping the outer array
     //console.log("function openModal => " + JSON.stringify(newFileArr));
     const modal = await this.modalController.create({
       component: ImportModalPage,
       componentProps: {
-        fileArr: newFileArr
+        fileArr: filearr
       }
     });
     modal.onDidDismiss().then(() => {
@@ -434,7 +488,7 @@ export class ViewPlansPage implements OnInit {
       this.checkIfContainsFiles().then((isThere) => {
         if (isThere === true) {
           let filename: string = "allPlans";
-          this.listJsonFiles(function (callbackResult) {
+          this.listFiles(function (callbackResult) {
             if (callbackResult.length >= 1) {
               var files = callbackResult[0];
 
@@ -499,7 +553,7 @@ export class ViewPlansPage implements OnInit {
               }
 
             }
-          })
+          }, "crisisApp")
         }
         else if (isThere === false) {     //first file in the app folder
           console.log("This is the first file!")
@@ -534,13 +588,17 @@ export class ViewPlansPage implements OnInit {
   }
 
   //on hold, show checkboxes
-  pressEvent(e, item){
-    this.checkboxHidden = true;
+  enableCheckbox(e){
+    this.checkboxHidden = true
+    var slideElement = <HTMLInputElement> document.getElementById("slideitem")
+    slideElement.disabled = !slideElement.disabled
   }
 
   //hide checkboxes
   disableCheckbox(){
     this.checkboxHidden = false;
+    var slideElement = <HTMLInputElement> document.getElementById("slideitem")
+    slideElement.disabled = !slideElement.disabled
     this.sortedDetails.forEach(element => {     //reset checkbox to false
       element.isChecked = false
     });
