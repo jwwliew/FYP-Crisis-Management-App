@@ -25,6 +25,11 @@ export class ImportModalPage implements OnInit {
   fileIdArr = [];       //refers to ids of plans from selected import file
   parsedPlans = [];     //plans without the separator
 
+  selectedFolder = "appfolder";
+  appfolder = []
+  downloads = []
+  bluetooth = []
+
   constructor(private modalController: ModalController, private navParams: NavParams,
     private file: File, private navController: NavController,
     private router: Router, private storage: Storage, private toastController: ToastController,
@@ -32,6 +37,14 @@ export class ImportModalPage implements OnInit {
 
   ngOnInit() {
     this.theFiles = this.navParams.get('fileArr');
+    this.appfolder = this.theFiles[2][0]
+    this.downloads = this.theFiles[0][0]
+    this.bluetooth = this.theFiles[1][0]
+  }
+
+  //not needed, rmb to remove
+  changeView(selectedFolder){
+    console.log("selectedfolder => " + selectedFolder)
   }
 
   dismiss() {
@@ -153,7 +166,7 @@ export class ImportModalPage implements OnInit {
 
   importBtn(oneFile) {    //html btn
     this.importFile(oneFile).then(() => {
-      this.modalController.dismiss();
+      this.dismiss();
       this.showToast("Import successful");
     })
   }
@@ -366,6 +379,7 @@ export class ImportModalPage implements OnInit {
       popover.present()
 
       popover.onDidDismiss().then((check) => {
+        this.resetArr()
         if (check.data === true) {    //only triggers if popover is NOT dismissed by tapping backdrop
           res()
         }
