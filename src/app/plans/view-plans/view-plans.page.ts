@@ -344,6 +344,12 @@ export class ViewPlansPage implements OnInit {
 
   //open import file selection page
   async openModal(filearr) {
+<<<<<<< HEAD
+=======
+    //var newFileArr = [];
+    //newFileArr = filearr[0];      //since filearr is a [[]], im unwrapping the outer array
+    //console.log("function openModal => " + JSON.stringify(newFileArr));
+>>>>>>> 2ab703874c8b92076795b5bc7b165e9d0000c03d
     const modal = await this.modalController.create({
       component: ImportModalPage,
       componentProps: {
