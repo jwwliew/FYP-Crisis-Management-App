@@ -10,6 +10,7 @@ import { ModalController, PopoverController } from '@ionic/angular';
 import { ImportModalPage } from '../../import-modal/import-modal.page';
 import { v4 as uuid } from 'uuid';
 import { Storage } from '@ionic/storage';
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-view-plans',
@@ -344,12 +345,6 @@ export class ViewPlansPage implements OnInit {
 
   //open import file selection page
   async openModal(filearr) {
-<<<<<<< HEAD
-=======
-    //var newFileArr = [];
-    //newFileArr = filearr[0];      //since filearr is a [[]], im unwrapping the outer array
-    //console.log("function openModal => " + JSON.stringify(newFileArr));
->>>>>>> 2ab703874c8b92076795b5bc7b165e9d0000c03d
     const modal = await this.modalController.create({
       component: ImportModalPage,
       componentProps: {
@@ -436,7 +431,7 @@ export class ViewPlansPage implements OnInit {
           res(check)
         }
 
-        let newPlansStr: string = "";
+        let newPlansStr: string = "";   //string to be written into file
         let that = this;
 
         let fileCheck = this.idJsonFile();
@@ -459,7 +454,10 @@ export class ViewPlansPage implements OnInit {
         //put into file part
         async function putIntoFile(newPlansStr, that) {
           let filename = await that.nameJsonFile();
-          let data: string = newPlansStr;
+          // console.log("UNENCRYPTED => " + newPlansStr)
+          // newPlansStr = await that.encryptData(newPlansStr)
+          // console.log("ENCRYPTED => " + newPlansStr)
+          let data: string = await that.encryptData(newPlansStr);
           let path = that.file.externalRootDirectory + "crisisApp/";
           await that.file.writeFile(path, filename, data, { replace: true });
           res(check)
@@ -569,6 +567,15 @@ export class ViewPlansPage implements OnInit {
           //catch error?
         }
       })
+    })
+  }
+
+  encryptData(fileData: string){
+    return new Promise((res) => {
+      const encryptKey = "iLoveProgramming"
+      var encryptedString = CryptoJS.AES.encrypt(fileData, encryptKey)
+      encryptedString = encryptedString.toString()
+      res(encryptedString)
     })
   }
 

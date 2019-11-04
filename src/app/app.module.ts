@@ -16,6 +16,7 @@ import { Camera } from '@ionic-native/camera/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import * as Hammer from 'hammerjs';
+import * as CryptoJS from 'crypto-js';
 import { TemplatePopComponent } from './templates/template-pop/template-pop.component';
 
 import { ImportModalPageModule } from './import-modal/import-modal.module'

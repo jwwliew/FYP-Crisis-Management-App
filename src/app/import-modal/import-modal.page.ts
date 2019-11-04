@@ -8,6 +8,7 @@ import { PlanService } from './../services/plan.service';
 import { ImportConflictPopoverPage } from '../popover/import-conflict-popover/import-conflict-popover.page';
 
 import * as _ from 'lodash';
+import * as CryptoJS from 'crypto-js';
 
 import { Router } from '@angular/router';
 
@@ -61,14 +62,24 @@ export class ImportModalPage implements OnInit {
             var reader = new FileReader();
             reader.readAsText(theFile);
 
-            reader.onloadend = () => storeResults(reader.result);
-            function storeResults(results) {
-              contents = results;
+            var that = this
+            reader.onloadend = () => storeResults(reader.result, that);
+            async function storeResults(results, that) {
+              contents = await that.decryptData(results)
               res(contents);
             }
           })
         })
       })
+    })
+  }
+
+  decryptData(encryptedData){
+    return new Promise((res) => {
+      const encryptKey = "iLoveProgramming"
+      var bytes = CryptoJS.AES.decrypt(encryptedData, encryptKey)
+      var decryptedData = bytes.toString(CryptoJS.enc.Utf8)
+      res(decryptedData)
     })
   }
 
