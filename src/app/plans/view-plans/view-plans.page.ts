@@ -208,29 +208,68 @@ export class ViewPlansPage implements OnInit {
     });
   }
 
+  //TODO:
+  //update logic
+  //check if it is json file, if no, ignore.
   getImportFiles() {
     return new Promise((Mres) => {
       var promise1 = new Promise((res1) => {
-        this.listFiles(function (callbackResult){
-          if(callbackResult.length >= 1){
-            res1(callbackResult)
-          }
-        }, "Download")
-      })
-      var promise2 = new Promise((res2) => {
-        this.listFiles(function (callbackResult){
-          if(callbackResult.length >= 1){
-            res2(callbackResult)
-          }
-        }, "Bluetooth")
-      })
-      var promise3 = new Promise((res3) => {
-        this.checkAppRootFolderExist().then((check: boolean) => {
+        this.checkFolderExist('Download').then((check: boolean) => {
           if (check === false) {
-            this.showToast("No import files available")
+            res1()
           }
           else if (check === true) {
-            this.checkIfContainsFiles().then((isThere) => {
+            this.checkIfContainsFiles('Download').then((isThere: boolean) => {
+              if (isThere === true) {
+                this.listFiles(function (callbackResult){
+                  if(callbackResult.length >= 1){
+                    res1(callbackResult)
+                  }
+                }, "Download")
+              }
+              else if (isThere === false) {
+                res1()
+              }
+              else {
+                //catch error
+              }
+            })
+          }
+        })
+      })
+
+      var promise2 = new Promise((res2) => {
+        this.checkFolderExist('Bluetooth').then((check: boolean) => {
+          if (check === false) {
+            res2()
+          }
+          else if(check === true) {
+            this.checkIfContainsFiles('Bluetooth').then((isThere: boolean) => {
+              if (isThere === true) {
+                this.listFiles(function (callbackResult){
+                  if(callbackResult.length >= 1){
+                    res2(callbackResult)
+                  }
+                }, "Bluetooth")
+              }
+              else if (isThere === false) {
+                res2()
+              }
+              else {
+                //catch error
+              }
+            })
+          }
+        })        
+      })
+      var promise3 = new Promise((res3) => {
+        this.checkFolderExist('crisisApp').then((check: boolean) => {
+          if (check === false) {
+            res3()
+            //this.showToast("No import files available")
+          }
+          else if (check === true) {
+            this.checkIfContainsFiles('crisisApp').then((isThere: boolean) => {
               if (isThere === true) {
                 this.listFiles(function (callbackResult) {
                   if (callbackResult.length >= 1) {
@@ -239,11 +278,11 @@ export class ViewPlansPage implements OnInit {
                 }, "crisisApp")
               }
               else if (isThere === false) {
-                this.showToast("No import files available")
+                res3()
+                //this.showToast("No import files available")
               }
-              else {
+              else {                
                 //catch error?
-                //console.log("catch error?")
               }
             })
           }
@@ -259,12 +298,12 @@ export class ViewPlansPage implements OnInit {
   //OUTDATED, NOT USED
   getImportFiles2() {
     return new Promise((res) => {
-      this.checkAppRootFolderExist().then((check: boolean) => {
+      this.checkFolderExist('crisisApp').then((check: boolean) => {
         if (check === false) {
           this.showToast("No import files available")
         }
         else if (check === true) {
-          this.checkIfContainsFiles().then((isThere) => {
+          this.checkIfContainsFiles('crisisApp').then((isThere) => {
             if (isThere === true) {
               this.listFiles(function (callbackResult) {
                 if (callbackResult.length >= 1) {
@@ -285,11 +324,11 @@ export class ViewPlansPage implements OnInit {
     })
   }
 
-  checkIfContainsFiles() {
+  checkIfContainsFiles(foldername: string) {
     return new Promise((res) => {
       var isThere = false;
       let path = this.file.externalRootDirectory
-      this.file.listDir(path, 'crisisApp').then((files) => {
+      this.file.listDir(path, foldername).then((files) => {
         if (files.length <= 0) {
           res(isThere)
         }
@@ -364,7 +403,7 @@ export class ViewPlansPage implements OnInit {
   }
 
   exportPlansBtn() {   //html btn
-    this.checkAppRootFolderExist().then((isThere: boolean) => {
+    this.checkFolderExist('crisisApp').then((isThere: boolean) => {
       if (isThere == true) {
         this.exportAllPlans().then(() => {
           this.showToast("Export successful")
@@ -382,21 +421,22 @@ export class ViewPlansPage implements OnInit {
       }
     })
   }
-
+  
   //check device storage for app folder
-  checkAppRootFolderExist() {
+  checkFolderExist(foldername: string) {
     return new Promise((res) => {
       let path = this.file.externalRootDirectory;
-      this.file.checkDir(path, 'crisisApp').then((isThere) => {
+      this.file.checkDir(path, foldername).then((isThere) => {
         if (isThere == true) {
           //console.log("App folder found!");
           res(isThere);
         }
       })
         .catch((err) => {
+          console.log("Caught something!")
           if (err.code == 1) {    //code for file not found
             let isThere = false;
-            //console.log("App folder not found!");
+            //console.log("Caught error, please ignore => " + JSON.stringify(err))
             res(isThere);
           }
         })
@@ -454,9 +494,6 @@ export class ViewPlansPage implements OnInit {
         //put into file part
         async function putIntoFile(newPlansStr, that) {
           let filename = await that.nameJsonFile();
-          // console.log("UNENCRYPTED => " + newPlansStr)
-          // newPlansStr = await that.encryptData(newPlansStr)
-          // console.log("ENCRYPTED => " + newPlansStr)
           let data: string = await that.encryptData(newPlansStr);
           let path = that.file.externalRootDirectory + "crisisApp/";
           await that.file.writeFile(path, filename, data, { replace: true });
@@ -486,7 +523,7 @@ export class ViewPlansPage implements OnInit {
   //create and number filenames
   nameJsonFile(): Promise<string> {
     return new Promise(async (res) => {
-      this.checkIfContainsFiles().then((isThere) => {
+      this.checkIfContainsFiles('crisisApp').then((isThere) => {
         if (isThere === true) {
           let filename: string = "allPlans";
           this.listFiles(function (callbackResult) {
@@ -686,6 +723,11 @@ export class ViewPlansPage implements OnInit {
 
       looper(putIntoFile, newPlansStr, that);
     })
+  }
+
+  confirmExportAlert(){
+    //on export, show alert
+    //never ask again
   }
 
   //TOASTER

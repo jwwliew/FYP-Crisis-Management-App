@@ -18,6 +18,8 @@ import { FileOpener } from '@ionic-native/file-opener/ngx';
 import * as Hammer from 'hammerjs';
 import * as CryptoJS from 'crypto-js';
 import { TemplatePopComponent } from './templates/template-pop/template-pop.component';
+import { FileChooser } from '@ionic-native/file-chooser/ngx';
+import { FilePath } from '@ionic-native/file-path/ngx';
 
 import { ImportModalPageModule } from './import-modal/import-modal.module'
 import { ImportConflictPopoverPageModule } from './popover/import-conflict-popover/import-conflict-popover.module'
@@ -46,6 +48,8 @@ export class CustomHammerConfig extends HammerGestureConfig {
     Camera,
     File,
     FileOpener,
+    FileChooser,
+    FilePath,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig }
   ],

@@ -6,6 +6,8 @@ import { File } from '@ionic-native/file/ngx';
 import { Storage } from '@ionic/storage';
 import { PlanService } from './../services/plan.service';
 import { ImportConflictPopoverPage } from '../popover/import-conflict-popover/import-conflict-popover.page';
+import { FileChooser } from '@ionic-native/file-chooser/ngx';
+import { FilePath } from '@ionic-native/file-path/ngx';
 
 import * as _ from 'lodash';
 import * as CryptoJS from 'crypto-js';
@@ -27,35 +29,57 @@ export class ImportModalPage implements OnInit {
   parsedPlans = [];     //plans without the separator
 
   selectedFolder = "appfolder";
-  appfolder = []
-  downloads = []
-  bluetooth = []
+  appfolder = [];
+  downloads = [];
+  bluetooth = [];
+  noAFoldersAvailable: boolean = false;
+  noDFoldersAvailable: boolean = false;
+  noBFoldersAvailable: boolean = false;
 
   constructor(private modalController: ModalController, private navParams: NavParams,
     private file: File, private navController: NavController,
     private router: Router, private storage: Storage, private toastController: ToastController,
-    private planService: PlanService, private popoverController: PopoverController) { }
+    private planService: PlanService, private popoverController: PopoverController,
+    private fileChooser: FileChooser, private filePath: FilePath) { }
 
   ngOnInit() {
-    this.theFiles = this.navParams.get('fileArr');
-    this.appfolder = this.theFiles[2][0]
-    this.downloads = this.theFiles[0][0]
-    this.bluetooth = this.theFiles[1][0]
+    this.theFiles = this.navParams.get('fileArr')
+    if(this.theFiles.length === 3){
+      if (this.theFiles[0] == null) {
+        this.noDFoldersAvailable = true
+      }
+      if(this.theFiles[0] != null){
+        //downloads not empty
+        this.downloads = this.theFiles[0][0]
+      }
+
+      if (this.theFiles[1] == null) {
+        this.noBFoldersAvailable = true
+      }
+      if(this.theFiles[1] != null){
+        //bluetooth not empty
+        this.bluetooth = this.theFiles[1][0]
+      }      
+
+      if (this.theFiles[2] == null){
+        this.noAFoldersAvailable = true
+      }
+      if(this.theFiles[2] != null){
+        //appfolder not empty
+        this.appfolder = this.theFiles[2][0]
+      }
+    }
   }
 
-  //not needed, rmb to remove
-  changeView(selectedFolder){
-    console.log("selectedfolder => " + selectedFolder)
-  }
-
+  //dismiss modal
   dismiss() {
     this.modalController.dismiss();
   }
 
   //read .json and store in var
-  readFileToVar(filename) {
+  readFileToVar(filename, foldername) {
     return new Promise((res) => {
-      this.file.resolveDirectoryUrl(this.file.externalRootDirectory + 'crisisApp').then((dirEntry) => {
+      this.file.resolveDirectoryUrl(this.file.externalRootDirectory + foldername).then((dirEntry) => {
         this.file.getFile(dirEntry, filename, { create: false }).then((fileEntry) => {
           fileEntry.file((theFile) => {
             var contents = "";
@@ -175,17 +199,17 @@ export class ImportModalPage implements OnInit {
     })
   }
 
-  importBtn(oneFile) {    //html btn
-    this.importFile(oneFile).then(() => {
-      this.dismiss();
-      this.showToast("Import successful");
+  importBtn(oneFile, foldername) {    //html btn
+    this.importFile(oneFile, foldername).then(() => {
+      this.dismiss()
+      this.showToast("Import successful")
     })
   }
 
   //revised import
-  importFile(oneFile) {
+  importFile(oneFile, foldername) {
     return new Promise((Mresolve) => {
-      this.readFileToVar(oneFile.name).then((fileContents: string) => {
+      this.readFileToVar(oneFile.name, foldername).then((fileContents: string) => {
         this.checkJsonFileId(fileContents).then((fileContents: string) => {
           let apromise2 = this.asyncLoopToParseFile(fileContents)
           let apromise1 = this.getStoragePlansIds().then((check) => {
@@ -398,6 +422,90 @@ export class ImportModalPage implements OnInit {
     })
   }
 
+  //file chooser
+  openFileChooser() {
+		this.fileChooser.open().then((uri) => {
+			this.filePath.resolveNativePath(uri).then((newUrl) => {
+				let dirPathSegments = newUrl.split('/')
+				let fileName = dirPathSegments[dirPathSegments.length-2]
+				fileName = fileName + "/" +dirPathSegments[dirPathSegments.length-1]
+				let path = this.file.externalRootDirectory
+
+				this.file.readAsArrayBuffer(path, fileName).then((buffer) => {
+          let bufferStr = String.fromCharCode.apply(null, new Uint8Array(buffer))
+          new Promise(async(Mresolve) => {
+            bufferStr = await this.decryptData(bufferStr)
+            this.checkJsonFileId(bufferStr).then((fileContents: string) => {
+              let apromise2 = this.asyncLoopToParseFile(fileContents)
+              let apromise1 = this.getStoragePlansIds().then((check) => {
+                if(check === true){     //if local db not empty
+                  Promise.all([apromise1, apromise2]).then(() => {
+                    new Promise((res1) => {
+                      this.filterSameIds(this.storageIdArr, this.fileIdArr).then((filteredIdArr: string[]) => {
+                        if (filteredIdArr.length <= 0) {    //if there are no conflicting plans
+                          res1()
+                        }
+                        if (filteredIdArr.length > 0) {     //if there are conflicting plans
+                          let bpromise1 = this.getFilteredPlansFileSide(filteredIdArr)
+                          let bpromise2 = this.getFilteredPlansStorageSide(filteredIdArr)
+                          Promise.all([bpromise1, bpromise2]).then((values) => {
+                            this.popover(values).then(() => {   //brings up popover to let user resolve conflicting files
+                              res1()
+                            })
+                          })
+                        }
+                      })
+                    }).then(() => {
+                      //for plans without conflicts
+                      new Promise((res2) => {
+                        this.filterDiffIds(this.storageIdArr, this.fileIdArr).then((filteredIdArr: string[]) => {
+                          if (filteredIdArr.length <= 0) {    //if there are no new plans
+                            res2()
+                          }
+                          if (filteredIdArr.length > 0) {     //if there are new plans
+                            this.getFilteredPlans(filteredIdArr).then((filteredPlans) => {
+                              this.insertPlansIntoDb(filteredPlans).then(() => {
+                                res2()
+                              })
+                            })
+                          }
+                        })
+                      }).then(() => {
+                        Mresolve();
+                        this.resetArr();
+                      })
+                    })
+                  })
+                }
+                if(check === false){    //if local db is empty
+                  //just imports files straight away (skips conflict part)
+                  this.asyncwhileloop(fileContents).then(() => {
+                    Mresolve();
+                    this.resetArr();
+                  })
+                }
+              })
+            })
+            .catch((err) => {   //catch files without valid identifier {"@":"~"}
+              console.log("Caught error => " + JSON.stringify(err));
+              this.showToast("Invalid file");
+            })
+          }).then(() => {
+            this.dismiss()
+            this.showToast("Import successful")
+          })
+				})
+			})
+		})
+  }
+  
+  //checks if selected option is "others"
+  changeView(selectedFolder){
+    if(selectedFolder === "others"){
+      this.openFileChooser()
+    }
+  }
+
   //reset global arrays
   resetArr() {
     this.fileIdArr = [];
@@ -414,11 +522,11 @@ export class ImportModalPage implements OnInit {
     toast.present();
   }
 
-  //OLD CODES FOR REFERENCE
+  //OLD CODES BELOW. FOR REFERENCE ONLY
 
   //OUTDATED, NOT USED
-  importSelectedCheck(oneFile) {    //html btn
-    this.importSelected(oneFile).then((check) => {
+  importSelectedCheck(oneFile, foldername) {    //html btn
+    this.importSelected(oneFile, foldername).then((check) => {
       //nothing
     })
       .catch(err => {
@@ -427,9 +535,9 @@ export class ImportModalPage implements OnInit {
   }
 
   //OUTDATED, NOT USED
-  importSelected(oneFile) {
+  importSelected(oneFile, foldername) {
     return new Promise((resolve) => {
-      this.readFileToVar(oneFile.name).then((fileContents: string) => {
+      this.readFileToVar(oneFile.name, foldername).then((fileContents: string) => {
         this.checkJsonFileId(fileContents).then((fileContents: string) => {
           this.asyncwhileloop(fileContents).then(() => {
             resolve();
