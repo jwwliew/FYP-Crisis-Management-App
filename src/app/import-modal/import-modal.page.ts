@@ -105,6 +105,10 @@ export class ImportModalPage implements OnInit {
       var decryptedData = bytes.toString(CryptoJS.enc.Utf8)
       res(decryptedData)
     })
+    .catch((err) => {
+      console.log("Caught error for decryption => " + err)
+      this.showToast("Invalid File")
+    })
   }
 
   //check file for identifier
