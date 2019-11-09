@@ -1,3 +1,10 @@
+<style>
+  .modalSelect {
+    padding: 10px;
+
+  }
+</style>
+
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title>Import Files</ion-title>
@@ -11,7 +18,7 @@
 
 <ion-content>
 
-  <ion-select interface="popover" [(ngModel)]="selectedFolder" (ionChange)="changeView(selectedFolder)">
+  <ion-select class="modalSelect" interface="popover" [(ngModel)]="selectedFolder" (ionChange)="changeView(selectedFolder)">
     <ion-select-option value="appfolder">App Folder</ion-select-option>
     <ion-select-option value="downloads">Downloads</ion-select-option>
     <ion-select-option value="bluetooth">Bluetooth</ion-select-option>
@@ -57,7 +64,7 @@
   </ion-list>
 
   <div *ngIf="selectedFolder === 'others'">
-    <ion-button (click)="openFileChooser()">Choose another file</ion-button>
+    <ion-button class="button-block" (click)="openFileChooser()">Choose another file</ion-button>
   </div>
 
   <!-- <ion-list>

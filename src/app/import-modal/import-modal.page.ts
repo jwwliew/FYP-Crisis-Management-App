@@ -106,7 +106,7 @@ export class ImportModalPage implements OnInit {
       res(decryptedData)
     })
     .catch((err) => {
-      console.log("Caught error for decryption => " + err)
+      //console.log("Caught error for decryption => " + err)
       this.showToast("Invalid File")
     })
   }
@@ -520,8 +520,13 @@ export class ImportModalPage implements OnInit {
   //TOASTER
   async showToast(msg) {
     const toast = await this.toastController.create({
-      message: msg,
-      duration: 3000
+      header: msg,
+      duration: 3000,
+      position: 'bottom',
+      buttons: [{
+        text: 'CLOSE',
+        role: 'cancel'
+      }]
     });
     toast.present();
   }

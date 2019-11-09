@@ -6,6 +6,11 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Storage } from '@ionic/storage';
 import {v4 as uuid} from 'uuid';
+
+import { File } from '@ionic-native/file/ngx';
+
+declare let window: any;
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
@@ -40,6 +45,7 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private storage: Storage,
+    private file: File,
   ) {
     // for(let i = 100; i--;) {
       // let globalPlanObj = {
@@ -79,6 +85,47 @@ export class AppComponent {
 
   globalPlanObj = [];
 
+  //UNUSED, FOR REFERENCE ONLY
+  //JW: create persistent txt file to store settings for "dont ask again"
+  // dontAskAgain() {
+  //   window.requestFileSystem(window.LocalFileSystem.PERSISTENT, 0, function (fs) {
+  //     fs.root.getFile("exportDontAskAgain.txt", { create: true, exclusive: false }, function (fileEntry) {
+  //       //console.log(fileEntry.name)
+  //       //console.log("path => " + fileEntry.fullPath)
+  //       writeFile(fileEntry, "exportDontAskAgain=false")
+  //     }, onErrorCreateFile)
+  //   }, onErrorLoadFs)
+
+  //   window.requestFileSystem(window.LocalFileSystem.PERSISTENT, 0, function (fs) {
+  //     fs.root.getFile("importDontAskAgain.txt", { create: true, exclusive: false }, function (fileEntry) {
+  //       //console.log(fileEntry.name)
+  //       //console.log("path => " + fileEntry.fullPath)
+  //       writeFile(fileEntry, "importDontAskAgain=false")
+  //     }, onErrorCreateFile)
+  //   }, onErrorLoadFs)
+
+  //   function onErrorCreateFile() {
+  //     console.log("Error creating persistent file")
+  //   }
+
+  //   function onErrorLoadFs() {
+  //     console.log("Error requesting file system")
+  //   }
+
+  //   function writeFile(fileEntry, data) {
+  //     fileEntry.createWriter(function (fileWriter) {
+  //       fileWriter.onwriteend = function () {
+  //         //console.log("Successful file write...");
+  //       };
+  
+  //       fileWriter.onerror = function (e) {
+  //         console.log("Failed file write: " + e.toString());
+  //       };
+  //       fileWriter.write(data);
+  //     });
+  //   }
+  // }
+
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
@@ -94,14 +141,24 @@ export class AppComponent {
           this.storage.set("actionKey", this.globalActionObj),
           this.storage.set("plan", this.globalPlanObj),
           this.storage.set("settingStorageKey1", this.globalSettingObj1),
-          this.storage.set("glo",this.glo)
+          this.storage.set("glo",this.glo),
+          this.storage.set("appSetting", this.appSetting)
         //添加+++++++++
         );
-      })
-      
-     
-    });
+      })    
+    })
   }
+
+  //JW
+  appSetting = [
+    {
+      userConfirmation: {
+        export: false,
+        import: false
+      }
+    }
+  ]
+
 //要想创建新的数据，需要双向添加 globalSettingObj1  glo 两个数组数据一样enName！！
 
   globalSettingObj: Setting[] = [

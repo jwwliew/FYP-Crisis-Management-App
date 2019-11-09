@@ -13,6 +13,8 @@
 
     <ion-buttons slot="end">
 
+      <ion-button (click)="enableDontAskAgain2()">test</ion-button>
+
       <ion-button *ngIf="!checkboxHidden" (click)="onClick()">New</ion-button>
 
       <ion-button *ngIf="!checkboxHidden" (click)="popOverController($event)">

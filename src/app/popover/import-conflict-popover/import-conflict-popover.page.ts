@@ -131,14 +131,19 @@ export class ImportConflictPopoverPage implements OnInit {
     this.storageSide = null;
   }
 
-//TOASTER
-async showToast(msg) {
-  const toast = await this.toastController.create({
-    message: msg,
-    duration: 3000
-  });
-  toast.present();
-}
+  //TOASTER
+  async showToast(msg) {
+    const toast = await this.toastController.create({
+      header: msg,
+      duration: 3000,
+      position: 'bottom',
+      buttons: [{
+        text: 'CLOSE',
+        role: 'cancel'
+      }]
+    });
+    toast.present();
+  }
 
 
   // //NOT USED, REDUNDANT CODES WOOPS

@@ -8,6 +8,7 @@ const routes: Routes = [
   { path: 'text3', loadChildren: './text3/text3.module#Text3PageModule' },
 
 
+
 ];
 
 @NgModule({

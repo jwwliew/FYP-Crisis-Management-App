@@ -11,18 +11,22 @@
     padding: 10px;
   }
 
+  .popoverCheckbox {
+    padding-right: 10px;
+  }
+
 </style>
 <ion-header class="header">
-  Import file contains plan(s) that exists in the current version. Please select
+  Import file contains plan(s) that already exists. Please select
   the plans you want to replace
 </ion-header>
 <ion-content class="popoverContent">
   <ion-list>
     <ion-item *ngFor="let oneFile of storageSide; index as i">
-      <ion-checkbox [(ngModel)]="oneFile.isChecked"></ion-checkbox>
+      <ion-checkbox [(ngModel)]="oneFile.isChecked" class="popoverCheckbox"></ion-checkbox>
       <ion-label>{{oneFile.planName}}</ion-label>
     </ion-item>
-  </ion-list>
+  </ion-list>  
 
   <ion-button (click)="updateBtn()" expand="block">Import</ion-button>
 </ion-content>
