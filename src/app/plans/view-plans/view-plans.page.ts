@@ -206,9 +206,6 @@ export class ViewPlansPage implements OnInit {
     });
   }
 
-  //TODO:
-  //update logic
-  //check if it is json file, if no, ignore.
   getImportFiles() {
     return new Promise((Mres) => {
       var promise1 = new Promise((res1) => {
@@ -224,9 +221,6 @@ export class ViewPlansPage implements OnInit {
                     res1(callbackResult)
                   }
                 }, "Download")
-                // await this.getFilteredFiles("Download").then((files) => {
-                //   res1(files)
-                // })
               }
               else if (isThere === false) {
                 res1()
@@ -252,9 +246,6 @@ export class ViewPlansPage implements OnInit {
                     res2(callbackResult)
                   }
                 }, "Bluetooth")
-                // await this.getFilteredFiles("Bluetooth").then((files) => {
-                //   res2(files)
-                // })
               }
               else if (isThere === false) {
                 res2()
@@ -280,9 +271,6 @@ export class ViewPlansPage implements OnInit {
                     res3(callbackResult);
                   }
                 }, "crisisApp")
-                // await this.getFilteredFiles("crisisApp").then((files) => {
-                //   res3(files)
-                // })
               }
               else if (isThere === false) {
                 res3()
@@ -367,64 +355,6 @@ export class ViewPlansPage implements OnInit {
     })
   }
 
-  // getFilteredFiles(foldername){
-  //   return new Promise(async(res) => {
-  //     await this.listFiles2(foldername).then(async(fileArr) => {
-  //       await this.removeNullFromArr(fileArr).then((filteredFileArr) => {
-  //         res(filteredFileArr)
-  //       })
-  //     })
-  //   })    
-  // }
-
-  // listFiles2(foldername: string){
-  //   return new Promise((res) => {
-  //     let path = this.file.externalRootDirectory
-  //     let fileArr = []
-  
-  //     this.file.listDir(path, foldername).then(async(files) => {
-  //       for(let a =0; a<files.length; a++){
-  //         await this.checkFile(files[a]).then((theFile) => {
-  //           if(theFile != false){
-  //             fileArr.push(theFile)
-  //           }
-  //           if(a == files.length-1){
-  //             res(fileArr)
-  //           }
-  //         })
-  //       }
-  //     })
-  //   })    
-  // }
-
-  // checkFile(theFile){
-  //   return new Promise((res) => {
-  //     if(theFile.isFile === true){
-  //       // theFile.file(function(data) {
-  //       //   if(data.type == "application/pdf"){
-  //       //     console.log("AYE")
-  //       //     res(theFile)
-  //       //   }
-  //       // })
-  //       res(theFile)
-  //     }
-  //     else{
-  //       //do nothing
-  //       var ifCheckFail = false
-  //       res(ifCheckFail)
-  //     }
-  //   })
-  // }
-
-  // removeNullFromArr(fileArr){
-  //   return new Promise((res) => {
-  //     var filteredResult = fileArr.filter(function (element){
-  //       return element != null
-  //     })
-  //     res(filteredResult)
-  //   })
-  // }
-
   //open import file selection page
   async openModal(filearr) {
     const modal = await this.modalController.create({
@@ -450,13 +380,31 @@ export class ViewPlansPage implements OnInit {
       if(enabled === true){
         this.checkFolderExist('crisisApp').then((isThere: boolean) => {
           if (isThere == true) {
-            this.exportAllPlans()
+            this.generateSuggestedFileName().then((suggestedName: string) => {
+              this.nameExportAlert(suggestedName).then((filename) => {              
+                if(filename === false){
+                  //user clicked cancel. do nothing
+                }
+                if(filename !== false){
+                  this.exportAllPlans(filename)
+                }
+              })
+            })
           }
           else if (isThere == false) {
             this.showToast("App folder not found. Creating one for you. . .")
             this.createAppRootFolder().then((isCreated: boolean) => {
               if (isCreated === true) {
-                this.exportAllPlans()
+                this.generateSuggestedFileName().then((suggestedName: string) => {
+                  this.nameExportAlert(suggestedName).then((filename) => {              
+                    if(filename === false){
+                      //user clicked cancel. do nothing
+                    }
+                    if(filename !== false){
+                      this.exportAllPlans(filename)
+                    }
+                  })
+                })
               }
             })
           }
@@ -470,13 +418,31 @@ export class ViewPlansPage implements OnInit {
           if(check === true){
             this.checkFolderExist('crisisApp').then((isThere: boolean) => {
               if (isThere == true) {
-                this.exportAllPlans()
+                this.generateSuggestedFileName().then((suggestedName: string) => {
+                  this.nameExportAlert(suggestedName).then((filename) => {              
+                    if(filename === false){
+                      //user clicked cancel. do nothing
+                    }
+                    if(filename !== false){
+                      this.exportAllPlans(filename)
+                    }
+                  })
+                })
               }
               else if (isThere == false) {
                 this.showToast("App folder not found. Creating one for you. . .")
                 this.createAppRootFolder().then((isCreated: boolean) => {
                   if (isCreated === true) {
-                    this.exportAllPlans()
+                    this.generateSuggestedFileName().then((suggestedName: string) => {
+                      this.nameExportAlert(suggestedName).then((filename) => {              
+                        if(filename === false){
+                          //user clicked cancel. do nothing
+                        }
+                        if(filename !== false){
+                          this.exportAllPlans(filename)
+                        }
+                      })
+                    })
                   }
                 })
               }
@@ -525,7 +491,7 @@ export class ViewPlansPage implements OnInit {
   }
 
   //retrieve all plans from db and put into file
-  exportAllPlans() {
+  exportAllPlans(filename) {
     var check = true;
     return new Promise((res) => {
       this.planService.getAllPlan().then((plans) => {
@@ -557,7 +523,7 @@ export class ViewPlansPage implements OnInit {
 
         //put into file part
         async function putIntoFile(newPlansStr, that) {
-          let filename = await that.nameJsonFile();
+          //let filename = await that.nameJsonFile();
           let data: string = await that.encryptData(newPlansStr);
           let path = that.file.externalRootDirectory + "crisisApp/";
           await that.file.writeFile(path, filename + ".json", data, { replace: true });
@@ -674,6 +640,64 @@ export class ViewPlansPage implements OnInit {
     })
   }
 
+  generateSuggestedFileName(){
+    return new Promise((res) => {
+      this.planService.getAllPlan().then((allPlans) => {
+        var planname = allPlans[0].planName
+        planname = planname.trim()
+        planname = planname.replace(/ +/g, "");
+
+        var today = new Date()
+        var dd = String(today.getDate()).padStart(2, '0')
+        var mm = String(today.getMonth() + 1).padStart(2, '0')
+        var yyyy = today.getFullYear()
+        var date = dd + mm + yyyy
+
+        var suggestedName = planname + date
+        res(suggestedName)
+      })
+    })
+  }
+
+  async nameExportAlert(suggestedName){
+    return new Promise(async(res) => {
+      var check = false
+      const alert = await this.alertController.create({
+        header: 'Name of export file',
+        inputs: [
+          {
+            name: "filename",
+            type: "text",
+            id: "tb_filename",
+            placeholder: "Enter file name",
+            value: suggestedName
+          }
+        ],
+        buttons: [
+          {
+            text: "Cancel",
+            role: "cancel",
+            cssClass: "secondary",
+            handler: () => {
+              res(check)
+            }
+          },
+          {
+            text: "Export",
+            handler: () => {
+
+            }
+          }
+        ],
+        cssClass: "alertCustomCss"
+      })
+
+      await alert.present()
+      var result = await alert.onDidDismiss()
+      res(result.data.values.filename)
+    })
+  }
+
   encryptData(fileData: string){
     return new Promise((res) => {
       const encryptKey = "iLoveProgramming"
@@ -723,18 +747,92 @@ export class ViewPlansPage implements OnInit {
       if(enabled === true){
         this.selectedPlans().then((selectedPlans:any) => {
           if(selectedPlans.length === this.sortedDetails.length){
-            this.exportAllPlans().then(() => {
-              this.checkboxHidden = false;
-              this.showToast("Export successful")
+            this.checkFolderExist('crisisApp').then((isThere: boolean) => {
+              if(isThere == true){
+                this.generateSuggestedFileName().then((suggestedName: string) => {
+                  this.nameExportAlert(suggestedName).then((filename) => {              
+                    if(filename === false){
+                      //user clicked cancel. do nothing
+                    }
+                    if(filename !== false){
+                      this.exportAllPlans(filename)
+                      this.checkboxHidden = false;
+                      this.showToast("Export successful")
+                    }
+                  })
+                })
+              }
+              if (isThere == false) {
+                this.showToast("App folder not found. Creating one for you. . .")
+                this.createAppRootFolder().then((isCreated: boolean) => {
+                  if (isCreated === true) {
+                    this.generateSuggestedFileName().then((suggestedName: string) => {
+                      this.nameExportAlert(suggestedName).then((filename) => {
+                        if(filename === false){
+                          //user clicked cancel. do nothing
+                        }
+                        if(filename !== false){
+                          this.exportAllPlans(filename)
+                          this.checkboxHidden = false;
+                          this.showToast("Export successful")
+                        }
+                      })
+                    })
+                  }
+                })
+              }
             })
           }
           else if(selectedPlans.length <= 0){
             this.showToast("Nothing was selected")
           }
           else{
-            this.exportSelectedPlans(selectedPlans).then(() => {
-              this.checkboxHidden = false;
-              this.showToast("Export successful")
+            this.checkFolderExist('crisisApp').then((isThere: boolean) => {
+              if(isThere == true){
+                var suggestedName = selectedPlans[0].planName.trim().replace(/ +/g, "")
+                var today = new Date()
+                var dd = String(today.getDate()).padStart(2, '0')
+                var mm = String(today.getMonth() + 1).padStart(2, '0')
+                var yyyy = today.getFullYear()
+                var date = dd + mm + yyyy
+                suggestedName = suggestedName + date
+                this.nameExportAlert(suggestedName).then((filename) => {
+                  if(filename === false){
+                    //user clicked cancel. do nothing
+                  }
+                  if(filename !== false){
+                    this.exportSelectedPlans(selectedPlans).then(() => {
+                      this.checkboxHidden = false;
+                      this.showToast("Export successful")
+                    })
+                  }
+                })
+              }
+              if(isThere == false){
+                this.showToast("App folder not found. Creating one for you. . .")
+                this.createAppRootFolder().then((isCreated: boolean) => {
+                  if (isCreated === true) {
+                    var suggestedName = selectedPlans[0].planName.trim().replace(/ +/g, "")
+                    var today = new Date()
+                    var dd = String(today.getDate()).padStart(2, '0')
+                    var mm = String(today.getMonth() + 1).padStart(2, '0')
+                    var yyyy = today.getFullYear()
+                    var date = dd + mm + yyyy
+                    suggestedName = suggestedName + date
+                    this.nameExportAlert(suggestedName).then((filename) => {
+                      if(filename === false){
+                        //user clicked cancel. do nothing
+                      }
+                      if(filename !== false){
+                        this.exportSelectedPlans(selectedPlans).then(() => {
+                          this.checkboxHidden = false;
+                          this.showToast("Export successful")
+                        })
+                      }
+                    })
+                  }
+                })
+              }
             })
           }
         })
@@ -747,18 +845,92 @@ export class ViewPlansPage implements OnInit {
           if(check === true){
             this.selectedPlans().then((selectedPlans:any) => {
               if(selectedPlans.length === this.sortedDetails.length){
-                this.exportAllPlans().then(() => {
-                  this.checkboxHidden = false;
-                  this.showToast("Export successful")
-                })
+                this.checkFolderExist('crisisApp').then((isThere: boolean) => {
+                  if(isThere == true){
+                    this.generateSuggestedFileName().then((suggestedName: string) => {
+                      this.nameExportAlert(suggestedName).then((filename) => {              
+                        if(filename === false){
+                          //user clicked cancel. do nothing
+                        }
+                        if(filename !== false){
+                          this.exportAllPlans(filename)
+                          this.checkboxHidden = false;
+                          this.showToast("Export successful")
+                        }
+                      })
+                    })
+                  }
+                  if (isThere == false) {
+                    this.showToast("App folder not found. Creating one for you. . .")
+                    this.createAppRootFolder().then((isCreated: boolean) => {
+                      if (isCreated === true) {
+                        this.generateSuggestedFileName().then((suggestedName: string) => {
+                          this.nameExportAlert(suggestedName).then((filename) => {              
+                            if(filename === false){
+                              //user clicked cancel. do nothing
+                            }
+                            if(filename !== false){
+                              this.exportAllPlans(filename)
+                              this.checkboxHidden = false;
+                              this.showToast("Export successful")
+                            }
+                          })
+                        })
+                      }
+                    })
+                  }
+                })  
               }
               else if(selectedPlans.length <= 0){
                 this.showToast("Nothing was selected")
               }
               else{
-                this.exportSelectedPlans(selectedPlans).then(() => {
-                  this.checkboxHidden = false;
-                  this.showToast("Export successful")
+                this.checkFolderExist('crisisApp').then((isThere: boolean) => {
+                  if(isThere == true){
+                    var suggestedName = selectedPlans[0].planName.trim().replace(/ +/g, "")
+                    var today = new Date()
+                    var dd = String(today.getDate()).padStart(2, '0')
+                    var mm = String(today.getMonth() + 1).padStart(2, '0')
+                    var yyyy = today.getFullYear()
+                    var date = dd + mm + yyyy
+                    suggestedName = suggestedName + date
+                    this.nameExportAlert(suggestedName).then((filename) => {
+                      if(filename === false){
+                        //user clicked cancel. do nothing
+                      }
+                      if(filename !== false){
+                        this.exportSelectedPlans(selectedPlans).then(() => {
+                          this.checkboxHidden = false;
+                          this.showToast("Export successful")
+                        })
+                      }
+                    })
+                  }
+                  if(isThere == false){
+                    this.showToast("App folder not found. Creating one for you. . .")
+                    this.createAppRootFolder().then((isCreated: boolean) => {
+                      if (isCreated === true) {
+                        var suggestedName = selectedPlans[0].planName.trim().replace(/ +/g, "")
+                        var today = new Date()
+                        var dd = String(today.getDate()).padStart(2, '0')
+                        var mm = String(today.getMonth() + 1).padStart(2, '0')
+                        var yyyy = today.getFullYear()
+                        var date = dd + mm + yyyy
+                        suggestedName = suggestedName + date
+                        this.nameExportAlert(suggestedName).then((filename) => {
+                          if(filename === false){
+                            //user clicked cancel. do nothing
+                          }
+                          if(filename !== false){
+                            this.exportSelectedPlans(selectedPlans).then(() => {
+                              this.checkboxHidden = false;
+                              this.showToast("Export successful")
+                            })
+                          }
+                        })
+                      }
+                    })
+                  }
                 })
               }
             })
@@ -814,7 +986,7 @@ export class ViewPlansPage implements OnInit {
         let filename = await that.nameJsonFile()
         let data: string = await that.encryptData(newPlansStr)
         let path = that.file.externalRootDirectory + "crisisApp/"
-        await that.file.writeFile(path, filename, data, { replace: true })
+        await that.file.writeFile(path, filename+".json", data, { replace: true })
         res(check)
       }
 
@@ -858,7 +1030,6 @@ export class ViewPlansPage implements OnInit {
   
       await alert.present();
       var result = await alert.onDidDismiss()
-      console.log(result)
       if (result.data != undefined) {
         if (result.data.values[0] === true) {
           this.enableDontAskAgain()
