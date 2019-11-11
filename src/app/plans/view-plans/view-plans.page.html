@@ -1,3 +1,9 @@
+<style>
+  .itemCheckbox {
+    margin: 10px;
+  }
+</style>
+
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title>
@@ -46,7 +52,7 @@
       <!-- <div *virtualItem="let item; let index = index;"> -->
       <ion-item-sliding (ionSwipe)="swipeEvent(item.id)" *virtualItem="let item; let index = index;" id="slideitem">
         <ion-item (click)="goEdit(item)" detail="false" (press)="enableCheckbox($event)">
-          <ion-checkbox *ngIf="checkboxHidden" [(ngModel)]="item.isChecked" (click)="$event.stopPropagation()"></ion-checkbox>          
+          <ion-checkbox *ngIf="checkboxHidden" [(ngModel)]="item.isChecked" (click)="$event.stopPropagation()" class="itemCheckbox"></ion-checkbox>          
           <ion-card button>
             <ion-card-header color="tertiary">
               <ion-card-title>{{item.planName}}</ion-card-title>

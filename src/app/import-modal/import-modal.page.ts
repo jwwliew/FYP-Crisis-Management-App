@@ -212,67 +212,75 @@ export class ImportModalPage implements OnInit {
     })
   }
 
+  mainFunctionCalls(oneFile, foldername){
+    return new Promise((resolve) => {
+      this.readFileToVar(oneFile.name, foldername).then((fileContents: string) => {
+        this.checkJsonFileId(fileContents).then((fileContents: string) => {
+          let apromise2 = this.asyncLoopToParseFile(fileContents)
+          let apromise1 = this.getStoragePlansIds().then((check) => {
+            if (check === true) {     //if local db not empty
+              Promise.all([apromise1, apromise2]).then(() => {
+                new Promise((res1) => {
+                  this.filterSameIds(this.storageIdArr, this.fileIdArr).then((filteredIdArr: string[]) => {
+                    if (filteredIdArr.length <= 0) {    //if there are no conflicting plans
+                      res1()
+                    }
+                    if (filteredIdArr.length > 0) {     //if there are conflicting plans
+                      let bpromise1 = this.getFilteredPlansFileSide(filteredIdArr)
+                      let bpromise2 = this.getFilteredPlansStorageSide(filteredIdArr)
+                      Promise.all([bpromise1, bpromise2]).then((values) => {
+                        this.popover(values).then(() => {   //brings up popover to let user resolve conflicting files
+                          res1()
+                        })
+                      })
+                    }
+                  })
+                }).then(() => {
+                  //for plans without conflicts
+                  new Promise((res2) => {
+                    this.filterDiffIds(this.storageIdArr, this.fileIdArr).then((filteredIdArr: string[]) => {
+                      if (filteredIdArr.length <= 0) {    //if there are no new plans
+                        res2()
+                      }
+                      if (filteredIdArr.length > 0) {     //if there are new plans
+                        this.getFilteredPlans(filteredIdArr).then((filteredPlans) => {
+                          this.insertPlansIntoDb(filteredPlans).then(() => {
+                            res2()
+                          })
+                        })
+                      }
+                    })
+                  }).then(() => {
+                    resolve();
+                    this.resetArr();
+                  })
+                })
+              })
+            }
+            if (check === false) {    //if local db is empty
+              //just imports files straight away (skips conflict part)
+              this.asyncwhileloop(fileContents).then(() => {
+                resolve();
+                this.resetArr();
+              })
+            }
+          })
+        })
+          .catch((err) => {   //catch files without valid identifier {"@":"~"}
+            console.log("Caught error => " + JSON.stringify(err));
+            this.showToast("Invalid file");
+          })
+      })
+    })    
+  }
+
   //revised import
   importFile(oneFile, foldername) {
     return new Promise((Mresolve) => {
       this.checkDontAskAgain().then((enabled) => {
         if (enabled === true) {
-          this.readFileToVar(oneFile.name, foldername).then((fileContents: string) => {
-            this.checkJsonFileId(fileContents).then((fileContents: string) => {
-              let apromise2 = this.asyncLoopToParseFile(fileContents)
-              let apromise1 = this.getStoragePlansIds().then((check) => {
-                if (check === true) {     //if local db not empty
-                  Promise.all([apromise1, apromise2]).then(() => {
-                    new Promise((res1) => {
-                      this.filterSameIds(this.storageIdArr, this.fileIdArr).then((filteredIdArr: string[]) => {
-                        if (filteredIdArr.length <= 0) {    //if there are no conflicting plans
-                          res1()
-                        }
-                        if (filteredIdArr.length > 0) {     //if there are conflicting plans
-                          let bpromise1 = this.getFilteredPlansFileSide(filteredIdArr)
-                          let bpromise2 = this.getFilteredPlansStorageSide(filteredIdArr)
-                          Promise.all([bpromise1, bpromise2]).then((values) => {
-                            this.popover(values).then(() => {   //brings up popover to let user resolve conflicting files
-                              res1()
-                            })
-                          })
-                        }
-                      })
-                    }).then(() => {
-                      //for plans without conflicts
-                      new Promise((res2) => {
-                        this.filterDiffIds(this.storageIdArr, this.fileIdArr).then((filteredIdArr: string[]) => {
-                          if (filteredIdArr.length <= 0) {    //if there are no new plans
-                            res2()
-                          }
-                          if (filteredIdArr.length > 0) {     //if there are new plans
-                            this.getFilteredPlans(filteredIdArr).then((filteredPlans) => {
-                              this.insertPlansIntoDb(filteredPlans).then(() => {
-                                res2()
-                              })
-                            })
-                          }
-                        })
-                      }).then(() => {
-                        Mresolve();
-                        this.resetArr();
-                      })
-                    })
-                  })
-                }
-                if (check === false) {    //if local db is empty
-                  //just imports files straight away (skips conflict part)
-                  this.asyncwhileloop(fileContents).then(() => {
-                    Mresolve();
-                    this.resetArr();
-                  })
-                }
-              })
-            })
-              .catch((err) => {   //catch files without valid identifier {"@":"~"}
-                console.log("Caught error => " + JSON.stringify(err));
-                this.showToast("Invalid file");
-              })
+          this.mainFunctionCalls(oneFile, foldername).then(() => {
+            Mresolve()
           })
         }
         else if (enabled === false) {
@@ -281,62 +289,8 @@ export class ImportModalPage implements OnInit {
               //user clicked cancel. do nothing
             }
             if (check === true) {
-              this.readFileToVar(oneFile.name, foldername).then((fileContents: string) => {
-                this.checkJsonFileId(fileContents).then((fileContents: string) => {
-                  let apromise2 = this.asyncLoopToParseFile(fileContents)
-                  let apromise1 = this.getStoragePlansIds().then((check) => {
-                    if (check === true) {     //if local db not empty
-                      Promise.all([apromise1, apromise2]).then(() => {
-                        new Promise((res1) => {
-                          this.filterSameIds(this.storageIdArr, this.fileIdArr).then((filteredIdArr: string[]) => {
-                            if (filteredIdArr.length <= 0) {    //if there are no conflicting plans
-                              res1()
-                            }
-                            if (filteredIdArr.length > 0) {     //if there are conflicting plans
-                              let bpromise1 = this.getFilteredPlansFileSide(filteredIdArr)
-                              let bpromise2 = this.getFilteredPlansStorageSide(filteredIdArr)
-                              Promise.all([bpromise1, bpromise2]).then((values) => {
-                                this.popover(values).then(() => {   //brings up popover to let user resolve conflicting files
-                                  res1()
-                                })
-                              })
-                            }
-                          })
-                        }).then(() => {
-                          //for plans without conflicts
-                          new Promise((res2) => {
-                            this.filterDiffIds(this.storageIdArr, this.fileIdArr).then((filteredIdArr: string[]) => {
-                              if (filteredIdArr.length <= 0) {    //if there are no new plans
-                                res2()
-                              }
-                              if (filteredIdArr.length > 0) {     //if there are new plans
-                                this.getFilteredPlans(filteredIdArr).then((filteredPlans) => {
-                                  this.insertPlansIntoDb(filteredPlans).then(() => {
-                                    res2()
-                                  })
-                                })
-                              }
-                            })
-                          }).then(() => {
-                            Mresolve();
-                            this.resetArr();
-                          })
-                        })
-                      })
-                    }
-                    if (check === false) {    //if local db is empty
-                      //just imports files straight away (skips conflict part)
-                      this.asyncwhileloop(fileContents).then(() => {
-                        Mresolve();
-                        this.resetArr();
-                      })
-                    }
-                  })
-                })
-                  .catch((err) => {   //catch files without valid identifier {"@":"~"}
-                    console.log("Caught error => " + JSON.stringify(err));
-                    this.showToast("Invalid file");
-                  })
+              this.mainFunctionCalls(oneFile, foldername).then(() => {
+                Mresolve()
               })
             }
           })

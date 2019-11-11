@@ -199,12 +199,6 @@ export class ViewPlansPage implements OnInit {
       : this.buttonShown = false;
   }
 
-  //TODO:
-  //check if downloads folder empty
-  //loop through downloads folder and store files
-  //send to openModal()
-
-
   //JW
   chooseImport() {    //html btn
     this.getImportFiles().then((filearr) => {
@@ -223,13 +217,16 @@ export class ViewPlansPage implements OnInit {
             res1()
           }
           else if (check === true) {
-            this.checkIfContainsFiles('Download').then((isThere: boolean) => {
+            this.checkIfContainsFiles('Download').then(async (isThere: boolean) => {
               if (isThere === true) {
                 this.listFiles(function (callbackResult){
                   if(callbackResult.length >= 1){
                     res1(callbackResult)
                   }
                 }, "Download")
+                // await this.getFilteredFiles("Download").then((files) => {
+                //   res1(files)
+                // })
               }
               else if (isThere === false) {
                 res1()
@@ -248,13 +245,16 @@ export class ViewPlansPage implements OnInit {
             res2()
           }
           else if(check === true) {
-            this.checkIfContainsFiles('Bluetooth').then((isThere: boolean) => {
+            this.checkIfContainsFiles('Bluetooth').then(async(isThere: boolean) => {
               if (isThere === true) {
                 this.listFiles(function (callbackResult){
                   if(callbackResult.length >= 1){
                     res2(callbackResult)
                   }
                 }, "Bluetooth")
+                // await this.getFilteredFiles("Bluetooth").then((files) => {
+                //   res2(files)
+                // })
               }
               else if (isThere === false) {
                 res2()
@@ -273,13 +273,16 @@ export class ViewPlansPage implements OnInit {
             //this.showToast("No import files available")
           }
           else if (check === true) {
-            this.checkIfContainsFiles('crisisApp').then((isThere: boolean) => {
+            this.checkIfContainsFiles('crisisApp').then(async(isThere: boolean) => {
               if (isThere === true) {
                 this.listFiles(function (callbackResult) {
                   if (callbackResult.length >= 1) {
                     res3(callbackResult);
                   }
                 }, "crisisApp")
+                // await this.getFilteredFiles("crisisApp").then((files) => {
+                //   res3(files)
+                // })
               }
               else if (isThere === false) {
                 res3()
@@ -299,34 +302,7 @@ export class ViewPlansPage implements OnInit {
     })
   }
 
-  //OUTDATED, NOT USED
-  getImportFiles2() {
-    return new Promise((res) => {
-      this.checkFolderExist('crisisApp').then((check: boolean) => {
-        if (check === false) {
-          this.showToast("No import files available")
-        }
-        else if (check === true) {
-          this.checkIfContainsFiles('crisisApp').then((isThere) => {
-            if (isThere === true) {
-              this.listFiles(function (callbackResult) {
-                if (callbackResult.length >= 1) {
-                  res(callbackResult);
-                }
-              }, "crisisApp")
-            }
-            else if (isThere === false) {
-              this.showToast("No import files available")
-            }
-            else {
-              //catch error?
-              console.log("catch error?")
-            }
-          })
-        }
-      })
-    })
-  }
+  
 
   checkIfContainsFiles(foldername: string) {
     return new Promise((res) => {
@@ -345,14 +321,19 @@ export class ViewPlansPage implements OnInit {
   }
 
   //list files in external storage ONLY. pass in folder name
-  async listFiles(callback, foldername: string) {       //callback function, returns a fileArr of json files
+  async listFiles(callback, foldername: string) {       //callback function, returns a fileArr of files
     let path = this.file.externalRootDirectory;
     let fileArr = [];
 
     function checkFile(theFile) {    //check if it is a folder, if false, dont push into fileArr
       return new Promise((res) => {
         if (theFile.isFile === true) {
-          fileArr.push(theFile);
+          var filenamesplit = theFile.name.split('.')
+          var extension = filenamesplit[filenamesplit.length -1]
+          if(extension === "json"){
+            fileArr.push(theFile)
+            res()
+          }
           res()
         }
         else {
@@ -385,6 +366,64 @@ export class ViewPlansPage implements OnInit {
       })()
     })
   }
+
+  // getFilteredFiles(foldername){
+  //   return new Promise(async(res) => {
+  //     await this.listFiles2(foldername).then(async(fileArr) => {
+  //       await this.removeNullFromArr(fileArr).then((filteredFileArr) => {
+  //         res(filteredFileArr)
+  //       })
+  //     })
+  //   })    
+  // }
+
+  // listFiles2(foldername: string){
+  //   return new Promise((res) => {
+  //     let path = this.file.externalRootDirectory
+  //     let fileArr = []
+  
+  //     this.file.listDir(path, foldername).then(async(files) => {
+  //       for(let a =0; a<files.length; a++){
+  //         await this.checkFile(files[a]).then((theFile) => {
+  //           if(theFile != false){
+  //             fileArr.push(theFile)
+  //           }
+  //           if(a == files.length-1){
+  //             res(fileArr)
+  //           }
+  //         })
+  //       }
+  //     })
+  //   })    
+  // }
+
+  // checkFile(theFile){
+  //   return new Promise((res) => {
+  //     if(theFile.isFile === true){
+  //       // theFile.file(function(data) {
+  //       //   if(data.type == "application/pdf"){
+  //       //     console.log("AYE")
+  //       //     res(theFile)
+  //       //   }
+  //       // })
+  //       res(theFile)
+  //     }
+  //     else{
+  //       //do nothing
+  //       var ifCheckFail = false
+  //       res(ifCheckFail)
+  //     }
+  //   })
+  // }
+
+  // removeNullFromArr(fileArr){
+  //   return new Promise((res) => {
+  //     var filteredResult = fileArr.filter(function (element){
+  //       return element != null
+  //     })
+  //     res(filteredResult)
+  //   })
+  // }
 
   //open import file selection page
   async openModal(filearr) {
@@ -521,7 +560,7 @@ export class ViewPlansPage implements OnInit {
           let filename = await that.nameJsonFile();
           let data: string = await that.encryptData(newPlansStr);
           let path = that.file.externalRootDirectory + "crisisApp/";
-          await that.file.writeFile(path, filename, data, { replace: true });
+          await that.file.writeFile(path, filename + ".json", data, { replace: true });
           res(check)
         }
 
@@ -829,6 +868,35 @@ export class ViewPlansPage implements OnInit {
       }]
     });
     toast.present();
+  }
+
+  //OUTDATED, NOT USED
+  getImportFiles2() {
+    return new Promise((res) => {
+      this.checkFolderExist('crisisApp').then((check: boolean) => {
+        if (check === false) {
+          this.showToast("No import files available")
+        }
+        else if (check === true) {
+          this.checkIfContainsFiles('crisisApp').then((isThere) => {
+            if (isThere === true) {
+              this.listFiles(function (callbackResult) {
+                if (callbackResult.length >= 1) {
+                  res(callbackResult);
+                }
+              }, "crisisApp")
+            }
+            else if (isThere === false) {
+              this.showToast("No import files available")
+            }
+            else {
+              //catch error?
+              console.log("catch error?")
+            }
+          })
+        }
+      })
+    })
   }
 
   //OLD CODES, FOR REFERENCE
