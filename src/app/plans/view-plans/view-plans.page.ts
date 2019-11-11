@@ -423,7 +423,7 @@ export class ViewPlansPage implements OnInit {
           }
         })
       }
-      if(enabled === false){
+      else if(enabled === false){
         this.presentExportAlert().then((check) => {
           if(check === false){
             //user clicked cancel. do nothing
