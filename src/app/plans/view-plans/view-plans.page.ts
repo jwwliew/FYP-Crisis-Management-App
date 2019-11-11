@@ -719,23 +719,53 @@ export class ViewPlansPage implements OnInit {
   }
 
   selectedPlansBtn(){   //html btn
-    this.selectedPlans().then((selectedPlans:any) => {
-      if(selectedPlans.length === this.sortedDetails.length){
-        this.exportAllPlans().then(() => {
-          this.checkboxHidden = false;
-          this.showToast("Export successful")
+    this.checkDontAskAgain().then((enabled) => {
+      if(enabled === true){
+        this.selectedPlans().then((selectedPlans:any) => {
+          if(selectedPlans.length === this.sortedDetails.length){
+            this.exportAllPlans().then(() => {
+              this.checkboxHidden = false;
+              this.showToast("Export successful")
+            })
+          }
+          else if(selectedPlans.length <= 0){
+            this.showToast("Nothing was selected")
+          }
+          else{
+            this.exportSelectedPlans(selectedPlans).then(() => {
+              this.checkboxHidden = false;
+              this.showToast("Export successful")
+            })
+          }
         })
       }
-      else if(selectedPlans.length <= 0){
-        this.showToast("Nothing was selected")
-      }
-      else{
-        this.exportSelectedPlans(selectedPlans).then(() => {
-          this.checkboxHidden = false;
-          this.showToast("Export successful")
+      else if(enabled === false){
+        this.presentExportAlert().then((check) => {
+          if(check === false){
+            //user clicked cancel. do nothing
+          }
+          if(check === true){
+            this.selectedPlans().then((selectedPlans:any) => {
+              if(selectedPlans.length === this.sortedDetails.length){
+                this.exportAllPlans().then(() => {
+                  this.checkboxHidden = false;
+                  this.showToast("Export successful")
+                })
+              }
+              else if(selectedPlans.length <= 0){
+                this.showToast("Nothing was selected")
+              }
+              else{
+                this.exportSelectedPlans(selectedPlans).then(() => {
+                  this.checkboxHidden = false;
+                  this.showToast("Export successful")
+                })
+              }
+            })
+          }
         })
       }
-    })
+    })    
   }
 
   selectedPlans(){
