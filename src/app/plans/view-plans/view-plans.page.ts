@@ -552,8 +552,7 @@ export class ViewPlansPage implements OnInit {
     return fileCheck;
   }
 
-  //TODO: LET USER NAME FILES, USE THIS PART TO NUMBER THEM IF FILENAME IS THE SAME
-  //create and number filenames
+  //number filenames if duplicate
   nameJsonFile(): Promise<string> {
     return new Promise(async (res) => {
       this.checkIfContainsFiles('crisisApp').then((isThere) => {
@@ -801,7 +800,7 @@ export class ViewPlansPage implements OnInit {
                     //user clicked cancel. do nothing
                   }
                   if(filename !== false){
-                    this.exportSelectedPlans(selectedPlans).then(() => {
+                    this.exportSelectedPlans(selectedPlans, filename).then(() => {
                       this.checkboxHidden = false;
                       this.showToast("Export successful")
                     })
@@ -824,7 +823,7 @@ export class ViewPlansPage implements OnInit {
                         //user clicked cancel. do nothing
                       }
                       if(filename !== false){
-                        this.exportSelectedPlans(selectedPlans).then(() => {
+                        this.exportSelectedPlans(selectedPlans, filename).then(() => {
                           this.checkboxHidden = false;
                           this.showToast("Export successful")
                         })
@@ -899,7 +898,7 @@ export class ViewPlansPage implements OnInit {
                         //user clicked cancel. do nothing
                       }
                       if(filename !== false){
-                        this.exportSelectedPlans(selectedPlans).then(() => {
+                        this.exportSelectedPlans(selectedPlans, filename).then(() => {
                           this.checkboxHidden = false;
                           this.showToast("Export successful")
                         })
@@ -922,7 +921,7 @@ export class ViewPlansPage implements OnInit {
                             //user clicked cancel. do nothing
                           }
                           if(filename !== false){
-                            this.exportSelectedPlans(selectedPlans).then(() => {
+                            this.exportSelectedPlans(selectedPlans, filename).then(() => {
                               this.checkboxHidden = false;
                               this.showToast("Export successful")
                             })
@@ -958,7 +957,7 @@ export class ViewPlansPage implements OnInit {
     })    
   }
 
-  exportSelectedPlans(selectedPlans){
+  exportSelectedPlans(selectedPlans, filename){
     var check = true;
     return new Promise((res) => {
       let newPlansStr: string = "";
@@ -983,7 +982,7 @@ export class ViewPlansPage implements OnInit {
 
       //put into file part
       async function putIntoFile(newPlansStr, that) {
-        let filename = await that.nameJsonFile()
+        //let filename = await that.nameJsonFile()
         let data: string = await that.encryptData(newPlansStr)
         let path = that.file.externalRootDirectory + "crisisApp/"
         await that.file.writeFile(path, filename+".json", data, { replace: true })

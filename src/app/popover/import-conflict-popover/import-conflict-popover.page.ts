@@ -102,7 +102,7 @@ export class ImportConflictPopoverPage implements OnInit {
     })
   }
 
-  dismiss(check) {
+  dismiss(check) {    //dismiss popover
     this.resetIsChecked().then(() => {
       this.popoverController.dismiss(check);
     })

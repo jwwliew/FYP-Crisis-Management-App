@@ -100,6 +100,7 @@ export class ImportModalPage implements OnInit {
     })
   }
 
+  //decrypt file contents
   decryptData(encryptedData) {
     return new Promise((res) => {
       const encryptKey = "iLoveProgramming"
@@ -543,6 +544,7 @@ export class ImportModalPage implements OnInit {
     this.parsedPlans = [];
   }
 
+  //import confirmation
   async presentImportAlert() {
     return new Promise(async (res) => {
       var check = false
@@ -588,10 +590,12 @@ export class ImportModalPage implements OnInit {
     })
   }
 
+  //enable dont ask again
   enableDontAskAgain() {
     this.settingService.importToggleDontAskAgain()
   }
 
+  //check if dont ask again is enabled
   checkDontAskAgain() {
     var enabled = false
     return new Promise((res) => {
