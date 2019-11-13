@@ -1,0 +1,152 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Bluetooth</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/settings"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content >
+ <style>
+   #loader{
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  display:none;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.myButton {
+ box-shadow: 0px 1px 0px 0px #f0f7fa;
+ background-color:#424953;
+ border-radius:6px;
+ display:inline-block;
+ cursor:pointer;
+ color:#ffffff;
+ font-family:Arial;
+ font-size:15px;
+ font-weight:bold;
+ padding:6px 24px;
+ text-decoration:none;
+ text-shadow:0px -1px 0px #5b6178;
+}
+.aligntext{
+
+text-align:left;
+margin-left: 20px;
+
+  }
+     .button2 {
+       display:flex;
+      background-color: white;
+      color: black;
+      height:200px;
+      width:800px;
+    
+    }
+    .img2 {
+      float:left;
+      height:35px;
+      width:37px;
+      margin-left: -15px;
+      
+  }
+  .text2 {
+    
+  margin-top: -20px;
+  margin-left: 5px;
+  }
+  .img{
+  display:inline-block;
+
+         height:120px;
+         width:120px;
+
+
+}
+.block{
+}
+
+.text{
+position: relative;
+display:inline-block;
+vertical-align: top;
+
+}</style>
+   <div>
+
+        <ion-segment [(ngModel)]="Transfer">
+        <ion-segment-button value="transferbluetooth">
+          Transfer Data
+          </ion-segment-button>
+          <ion-segment-button value="receivebluetooth">
+            Receive Data
+          </ion-segment-button>
+          </ion-segment>
+        
+        </div>
+
+        <div [ngSwitch]="Transfer">
+            <ion-list *ngSwitchCase="'receivebluetooth'">
+            
+                <ion-item>
+                    <div class="block
+                    ">
+                  <img src= "../assets/bluetoothicon.png" class = "img">
+                  <p class="text">
+            Wait for the central to finish sending the data, before retrieving it!
+                  </p>
+                  </div>
+            
+             <button (click)="Receive()" class="myButton">
+
+              Retrieve plans
+             </button>
+             
+                  </ion-item>
+                  
+<div  id="checkrequest" class="aligntext">
+    Waiting for data..
+                      </div>
+                      <div id="loader"></div>
+
+                </ion-list>
+                <ion-list *ngSwitchCase="'transferbluetooth'">
+                
+<div class="ion-padding" class="block" class="aligntext">
+  <p>{{bluetoothscanString}}</p>
+</div>
+
+<button (click)="scan()" class="myButton" script="margin-left:80px;" >Scan</button>
+                    <ion-item>
+               
+  <ion-list  >
+        
+      <button ion-item item-start *ngFor="let device of devices" (click)="deviceSelected(device)" class="button2">
+          
+              <img src='../assets/phone1.png' item-left class="img">
+  
+      <span class="text2">
+        <h2>Name: {{ device.name || 'Unnamed'}}</h2>
+        <p>ID: {{ device.id }} </p>
+      </span>
+            </button>
+        
+
+
+
+
+  </ion-list>
+     
+                    </ion-item>
+              </ion-list>
+            
+              </div>
+</ion-content>

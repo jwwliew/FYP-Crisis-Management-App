@@ -14,15 +14,31 @@
 
 </ion-header>
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let item of ggg" class="img" (click)="fanhui(item)">
-      <label class="lab">
-          {{item.chName}} <img [src]= "item.icon" width="70" height="70">
-      </label>
+  
+    
+ 
 
-    </ion-item>
-  </ion-list>
-
+    <form name="f" class="aaa">
+      
+    <input class="abc" type="radio" name="btext" value="0" checked="true" (click)="insert1(0)">English 
+    <br>
+    <br>
+    <br>
+    <input class="abc" type="radio" name="btext" value="1" (click)="insert1(1)" >中文
+    <br>
+    <br>
+    <br>
+    <input class="abc" type="radio" name="btext" value="2" (click)="insert1(2)">Malay
+    <br>
+    <br>
+    <br>
+    <input class="abc" type="radio" name="btext" value="3" (click)="insert1(3)">Tamil
+    <br>
+    <br>
+    <br>
+    <input class="cba" type=button value=determine name=insert (click)="determine()" style='background-color: #EBF5FC; border: 1px solid #0099CC'>
+    </form>
+   
+    
 </ion-content>
-<ion-toolbar color="primary">
-</ion-toolbar>
+

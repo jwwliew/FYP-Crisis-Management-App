@@ -21,11 +21,11 @@ export class SymptomActionPage implements OnInit {
   @Input('ngModel') value:any;
   @ViewChild('mylist')mylist: IonList;
   ngclick1(){
-    console.log("ngclick1");
+    // console.log("ngclick1");
     this.add2=null;
   }
   ngclick2(){
-    console.log("ngclick2");
+    // console.log("ngclick2");
     this.add2=null;
 
   }
@@ -100,8 +100,8 @@ export class SymptomActionPage implements OnInit {
     if(item.id==-10||item.id==-9||item.id==-8||item.id==-7||item.id==-6||item.id==-5||item.id==-4
       ||item.id==-3||item.id==-2||item.id==-1||item.id==1||item.id==2||item.id==3||item.id==4||item.id==11||
       item.id==12||item.id==13||item.id==14){
-    console.log("唐门="+item.id);
-    console.log("执行select函数");
+    // console.log("唐门="+item.id);
+    // console.log("执行select函数");
     item=item.id;
     this.router.navigate(['/text2'], {
       queryParams: {
@@ -111,12 +111,12 @@ export class SymptomActionPage implements OnInit {
       },
      
     });
-    console.log("item="+item);
+    // console.log("item="+item);
   }
   else{
-    console.log("唐门2="+item);
+    // console.log("唐门2="+item);
     this.selectedTab="Action";
-    console.log("pubg.id="+pubg.id);
+    // console.log("pubg.id="+pubg.id);
     this.router.navigateByUrl('/tabs/settings/symptomAction/edit/' + this.selectedTab + "/" + pubg.id); //routing start from root level
   }
 }

@@ -24,7 +24,7 @@ public it; //设置重新复制1，2，3，4
 public def;
 public planid;
 public setcgiditem:any;
-
+public dxkz; //单选框值
   constructor(private storage: Storage, private settingStorage: SymptomActionService, private actionSheetCtrl: ActionSheetController, private zone: NgZone, 
     private toastCtrl: ToastController, private alertCtrl: AlertController, private popoverCtrl: PopoverController, private modalCtrl: ModalController, private plt: Platform) { }
 
@@ -262,9 +262,11 @@ setplanid(id){
 }
 getplanid(){
   return this.planid;
+  
 }
 getcgid(){
   return this.setcgiditem;
+  this.setcgiditem=null;
 }
   getAllArray() {
     return [this.criticalArray, this.warningArray, this.goodArray];
@@ -487,21 +489,44 @@ getcgid(){
       //     data=data1;
       
         if (symptomOrAction == "Symptom") {
-          item.symptom.text = this.returnLanguage(data1,this.language1);
-          item.symptom.img = data1.icon;
-          this.image = data1.icon;
-          console.log("this.image="+this.image);
-          console.log("data1.id");
-          console.log(data1.id);
-          item.symptom.symptomID = data1.id2;
+            if(this.pdzwyw(this.returnLanguage(data1,this.language1))==1){
+              item.symptom.text = this.returnLanguage(data1,0)+"\n\t\r"+this.returnLanguage(data1,this.language1);
           
+              item.symptom.img = data1.icon;
+              this.image = data1.icon;
+              console.log("this.image="+this.image);
+              console.log("data1.id");
+              console.log(data1.id);
+              item.symptom.symptomID = data1.id2;
+              
+            }
+        
+         else{
+              item.symptom.text = this.returnLanguage(data1,this.language1);
+              item.symptom.img = data1.icon;
+              this.image = data1.icon;
+              console.log("this.image="+this.image);
+              console.log("data1.id");
+              console.log(data1.id);
+              item.symptom.symptomID = data1.id2;
+            
+         }
+          
+       
         }
-        if (symptomOrAction == "Action") {
+        if (symptomOrAction == "Action") {  //在这里 action
+          if(this.pdzwyw(this.returnLanguage(data1,this.language1))==1){
+            item.text = this.returnLanguage(data1,0)+"\n\t\r"+this.returnLanguage(data1,this.language1);
+            item.img = data1.icon;
+            item.id = data1.id;
+            item.actionID = data1.id2;
+          }
+          else{
           item.text = this.returnLanguage(data1,this.language1);
           item.img = data1.icon;
           item.id = data1.id;
-          item.actionID = data1.id2;
-        }
+          item.actionID = data1.id2;}
+    }
         //  console.log("item.actionID");
         //  console.log(item.actionID);
         // console.log(item.symptom.img)
@@ -529,6 +554,9 @@ pdzwyw(str){   //判断中文英文
     }
 
 }
+      setlanguage(value){   //设置语言
+          this.language1=value;
+      }
       language(){
         //language1
         return this.language1;
@@ -542,6 +570,12 @@ pdzwyw(str){   //判断中文英文
       }
     fanhuiyuyan(){
       return this.language1;
+    }
+    setdanxuankuangzhi(value){
+      this.dxkz=value;
+    }
+    getdanxuankuangzhi(){
+     return this.dxkz;
     }
 //     zhenglishuju(element,Language){
 //     this.tx1=element;
