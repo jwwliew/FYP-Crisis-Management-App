@@ -186,6 +186,25 @@ export class Text1Component implements OnInit {
      this.ggg[index].enName=this.imageTxt[index].chName;
        
      }
+     
+    }
+    if(this.ser.language1==2){
+      this.ggg=null;
+      this.ggg=this.imageTxt;
+     for (let index = 0; index < this.imageTxt.length; index++) {
+     this.ggg[index].enName=this.imageTxt[index].myName;
+       
+     }
+
+    }
+    if(this.ser.language1==3){
+      this.ggg=null;
+      this.ggg=this.imageTxt;
+     for (let index = 0; index < this.imageTxt.length; index++) {
+     this.ggg[index].enName=this.imageTxt[index].tmName;
+       
+     }
+
     }
   // for (let index = 0; index < this.ggg.length; index++) {
   //  this.ggg[index].enName=this.ser.returnLanguage(this.ggg[index],1);
@@ -253,18 +272,46 @@ fanhui(item){
   // console.log("itemm的值是");
   // console.log(this.itemm);
   // console.log("itemm的值是");
+  var index2;
+  var itemgg;
+  itemgg=this.imageTxt[index2];
+  //重新从数据里面提取需要的数据
+   this.sym.getType("Symptom1").then((items) => {
+    for (let index = 0; index < items.length; index++) {
+      // this.a.push(items.find(item => item.id == 1).enName);
+      if(items[index].id2==item.id2){
+        itemgg=items[index];
+        // alert("执行了一次");
+      }
+     
+   }
+  })
+  setTimeout(() => {
+    // alert("itemgg="+itemgg.enName)
+
+  
+  // if(this.ser.pdzwyw(item.enName)==1){
+   
+  //   alert(item.enName)
+  // }
+
+
+   //传完整的数据，因为item已经被改变，所以用imagetxt里面的数据传
+ 
+  // console.log("itemgg="+itemgg.Name);
+// alert(index2);
   if(item.id<=5){
-  this.ser.chuanhui('Symptom', this.itemm, this.defaultLanguage,item);
+  this.ser.chuanhui('Symptom', this.itemm, this.defaultLanguage,itemgg);
 }
   else{
-    this.ser.chuanhui('Action', this.itemm, this.defaultLanguage,item);
+    this.ser.chuanhui('Action', this.itemm, this.defaultLanguage,itemgg);
   }
   console.log("this.gettitlea");
  
   console.log(this.ser.gettitlea());
   //console.log(this.pdp.planName);
   this.router.navigateByUrl('/tabs/plans/details/0/'+this.text1);
-
+}, 300);
   //this.ser.fanhui(item);
   //跳转回选择页面
  //text1是标题

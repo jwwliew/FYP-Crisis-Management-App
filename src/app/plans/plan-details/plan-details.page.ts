@@ -75,9 +75,12 @@ public defaultLanguage1;
     // let date1 = new Date().toLocaleString('en-GB', {hour12: true}); //02/08/2019, 2:09:09 pm, without 'en-GB' is 08/02 on my computer
     let date1 = new Date().toLocaleString('en-US');
     let maparr = this.templateService.cleansedArray();
-    if(this.planName==='undefined'){
-      this.planName=this.templateService.getcgid().planName;
-    }
+  
+      if(this.planName==='undefined'){
+        this.planName=this.templateService.getcgid().planName;
+      }
+
+   
     this.PlanService.addPlanDetails(this.defaultLanguage, date1, this.planName, this.thisgroup.controls.detailname.value.trim(), this.thisgroup.controls.detailnric.value,
       this.thisgroup.controls.detailtcs.value.trim(), this.thisgroup.controls.detailcontact.value, maparr, this.appointment).then(() => {
         this.templateService.resetArray();
@@ -88,8 +91,9 @@ public defaultLanguage1;
         // setTimeout(() => {}
         //   location.reload();
         // }, 100);
-        
+          // this.ionViewWillEnter();
           // this.router.navigateByUrl('/tabs/plans');
+          this.planName=null;
           location.replace('#/tabs/plans'); //新跳转方式20191019
           
         this.templateService.presentToastWithOptions("Created plan!")
@@ -119,12 +123,12 @@ public defaultLanguage1;
     this.android = this.templateService.checkPlatformAndroid();
     this.planName = this.activatedRoute.snapshot.paramMap.get('planName');
     //++++++++++++++++
-    console.log("this.planName");
+    // console.log("this.planName");
     //修复修改后数据丢失的问题
     if(this.planName==='undefined'){
-      console.log("是空的");
+      // console.log("是空的");
       var aob1=this.templateService.getcgid();
-      console.log("接收的对象是:"+aob1);
+      // console.log("接收的对象是:"+aob1);
       
       this.thisgroup.controls.detailname.setValue(aob1.name);
       this.thisgroup.controls.detailnric.setValue(aob1.nric);
@@ -133,7 +137,7 @@ public defaultLanguage1;
     
       
     }
-    console.log(this.planName);
+    // console.log(this.planName);
     this.templateService.settitlea(this.planName);
      //++++++++++++++++
     this.defaultLanguage = +this.activatedRoute.snapshot.paramMap.get("languageID");

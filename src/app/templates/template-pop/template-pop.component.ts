@@ -4,7 +4,6 @@ import { Storage } from '@ionic/storage';
 import { RouterInitializer } from '@angular/router/src/router_module';
 import { importType } from '@angular/compiler/src/output/output_ast';
 import { Router, ActivatedRoute } from '@angular/router';
-
 @Component({
   selector: 'app-template-pop',
   templateUrl: './template-pop.component.html',
@@ -12,6 +11,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class TemplatePopComponent implements OnInit {
   data: any;
+  // yaya;
   constructor(public router: Router, public popoverController: PopoverController, public navParams: NavParams, private modalController: ModalController, public settingstorge: Storage) {
     navParams.data.type == 'modal' && (this.modalPopUp = true);
     this.menuOptions = navParams.data.menuOptions; // this.menuOptions = navParams.get("keyOptions");
@@ -34,7 +34,9 @@ export class TemplatePopComponent implements OnInit {
   modalPopUp = false;
   defaultLanguage = 0;
   symptomOrAction: string;
-
+// tiaozhuan(){
+//   this.yaya=this.ser.gettitlea();
+// }
   close(thisOption) {
     
     if(thisOption.id==-10||thisOption.id==-9||thisOption.id==-8||thisOption.id==-7||thisOption.id==-6||thisOption.id==-5||thisOption.id==-4||thisOption.id==-3||thisOption.id==-2||thisOption.id==-1||thisOption.id==1||thisOption.id==2||thisOption.id==3||thisOption.id==4||thisOption.id==5||thisOption.id==11||thisOption.id==12||thisOption.id==13||thisOption.id==14){
@@ -50,9 +52,9 @@ export class TemplatePopComponent implements OnInit {
         }
           });
          
-          console.log("跳转之前↓")
-          console.log(shuju)
-          console.log("跳转之前↑") 
+          // console.log("跳转之前↓")
+          // console.log(shuju)
+          // console.log("跳转之前↑") 
           this.modalController.dismiss();
             this.router.navigate(['/text1'], {
               queryParams: {

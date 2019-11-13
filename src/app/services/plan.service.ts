@@ -80,7 +80,7 @@ export class PlanService {
   addNewPlan(newitem) {
     return this.storage.get(key).then((items) => {
       if (items) {
-        items.push(newitem);
+        items.unshift(newitem);
         return this.storage.set(key, items);
       } else {
         return this.storage.set(key, [newitem]);
