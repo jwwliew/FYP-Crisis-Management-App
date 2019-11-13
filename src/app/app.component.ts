@@ -640,7 +640,7 @@ export class AppComponent {
   id: '-8',
   id2: '177',
    enName: "Sugar - Low",
-   chName: "高血糖",
+   chName: "低血糖",
    myName: "Sugar - Low",
    tmName: "Sugar - Low",
    icon: "assets/icon/sym-sugar-sugar-low.jpg"
@@ -1265,7 +1265,7 @@ export class AppComponent {
   id: '-8',
   id2: '177',
    enName: "Sugar - Low",
-   chName: "高血糖",
+   chName: "低血糖",
    myName: "Sugar - Low",
    tmName: "Sugar - Low",
    icon: "assets/icon/sym-sugar-sugar-low.jpg"

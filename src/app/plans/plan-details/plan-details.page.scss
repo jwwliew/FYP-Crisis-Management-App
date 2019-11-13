@@ -1,0 +1,8 @@
+.imgCircleText{
+  
+white-space: pre-wrap;        //中文换行
+word-break:break-all;        //英文换行，以字母为依据
+overflow:hidden;            //隐藏超出的内容
+text-overflow:ellipsis;    //超出的内容设置成省略号
+
+}
