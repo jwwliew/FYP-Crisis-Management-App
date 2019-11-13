@@ -14,7 +14,7 @@ declare var addressimpl: any;
 var messagecheck= "";
 var storageb;
 var requestcheck= "";
-
+var statechange;
 @Component({
   selector: 'app-bluetoothmenu',
   templateUrl: './bluetoothmenu.page.html',
@@ -29,7 +29,7 @@ export class BluetoothmenuPage implements OnInit {
   message123:string = "asd";
   devices: any[] = [];
   statusMessage: string;
-  
+
   constructor(  
     private storage: Storage,
     private planService: PlanService,
@@ -106,6 +106,12 @@ function(){
  
   }
  scan (){
+   if (statechange== "off"){
+
+alert("Your bluetooth is currently turned off. Please switch it on to scan for devices!")
+
+   }
+   else{
   this.bluetoothscanString= "Scanning for devices!"
   this.devices= []; //clear list
 
@@ -115,7 +121,7 @@ function(){
   );
   setTimeout(this.setStatus.bind(this), 5000, 'Scan complete');
 
-
+}
 
 
 }
@@ -130,6 +136,8 @@ scanComplete(){
   this.bluetoothscanString = "Scan complete!";
 }
 async Receive(){
+
+  try{
 if (messagecheck== ""){
 alert("No data plan available.")
 
@@ -158,7 +166,7 @@ else {
       )
     }
   
-alert("Multiple plans added!");
+alert(data.length+ " plans are successfully added!");
 
 document.getElementById("checkrequest").innerHTML= "Waiting for data..";
   }
@@ -174,6 +182,7 @@ console.log("this code is being run");
     
     )
 
+alert("Your plan is successfully added !");
   }
   
       // this.storage.get("plan").then((items) =>{
@@ -185,12 +194,16 @@ console.log("this code is being run");
      
   //})
     
-alert("One plan added!");
   }
-  
+}
+catch(err){
+alert("There was an error retrieving the plan. Let the central know, to send it again!")
+}
+  finally{
 messagecheck = "";
 
 document.getElementById("checkrequest").innerHTML= "Waiting for data..";
+}
       
 }
   // If location permission is denied, you'll end up here
@@ -216,6 +229,9 @@ document.getElementById("checkrequest").innerHTML= "Waiting for data..";
   }
   onBluetoothStateChange(state) {
 console.log("Bluetooth state is" + state);
+statechange = state;
+console.log("statechange is"+statechange)
+
   }
 
   didReceiveWriteRequest (request){
