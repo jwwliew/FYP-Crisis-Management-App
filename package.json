@@ -31,6 +31,7 @@
     "@ionic/storage": "^2.2.0",
     "cordova-android": "^8.0.0",
     "cordova-ios": "^5.0.1",
+    "cordova-plugin-ble-central": "^1.2.4",
     "cordova-plugin-camera": "4.0.3",
     "cordova-plugin-file": "6.0.1",
     "cordova-plugin-file-opener2": "2.2.0",
@@ -94,7 +95,9 @@
       "cordova-plugin-file-opener2": {
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
-      "cordova-plugin-x-toast": {}
+      "cordova-plugin-x-toast": {},
+      "cordova-plugin-ble-peripheral": {},
+      "cordova-plugin-ble-central": {}
     },
     "platforms": [
       "android",

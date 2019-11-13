@@ -1,0 +1,106 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Bluetooth</ion-title>
+    <ion-buttons slot="start">
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<style>
+     #loader{
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  display:none;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+button {
+ 
+    display: inline-block;
+    background-color: white;
+    color: black;
+    height:600px;
+    width:400px;
+  
+  }
+.service{
+
+display: block;
+width:220px;
+
+}
+  .block{float:left;
+  width:1000px;
+    
+    height: 220px;
+  
+  }
+  .aligntext{
+
+text-align:left;
+margin-left: 20px;
+
+  }
+  .img {
+    display:inline-block;
+
+       height:83px;
+       width:120px;
+       
+   }
+   
+   
+   
+   
+   </style>
+<ion-content class="padding">
+<p class="aligntext">Status: {{ connection}}</p>
+
+
+<div class="block">
+<ion-footer>
+  <ion-toolbar class="aligntext">
+    
+  </ion-toolbar>
+</ion-footer>
+
+
+
+
+<div class="button">
+
+  <img src="../assets/phone2.png" item-left class="img">
+  
+
+  <ion-button style="position:relative;margin-top:-105px;" (click)="WriteData()" >Send plans</ion-button>
+
+
+
+  
+<ion-button style="position:relative;margin-top:-10px;margin-left:-125px;" (click)="GoBack()">Disconnect</ion-button>
+</div>
+
+</div>
+<p id = "data" class = "aligntext">{{MessageData}}</p>
+<div id="loader">
+
+</div>
+<ion-card class="service">
+Services: <ion-item *ngFor="let service of peripheral.services">
+  {{service}}
+</ion-item>
+</ion-card>
+<ion-card>
+
+ID: {{peripheral.id}}
+</ion-card>
+
+</ion-content>

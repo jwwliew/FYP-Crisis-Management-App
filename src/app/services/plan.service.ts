@@ -47,7 +47,10 @@ export class PlanService {
     });
   }
 
+addBluetoothPlanDetails(data){
 
+
+}
   //insert
   //newitem= pname, Details--->
   addPlanDetails(indexL, date1, planName, pname, pnric, tcsname, tcscontact, maparr, appointment) {
