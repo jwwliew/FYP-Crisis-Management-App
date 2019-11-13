@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { v4 as uuid } from 'uuid';
 import { TemplateService } from './template.service';
+import { insertView } from '@ionic/angular/dist/directives/navigation/stack-utils';
 
 const key = "plan";
 
@@ -53,7 +54,7 @@ addBluetoothPlanDetails(data){
 }
   //insert
   //newitem= pname, Details--->
-  addPlanDetails(indexL, date1, planName, pname, pnric, tcsname, tcscontact, maparr, appointment, ischecked=false) {
+  addPlanDetails(indexL, date1, planName, pname, pnric, tcsname, tcscontact, maparr, appointment, ischecked=false, isnew=false) {
     return this.storage.get(key).then((items) => {
       let details = {
         id: uuid(),
@@ -65,6 +66,7 @@ addBluetoothPlanDetails(data){
         createdDate: date1,
         language: indexL,
         isChecked: ischecked,   //JW
+        isNew: isnew,     //JW
         templates: maparr,
         appointment: appointment
       }
@@ -171,7 +173,7 @@ addBluetoothPlanDetails(data){
   }
 
   //JW
-  //add new plan, pass in the new plan
+  //add new plan. to add, pass in the new plan
   importAddNewPlan(thePlan){
     return new Promise((res) => {
       this.storage.get(key).then((allPlans) => {
@@ -186,4 +188,119 @@ addBluetoothPlanDetails(data){
       });
     })    
   }
+
+  setIsNewToFalse(thePlan){
+    new Promise((res) => {
+      this.storage.get(key).then((allPlans) => {
+        if(allPlans){
+          for(var f = 0; allPlans.length; f++){
+            if(allPlans[f].id === thePlan.id){
+              allPlans[f].isNew = false
+            }
+            if(f == allPlans.length-1){
+              res(allPlans)
+            }
+          }
+        }
+      })
+    }).then((allPlans) => {
+      this.storage.set(key, allPlans)
+    })
+  }
+
+
+  // //for display of newly imported plans
+  // addNewlyImportedPlans(onePlan){
+  //   var kkey = "newImportedPlans"
+  //   return new Promise((res) => {
+  //     this.storage.get(kkey).then((newPlans) => {
+  //       if (newPlans) {
+  //         if(newPlans.length == 0){
+  //           newPlans.push(onePlan)
+  //           this.storage.set(kkey, newPlans)
+  //           res()
+  //         }
+  //         else if (newPlans.length > 1) {
+  //           new Promise((res2) => {
+  //             var check = false
+  //             for(var z = 0; newPlans.length; z++){
+  //               if(newPlans[z].id !== onePlan.id){
+  //                 if(z == newPlans.length-1){
+  //                   res2(check)
+  //                 }
+  //               }
+  //               else{
+  //                 check = true
+  //                 res2(check)
+  //               }
+  //             }
+  //           }).then((check) => {
+  //             if(check === true){
+  //               res()
+  //             }
+  //             if (check === false) {
+  //               newPlans.push(onePlan)
+  //               this.storage.set(kkey, newPlans)
+  //               res()
+  //             }
+  //           })
+  //         }
+  //         else if(newPlans.length == 1 ){
+  //           if(newPlans[0].id === onePlan.id){
+  //             res()
+  //           }
+  //           else{
+  //             newPlans.push(onePlan)
+  //             this.storage.set(kkey, newPlans)
+  //             res()
+  //           }
+  //         }          
+  //       }
+  //       else{
+  //         this.storage.set(kkey, [newPlans])
+  //         res()
+  //       }
+  //     })
+  //   })
+  // }
+
+  // getNewlyImportedPlans(){
+  //   var kkey = "newImportedPlans"
+  //   return this.storage.get(kkey)
+  // }
+
+  // removeNewlyImportedPlan(id) {
+  //   var kkey = "newImportedPlans"
+  //   return new Promise((res) => {
+  //     this.storage.get(kkey).then((items) => {
+  //       var itemsToKeep = [];
+
+  //       if (items.length === 1) {
+  //         if (id === items[0].id) {
+  //           this.storage.set(kkey, itemsToKeep)
+  //           res()
+  //         }
+  //       }
+
+  //       else {
+  //         items.forEach((element, index, arr) => {
+  //           if (element.id !== id) {
+  //             itemsToKeep.push(element)
+
+  //             if (index === arr.length - 1) {
+  //               this.storage.set(kkey, itemsToKeep)
+  //               res()
+  //             }
+  //           }
+  //           else {
+  //             if (index === arr.length - 1) {
+  //               this.storage.set(kkey, itemsToKeep)
+  //               res()
+  //             }
+  //           }
+  //         })
+  //       }
+  //     })
+  //   })
+  // }
 }

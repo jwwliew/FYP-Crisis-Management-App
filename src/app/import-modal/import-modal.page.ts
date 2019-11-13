@@ -13,8 +13,6 @@ import { SettingsService } from './../services/settings.service'
 import * as _ from 'lodash';
 import * as CryptoJS from 'crypto-js';
 
-import { Router } from '@angular/router';
-
 @Component({
   selector: 'app-import-modal',
   templateUrl: './import-modal.page.html',
@@ -37,9 +35,10 @@ export class ImportModalPage implements OnInit {
   noDFoldersAvailable: boolean = false;
   noBFoldersAvailable: boolean = false;
 
+  addedPlans = [];
+
   constructor(private modalController: ModalController, private navParams: NavParams,
-    private file: File, private navController: NavController,
-    private router: Router, private storage: Storage, private toastController: ToastController,
+    private file: File, private storage: Storage, private toastController: ToastController,
     private planService: PlanService, private popoverController: PopoverController,
     private fileChooser: FileChooser, private filePath: FilePath, private settingService: SettingsService,
     private alertController: AlertController) { }
@@ -185,6 +184,7 @@ export class ImportModalPage implements OnInit {
   insertOneItemIntoDb(theItem) {
     return new Promise((res) => {
       const key = "plan";
+      theItem.isNew = true
       this.storage.get(key).then((result: any[]) => {
         result.push(theItem);
         this.storage.set(key, result)
@@ -221,7 +221,7 @@ export class ImportModalPage implements OnInit {
           let apromise1 = this.getStoragePlansIds().then((check) => {
             if (check === true) {     //if local db not empty
               Promise.all([apromise1, apromise2]).then(() => {
-                new Promise((res1) => {
+                new Promise((res1) => {     //for plans with conflicts
                   this.filterSameIds(this.storageIdArr, this.fileIdArr).then((filteredIdArr: string[]) => {
                     if (filteredIdArr.length <= 0) {    //if there are no conflicting plans
                       res1()
@@ -260,7 +260,7 @@ export class ImportModalPage implements OnInit {
             }
             if (check === false) {    //if local db is empty
               //just imports files straight away (skips conflict part)
-              this.asyncwhileloop(fileContents).then(() => {
+              this.asyncwhileloop(fileContents).then(async () => {
                 resolve();
                 this.resetArr();
               })
@@ -403,6 +403,7 @@ export class ImportModalPage implements OnInit {
   insertPlansIntoDb(filteredPlans) {
     return new Promise(async (res) => {
       for (var w = 0; w < filteredPlans.length; w++) {
+        filteredPlans[w].isNew = true
         await this.planService.importAddNewPlan(filteredPlans[w]).then(() => {
           if (w == filteredPlans.length - 1) {
             res();
@@ -445,7 +446,6 @@ export class ImportModalPage implements OnInit {
       popover.present()
 
       popover.onDidDismiss().then((check) => {
-        this.resetArr()
         if (check.data === true) {    //only triggers if popover is NOT dismissed by tapping backdrop
           res()
         }
@@ -510,7 +510,7 @@ export class ImportModalPage implements OnInit {
                 }
                 if (check === false) {    //if local db is empty
                   //just imports files straight away (skips conflict part)
-                  this.asyncwhileloop(fileContents).then(() => {
+                  this.asyncwhileloop(fileContents).then(async () => {
                     Mresolve();
                     this.resetArr();
                   })
@@ -581,7 +581,6 @@ export class ImportModalPage implements OnInit {
 
       await alert.present();
       var result = await alert.onDidDismiss()
-      console.log(result)
       if (result.data != undefined) {
         if (result.data.values[0] === true) {
           this.enableDontAskAgain()
