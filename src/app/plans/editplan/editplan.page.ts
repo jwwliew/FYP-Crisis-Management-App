@@ -9,13 +9,10 @@ import domtoimage from 'dom-to-image';
 import { File, IWriteOptions } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-<<<<<<< HEAD
 import * as  html2canvas from 'html2canvas';
 import { BluetoothModalPage } from 'src/app/bluetooth-modal/bluetooth-modal.page';
-=======
 declare var $: any;
 // declare var jquery:any;
->>>>>>> d3ec23fbe682640e6489ac949a65d798bde53da2
 @Component({
   selector: 'app-editplan',
   templateUrl: './editplan.page.html',
@@ -28,13 +25,8 @@ export class EditplanPage implements OnInit {
   details = {} as any;
   backUpPlanDetails = [];
   android: boolean;
-<<<<<<< HEAD
 
   constructor(private modal: ModalController,private PlanService: PlanService, private activatedRoute: ActivatedRoute, private templateService: TemplateService, private settingService: SymptomActionService,
-=======
-  dataUrl;
-  constructor(private PlanService: PlanService, private activatedRoute: ActivatedRoute, private templateService: TemplateService, private settingService: SymptomActionService,
->>>>>>> d3ec23fbe682640e6489ac949a65d798bde53da2
     private router: Router, private file: File, private loadingController: LoadingController, private fileOpener: FileOpener, public formBuilder: FormBuilder) {
   }
 
