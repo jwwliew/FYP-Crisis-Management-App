@@ -73,6 +73,7 @@ export class ViewPlansPage implements OnInit {
   }
 
   goEdit(item) {
+    this.planService.setIsNewToFalse(item)
     this.router.navigateByUrl('/tabs/plans/editplan/' + item.id);
   }
 

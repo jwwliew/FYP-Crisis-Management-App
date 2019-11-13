@@ -89,9 +89,9 @@ export class ImportConflictPopoverPage implements OnInit {
   }
 
   addSelectedPlans(toAdd) {     //add plans selected
-    const key = "plan";
     return new Promise(async (res) => {
       for (var k = 0; k < toAdd.length; k++) {
+        toAdd[k].isNew = true
         await this.planService.addNewPlan(toAdd[k]).then(() => {
           if (k === toAdd.length - 1) {
             //console.log("EXITING LOOP. . .")
