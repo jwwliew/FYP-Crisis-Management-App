@@ -1,0 +1,105 @@
+<ion-header>
+  <ion-toolbar color="primary">
+     
+    <ion-title> List of Bluetooth devices</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button  (click) = "closeModal()"></ion-back-button>
+    </ion-buttons>
+  
+  </ion-toolbar>
+</ion-header>
+<style>
+   .aligntext{
+
+text-align:left;
+margin-left: 20px;
+height:45px;
+  }
+  .myButton {
+ box-shadow: 0px 1px 0px 0px #f0f7fa;
+ background-color:#424953;
+ border-radius:6px;
+ display:inline-block;
+ cursor:pointer;
+ color:#ffffff;
+ font-family:Arial;
+ font-size:15px;
+ font-weight:bold;
+ padding:6px 24px;
+ text-decoration:none;
+ text-shadow:0px -1px 0px #5b6178;
+}
+    .button2 {
+      display:flex;
+     background-color: white;
+     color: black;
+     height:200px;
+     width:800px;
+   
+   }
+   .img2 {
+     float:left;
+     height:35px;
+     width:37px;
+     margin-left: -15px;
+     
+ }
+ .text2 {
+   
+ margin-top: -20px;
+ margin-left: 5px;
+ }
+ .img{
+ display:inline-block;
+
+        height:120px;
+        width:120px;
+
+
+}
+.block{
+}
+
+.text{
+position: relative;
+display:inline-block;
+vertical-align: top;
+
+}</style>
+<ion-content>
+<div class="ion-padding" class="block">
+  <p>{{bluetoothscanString}}</p>
+</div>
+<div class="aligntext">
+Choose the device, you would like to send the plan to! 
+</div>
+
+<div style="height:40px;">
+    <button (click)="scan()" class="myButton" style="margin-left:40px;">Scan</button>
+    
+    <button (click)="CloseModal()" class="myButton" style="margin-left:40px;" >Back</button> 
+    
+    </div>
+<ion-item>
+              
+
+  <ion-list  >
+        
+      <button ion-item item-start *ngFor="let device of devices" (click)="deviceSelected(device)" class="button2">
+          
+              <img src='../assets/phone1.png' item-left class="img">
+  
+      <span class="text2">
+        <h2>Name: {{ device.name || 'Unnamed'}}</h2>
+        <p>ID: {{ device.id }} </p>
+      </span>
+            </button>
+     
+
+
+
+
+  </ion-list>
+     
+                    </ion-item>
+</ion-content>

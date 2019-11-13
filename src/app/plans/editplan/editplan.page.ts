@@ -3,14 +3,19 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PlanService } from './../../services/plan.service';
 import { TemplateService } from 'src/app/services/template.service';
 import { SymptomActionService } from 'src/app/services/symptomaction.service';
-import { LoadingController, IonList, IonItemSliding } from '@ionic/angular';
+import { LoadingController, IonList, IonItemSliding, ModalController } from '@ionic/angular';
 import * as jsPDF from 'jspdf';
 import domtoimage from 'dom-to-image';
 import { File, IWriteOptions } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+<<<<<<< HEAD
+import * as  html2canvas from 'html2canvas';
+import { BluetoothModalPage } from 'src/app/bluetooth-modal/bluetooth-modal.page';
+=======
 declare var $: any;
 // declare var jquery:any;
+>>>>>>> d3ec23fbe682640e6489ac949a65d798bde53da2
 @Component({
   selector: 'app-editplan',
   templateUrl: './editplan.page.html',
@@ -23,8 +28,13 @@ export class EditplanPage implements OnInit {
   details = {} as any;
   backUpPlanDetails = [];
   android: boolean;
+<<<<<<< HEAD
+
+  constructor(private modal: ModalController,private PlanService: PlanService, private activatedRoute: ActivatedRoute, private templateService: TemplateService, private settingService: SymptomActionService,
+=======
   dataUrl;
   constructor(private PlanService: PlanService, private activatedRoute: ActivatedRoute, private templateService: TemplateService, private settingService: SymptomActionService,
+>>>>>>> d3ec23fbe682640e6489ac949a65d798bde53da2
     private router: Router, private file: File, private loadingController: LoadingController, private fileOpener: FileOpener, public formBuilder: FormBuilder) {
   }
 
@@ -131,7 +141,7 @@ export class EditplanPage implements OnInit {
   }
 
   popOverController(x) {
-    let menuOptions = ["Edit", "Rename", "Export to PDF"];
+    let menuOptions = ["Edit", "Rename", "Export to PDF", "Transfer via Bluetooth"];
     this.templateService.popOverController('popover', x, menuOptions).then(popover => {
       popover.present();
       popover.onDidDismiss().then((data) => {
@@ -144,10 +154,14 @@ export class EditplanPage implements OnInit {
     var call = {
       'Edit': () => this.callEdit(),
       'Rename': () => this.askForName(),
-      'Export to PDF': () => this.exportToPDF()
+      'Export to PDF': () => this.exportToPDF(),
+      
+      'Transfer via Bluetooth': () => this.TransferBluetooth()
     };
     call[type]();
   }
+
+
 
   public loading: any;
   async presentLoading(msg) {
@@ -155,6 +169,22 @@ export class EditplanPage implements OnInit {
       message: msg
     });
     return await this.loading.present();
+  }
+  async TransferBluetooth(){
+    const BluetoothModal = await this.modal.create(
+
+    {
+component: BluetoothModalPage,
+componentProps: {
+item: this.activatedRoute.snapshot.paramMap.get('item')
+}
+
+    }
+    ) ;
+  
+ 
+    return await BluetoothModal.present();
+
   }
 
 
