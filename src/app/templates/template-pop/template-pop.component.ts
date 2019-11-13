@@ -4,7 +4,6 @@ import { Storage } from '@ionic/storage';
 import { RouterInitializer } from '@angular/router/src/router_module';
 import { importType } from '@angular/compiler/src/output/output_ast';
 import { Router, ActivatedRoute } from '@angular/router';
-import { TemplateService } from 'src/app/services/template.service';
 @Component({
   selector: 'app-template-pop',
   templateUrl: './template-pop.component.html',
@@ -13,7 +12,7 @@ import { TemplateService } from 'src/app/services/template.service';
 export class TemplatePopComponent implements OnInit {
   data: any;
   // yaya;
-  constructor(public ser:TemplateService,public router: Router, public popoverController: PopoverController, public navParams: NavParams, private modalController: ModalController, public settingstorge: Storage) {
+  constructor(public router: Router, public popoverController: PopoverController, public navParams: NavParams, private modalController: ModalController, public settingstorge: Storage) {
     navParams.data.type == 'modal' && (this.modalPopUp = true);
     this.menuOptions = navParams.data.menuOptions; // this.menuOptions = navParams.get("keyOptions");
     this.symptomOrAction = navParams.data.symptomOrAction;

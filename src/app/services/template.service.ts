@@ -4,7 +4,7 @@ import {v4 as uuid} from 'uuid';
 import { Setting } from '../models/symptomaction';
 import { SymptomActionService } from './symptomaction.service';
 import { ActionSheetController, ToastController, AlertController, PopoverController, ModalController, Platform } from '@ionic/angular';
-import { TemplatePopComponent } from './../templates/template-pop/template-pop.component';
+import { TemplatePopComponent } from '.././templates/template-pop/template-pop.component';
 import { computeStackId, isTabSwitch } from '@ionic/angular/dist/directives/navigation/stack-utils';
 
 // import { AnyMxRecord } from 'dns';
