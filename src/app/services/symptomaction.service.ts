@@ -292,7 +292,7 @@ outputObj(obj) { //打印方法
 
   getOneImage(type, id) {
     return this.getType(type).then((items: Setting[]) => {
-      let img = items.find(item => item.id === id).icon;
+      let img = items.find(item => item.id2 === id).icon;
       // //强行调用glo
       // return this.getType("glo").then((items1: Setting[]) => {
       //   //  let img = this.ser1.image;

@@ -1,3 +1,17 @@
+<style>
+  .modalSelect {
+    text-align: center;
+    /* background-color:  #414A53;
+    color: white; */
+    position: relative;
+    right: 30px;
+  }
+
+  .ionList {
+    padding: 5px;
+  }
+</style>
+
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title>Import Files</ion-title>
@@ -10,10 +24,67 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6" size-md>
+        <ion-select class="modalSelect" interface="popover" [(ngModel)]="selectedFolder"
+          (ionChange)="changeView(selectedFolder)">
+          <ion-select-option value="appfolder">App Folder</ion-select-option>
+          <ion-select-option value="downloads">Downloads</ion-select-option>
+          <ion-select-option value="bluetooth">Bluetooth</ion-select-option>
+          <ion-select-option value="others">Others</ion-select-option>
+        </ion-select>
+      </ion-col>
+      <ion-col size="6" size-md></ion-col>
+    </ion-row>
+  </ion-grid>
+
+    <ion-list class="ionList" *ngIf="selectedFolder === 'appfolder'">
+      <ion-item-group *ngIf="!noFoldersAvailable">
+        <ion-item *ngFor="let oneFile of appfolder">
+          <ion-label>{{oneFile.name}}</ion-label>
+          <ion-button (click)="importBtn(oneFile, 'crisisApp')">Import</ion-button>
+        </ion-item>
+      </ion-item-group>
+
+      <ion-item *ngIf="noAFoldersAvailable">
+        <ion-label>No Import Files Avaialble</ion-label>
+      </ion-item>
+    </ion-list>
+
+    <ion-list *ngIf="selectedFolder === 'downloads'">
+      <ion-item-group *ngIf="!noFoldersAvailable">
+        <ion-item *ngFor="let oneFile of downloads">
+          <ion-label>{{oneFile.name}}</ion-label>
+          <ion-button (click)="importBtn(oneFile, 'Download')">Import</ion-button>
+        </ion-item>
+      </ion-item-group>
+      <ion-item *ngIf="noDFoldersAvailable">
+        <ion-label>No Import Files Available</ion-label>
+      </ion-item>
+    </ion-list>
+
+    <ion-list *ngIf="selectedFolder === 'bluetooth'">
+      <ion-item-group *ngIf="!noFoldersAvailable">
+        <ion-item *ngFor="let oneFile of bluetooth">
+          <ion-label>{{oneFile.name}}</ion-label>
+          <ion-button (click)="importBtn(oneFile, 'Bluetooth')">Import</ion-button>
+        </ion-item>
+      </ion-item-group>
+
+      <ion-item *ngIf="noBFoldersAvailable">
+        <ion-label>No Import Files Available</ion-label>
+      </ion-item>
+    </ion-list>
+
+    <div *ngIf="selectedFolder === 'others'">
+      <ion-button class="button-block" (click)="openFileChooser()">Choose another file</ion-button>
+    </div>
+
+  <!-- <ion-list>
     <ion-item *ngFor="let oneFile of theFiles; index as i">
       <ion-label>{{oneFile.name}}</ion-label>
-      <ion-button (click)="importSelectedCheck(oneFile)">Import</ion-button>
+      <ion-button (click)="importBtn(oneFile)">Import</ion-button>
     </ion-item>
-  </ion-list>
+  </ion-list> -->
 </ion-content>

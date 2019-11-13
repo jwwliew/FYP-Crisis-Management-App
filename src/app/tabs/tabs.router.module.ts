@@ -75,6 +75,10 @@ const routes: Routes = [
                     { 
                         path: 'about', 
                         loadChildren: '../settings/about/about.module#AboutPageModule' 
+                    },
+                    {
+                        path: 'setting',
+                        loadChildren: '../settings/setting/setting.module#SettingPageModule'
                     }
                 ]
             }

@@ -15,7 +15,8 @@ import { load } from '@angular/core/src/render3';
 })
 export class Text1Component implements OnInit {
   public lan:any[1];
-  public defaultLanguage = this.ser.language();
+  public abb=this.ser.language();
+  public defaultLanguage = this.abb;
   public abc: any = []; //选择传递过来的值
   public fzsz: any = []; //复制数组
   public imageText: any = []; //全部后台数据
@@ -171,9 +172,27 @@ export class Text1Component implements OnInit {
 
   out1(){
     this.ggg=this.imageTxt;
-    this.ggg=this.ser.zhenglishuju(this.ggg,this.ser.fanhuiyuyan());
+    // this.ggg=this.ser.zhenglishuju(this.ggg,this.ser.fanhuiyuyan());
     console.log("this.ggg="+this.ggg);
+    if(this.ser.language1==0){
+      this.ggg=null;
+      this.ggg=this.imageTxt;
+  
+    }
+    if(this.ser.language1==1){
+      this.ggg=null;
+      this.ggg=this.imageTxt;
+     for (let index = 0; index < this.imageTxt.length; index++) {
+     this.ggg[index].enName=this.imageTxt[index].chName;
+       
+     }
+    }
+  // for (let index = 0; index < this.ggg.length; index++) {
+  //  this.ggg[index].enName=this.ser.returnLanguage(this.ggg[index],1);
     
+  // }
+
+  console.log("out1准备完毕！！！");
   }
  xiugai(){
   console.log("修改前的数组");
