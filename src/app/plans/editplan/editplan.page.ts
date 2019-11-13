@@ -3,15 +3,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PlanService } from './../../services/plan.service';
 import { TemplateService } from 'src/app/services/template.service';
 import { SymptomActionService } from 'src/app/services/symptomaction.service';
-import { LoadingController, IonList, IonItemSliding } from '@ionic/angular';
+import { LoadingController, IonList, IonItemSliding, ModalController } from '@ionic/angular';
 import * as jsPDF from 'jspdf';
 import domtoimage from 'dom-to-image';
 import { File, IWriteOptions } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as  html2canvas from 'html2canvas';
-import { computeStackId } from '@ionic/angular/dist/directives/navigation/stack-utils';
-import * as jquery from 'jquery';
+import { BluetoothModalPage } from 'src/app/bluetooth-modal/bluetooth-modal.page';
 declare var $: any;
 // declare var jquery:any;
 @Component({
@@ -29,7 +28,7 @@ export class EditplanPage implements OnInit {
   dataUrl;
   texta;
   constructor(private PlanService: PlanService, private activatedRoute: ActivatedRoute, private templateService: TemplateService, private settingService: SymptomActionService,
-    private router: Router, private file: File, private loadingController: LoadingController, private fileOpener: FileOpener, public formBuilder: FormBuilder) {
+private modal: ModalController,    private router: Router, private file: File, private loadingController: LoadingController, private fileOpener: FileOpener, public formBuilder: FormBuilder) {
   }
 
   something = this.formBuilder.group({
@@ -152,14 +151,13 @@ export class EditplanPage implements OnInit {
       'Rename': () => this.askForName(),
       'Export to PDF': () => this.exportToPDF(),
       'duplicate': () => this.duplicate(),
-      'Transfer via Bluetooth':() =>this.Transfer()
+      'Transfer via Bluetooth':() =>this.TransferBluetooth()
     };
     call[type]();
   }
 
-  Transfer(){
-    
-  }
+
+
   public loading: any;
   async presentLoading(msg) {
     this.loading = await this.loadingController.create({
@@ -182,6 +180,24 @@ export class EditplanPage implements OnInit {
     // console.log(dxksj);
   }
 
+
+
+  async TransferBluetooth(){
+    const BluetoothModal = await this.modal.create(
+
+    {
+component: BluetoothModalPage,
+componentProps: {
+item: this.activatedRoute.snapshot.paramMap.get('item')
+}
+
+    }
+    ) ;
+  
+ 
+    return await BluetoothModal.present();
+
+  }
 
 
   exportToPDF() {
@@ -1410,7 +1426,6 @@ export class EditplanPage implements OnInit {
               }
               if (aaa1 == 0 && aaa2 == 0 && aaa3 == 1) {
 
-
                 while (leftHeight > 0) {
 
                   doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
@@ -1426,6 +1441,7 @@ export class EditplanPage implements OnInit {
               }
             }
 
+                while (leftHeight > 0) {
 
             if (zwyw == 0) {
               console.log("000000000000000000000000000000000000000000000");
@@ -1449,9 +1465,11 @@ export class EditplanPage implements OnInit {
                 }
                 doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 3 && aaa2 == 3 && aaa3 == 0) {//★
 
               if (aaa1 == 3 && aaa2 == 3 && aaa3 == 2) {
 
+                while (leftHeight > 0) {
 
                 while (leftHeight > 0) {
 
@@ -2552,9 +2570,9 @@ export class EditplanPage implements OnInit {
             this.templateService.presentToastWithOptions("PDF file has been created!");
             this.fileOpener.open(success.nativeURL, "application/pdf").catch(() => this.templateService.presentToastWithOptions("Please install a PDF Viewer such as Acrobat!"));
           }).catch((error) => this.templateService.presentToastWithOptions("An error has occured!!!")); 
+        }}}
         }, 4000);
-
-        }
+                  }
         //for website
     
          
@@ -2567,6 +2585,7 @@ export class EditplanPage implements OnInit {
         
   
       )}
+      
     // // this.presentLoading('Creating PDF file...');
     // const directory = this.file.externalRootDirectory;
     // console.log("directory的值="+directory); //directory=null
