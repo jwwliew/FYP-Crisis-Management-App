@@ -214,6 +214,7 @@ export class ImportModalPage implements OnInit {
   }
 
   mainFunctionCalls(oneFile, foldername){
+    this.resetArr()
     return new Promise((resolve) => {
       this.readFileToVar(oneFile.name, foldername).then((fileContents: string) => {
         this.checkJsonFileId(fileContents).then((fileContents: string) => {

@@ -55,8 +55,8 @@
           <ion-checkbox *ngIf="checkboxHidden" [(ngModel)]="item.isChecked" (click)="$event.stopPropagation()" class="itemCheckbox"></ion-checkbox>          
           <ion-card button>
             <ion-card-header color="tertiary">
-              <ion-card-title><div *ngIf="item.isNew"><ion-badge color="danger">New</ion-badge></div>{{item.planName}}
-              </ion-card-title>
+              <ion-card-title style="display: inline-block">{{item.planName}}</ion-card-title>
+              <ion-label *ngIf="item.isNew" style="display: inline-block;"><ion-badge color="danger">New</ion-badge></ion-label>
             </ion-card-header>
             <ion-card-content no-padding>
               <ion-row style="border-bottom: 1px solid lightgrey;" padding-start>

@@ -42,11 +42,10 @@
     <ion-list class="ionList" *ngIf="selectedFolder === 'appfolder'">
       <ion-item-group *ngIf="!noFoldersAvailable">
         <ion-item *ngFor="let oneFile of appfolder">
-          <ion-label>{{oneFile.name}}</ion-label>
+          <ion-label text-wrap>{{oneFile.name}}</ion-label>
           <ion-button (click)="importBtn(oneFile, 'crisisApp')">Import</ion-button>
         </ion-item>
       </ion-item-group>
-
       <ion-item *ngIf="noAFoldersAvailable">
         <ion-label>No Import Files Avaialble</ion-label>
       </ion-item>
@@ -55,7 +54,7 @@
     <ion-list *ngIf="selectedFolder === 'downloads'">
       <ion-item-group *ngIf="!noFoldersAvailable">
         <ion-item *ngFor="let oneFile of downloads">
-          <ion-label>{{oneFile.name}}</ion-label>
+          <ion-label text-wrap>{{oneFile.name}}</ion-label>
           <ion-button (click)="importBtn(oneFile, 'Download')">Import</ion-button>
         </ion-item>
       </ion-item-group>
@@ -67,7 +66,7 @@
     <ion-list *ngIf="selectedFolder === 'bluetooth'">
       <ion-item-group *ngIf="!noFoldersAvailable">
         <ion-item *ngFor="let oneFile of bluetooth">
-          <ion-label>{{oneFile.name}}</ion-label>
+          <ion-label text-wrap>{{oneFile.name}}</ion-label>
           <ion-button (click)="importBtn(oneFile, 'Bluetooth')">Import</ion-button>
         </ion-item>
       </ion-item-group>

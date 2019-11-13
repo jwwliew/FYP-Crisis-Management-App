@@ -20,6 +20,9 @@ export class ImportConflictPopoverPage implements OnInit {
     private storage: Storage, private planService: PlanService, private  toastController: ToastController) { }
 
   ngOnInit() {
+    this.toDelete = [];
+    this.toAdd = [];
+
     let values = this.navParams.get('conflictedPlans')
     if(this.fileSide.length <= 0){
       this.fileSide = values[0]
@@ -27,8 +30,6 @@ export class ImportConflictPopoverPage implements OnInit {
     if(this.storageSide.length <= 0){
       this.storageSide = values[1]
     }
-    this.toDelete = [];
-    this.toAdd = [];
   }
 
   //TODO:
