@@ -1,3 +1,9 @@
+<style>
+  .itemCheckbox {
+    margin: 5px;
+  }
+</style>
+
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title>
@@ -44,12 +50,13 @@
     <ion-virtual-scroll [items]="sortedDetails" id="virtualScroll" [itemHeight]="itemHeightFn"
       [approxItemHeight]="'140px'">
       <!-- <div *virtualItem="let item; let index = index;"> -->
-      <ion-item-sliding (ionSwipe)="swipeEvent(item.id)" *virtualItem="let item; let index = index;" [disabled]="checkboxHidden">
-        <ion-item (click)="goEdit(item)" detail="false" (press)="pressEvent($event, item)">
-          <ion-checkbox *ngIf="checkboxHidden" [(ngModel)]="item.isChecked" (click)="$event.stopPropagation()"></ion-checkbox>          
+      <ion-item-sliding (ionSwipe)="swipeEvent(item.id)" *virtualItem="let item; let index = index;" id="slideitem">
+        <ion-item (click)="goEdit(item)" detail="false" (press)="enableCheckbox($event)">
+          <ion-checkbox *ngIf="checkboxHidden" [(ngModel)]="item.isChecked" (click)="$event.stopPropagation()" class="itemCheckbox"></ion-checkbox>          
           <ion-card button>
             <ion-card-header color="tertiary">
-              <ion-card-title>{{item.planName}}</ion-card-title>
+              <ion-card-title><div *ngIf="item.isNew"><ion-badge color="danger">New</ion-badge></div>{{item.planName}}
+              </ion-card-title>
             </ion-card-header>
             <ion-card-content no-padding>
               <ion-row style="border-bottom: 1px solid lightgrey;" padding-start>

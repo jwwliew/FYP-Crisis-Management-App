@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { PlanService } from './../../services/plan.service';
-import { ActionSheetController, Events, IonList, ToastController } from '@ionic/angular';
+import { ActionSheetController, Events, IonList, ToastController, AlertController } from '@ionic/angular';
 import { TemplateService } from 'src/app/services/template.service';
+import { SettingsService } from 'src/app/services/settings.service';
 
 //JW
 import { File } from '@ionic-native/file/ngx';
@@ -10,6 +11,9 @@ import { ModalController, PopoverController } from '@ionic/angular';
 import { ImportModalPage } from '../../import-modal/import-modal.page';
 import { v4 as uuid } from 'uuid';
 import { Storage } from '@ionic/storage';
+import * as CryptoJS from 'crypto-js';
+
+declare let window: any;
 
 @Component({
   selector: 'app-view-plans',
@@ -26,7 +30,8 @@ export class ViewPlansPage implements OnInit {
   constructor(private router: Router, private planService: PlanService, public actionSheetController: ActionSheetController,
     private event: Events, private templateService: TemplateService, private file: File,
     private modalController: ModalController, private storage: Storage, private toastController: ToastController,
-    private popoverController: PopoverController) {
+    private popoverController: PopoverController, private alertController: AlertController,
+    private settingService: SettingsService) {
 
   }
   details: any;
@@ -68,6 +73,7 @@ export class ViewPlansPage implements OnInit {
   }
 
   goEdit(item) {
+    this.planService.setIsNewToFalse(item)
     this.router.navigateByUrl('/tabs/plans/editplan/' + item.id);
   }
 
@@ -202,39 +208,96 @@ export class ViewPlansPage implements OnInit {
   }
 
   getImportFiles() {
-    return new Promise((res) => {
-      this.checkAppRootFolderExist().then((check: boolean) => {
-        if (check === false) {
-          //console.log("Nothing to import");
-          this.showToast("No import files available")
-        }
-        else if (check === true) {
-          this.checkIfContainsFiles().then((isThere) => {
-            if (isThere === true) {
-              this.listJsonFiles(function (callbackResult) {
-                if (callbackResult.length >= 1) {
-                  res(callbackResult);
-                }
-              })
-            }
-            else if (isThere === false) {
-              this.showToast("No import files available")
-            }
-            else {
-              //catch error?
-              console.log("catch error?")
-            }
-          })
-        }
+    return new Promise((Mres) => {
+      var promise1 = new Promise((res1) => {
+        this.checkFolderExist('Download').then((check: boolean) => {
+          if (check === false) {
+            res1()
+          }
+          else if (check === true) {
+            this.checkIfContainsFiles('Download').then(async (isThere: boolean) => {
+              if (isThere === true) {
+                this.listFiles(function (callbackResult){
+                  if(callbackResult.length >= 1){
+                    res1(callbackResult)
+                  }
+                }, "Download")
+              }
+              else if (isThere === false) {
+                res1()
+              }
+              else {
+                //catch error
+              }
+            })
+          }
+        })
+      })
+
+      var promise2 = new Promise((res2) => {
+        this.checkFolderExist('Bluetooth').then((check: boolean) => {
+          if (check === false) {
+            res2()
+          }
+          else if(check === true) {
+            this.checkIfContainsFiles('Bluetooth').then(async(isThere: boolean) => {
+              if (isThere === true) {
+                this.listFiles(function (callbackResult){
+                  if(callbackResult.length >= 1){
+                    res2(callbackResult)
+                  }
+                }, "Bluetooth")
+              }
+              else if (isThere === false) {
+                res2()
+              }
+              else {
+                //catch error
+              }
+            })
+          }
+        })        
+      })
+      var promise3 = new Promise((res3) => {
+        this.checkFolderExist('crisisApp').then((check: boolean) => {
+          if (check === false) {
+            res3()
+            //this.showToast("No import files available")
+          }
+          else if (check === true) {
+            this.checkIfContainsFiles('crisisApp').then(async(isThere: boolean) => {
+              if (isThere === true) {
+                this.listFiles(function (callbackResult) {
+                  if (callbackResult.length >= 1) {
+                    res3(callbackResult);
+                  }
+                }, "crisisApp")
+              }
+              else if (isThere === false) {
+                res3()
+                //this.showToast("No import files available")
+              }
+              else {                
+                //catch error?
+              }
+            })
+          }
+        })
+      })
+
+      Promise.all([promise1, promise2, promise3]).then((filesArr) => {
+        Mres(filesArr)
       })
     })
   }
 
-  checkIfContainsFiles() {
+  
+
+  checkIfContainsFiles(foldername: string) {
     return new Promise((res) => {
       var isThere = false;
       let path = this.file.externalRootDirectory
-      this.file.listDir(path, 'crisisApp').then((files) => {
+      this.file.listDir(path, foldername).then((files) => {
         if (files.length <= 0) {
           res(isThere)
         }
@@ -246,15 +309,20 @@ export class ViewPlansPage implements OnInit {
     })
   }
 
-  //list import files available in device storage
-  async listJsonFiles(callback) {       //callback function, returns a fileArr of json files
+  //list files in external storage ONLY. pass in folder name
+  async listFiles(callback, foldername: string) {       //callback function, returns a fileArr of files
     let path = this.file.externalRootDirectory;
     let fileArr = [];
 
     function checkFile(theFile) {    //check if it is a folder, if false, dont push into fileArr
       return new Promise((res) => {
         if (theFile.isFile === true) {
-          fileArr.push(theFile);
+          var filenamesplit = theFile.name.split('.')
+          var extension = filenamesplit[filenamesplit.length -1]
+          if(extension === "json"){
+            fileArr.push(theFile)
+            res()
+          }
           res()
         }
         else {
@@ -264,7 +332,7 @@ export class ViewPlansPage implements OnInit {
       })
     }
 
-    this.file.listDir(path, 'crisisApp').then(async (files) => {
+    this.file.listDir(path, foldername).then(async (files) => {
       (async function asyncloop() {     //loop through files in folder
         for (let a = 0; a < files.length; a++) {
           await checkFile(files[a])     //function checkFile pushes json files into fileArr, returns fileArr
@@ -288,15 +356,12 @@ export class ViewPlansPage implements OnInit {
     })
   }
 
-  //open import selection page
+  //open import file selection page
   async openModal(filearr) {
-    var newFileArr = [];
-    newFileArr = filearr[0];      //since filearr is a [[]], im unwrapping the outer array
-    //console.log("function openModal => " + JSON.stringify(newFileArr));
     const modal = await this.modalController.create({
       component: ImportModalPage,
       componentProps: {
-        fileArr: newFileArr
+        fileArr: filearr
       }
     });
     modal.onDidDismiss().then(() => {
@@ -312,39 +377,98 @@ export class ViewPlansPage implements OnInit {
   }
 
   exportPlansBtn() {   //html btn
-    this.checkAppRootFolderExist().then((isThere: boolean) => {
-      if (isThere == true) {
-        this.exportAllPlans().then(() => {
-          this.showToast("Export successful")
-        })
-      }
-      else if (isThere == false) {
-        this.showToast("App folder not found. Creating one for you. . .")
-        this.createAppRootFolder().then((isCreated: boolean) => {
-          if (isCreated === true) {
-            this.exportAllPlans().then(() => {
-              this.showToast("Export successful")
+    this.checkDontAskAgain().then((enabled) => {
+      if(enabled === true){
+        this.checkFolderExist('crisisApp').then((isThere: boolean) => {
+          if (isThere == true) {
+            this.generateSuggestedFileName().then((suggestedName: string) => {
+              this.nameExportAlert(suggestedName).then((filename) => {              
+                if(filename === false){
+                  //user clicked cancel. do nothing
+                }
+                if(filename !== false){
+                  this.exportAllPlans(filename)
+                }
+              })
+            })
+          }
+          else if (isThere == false) {
+            this.showToast("App folder not found. Creating one for you. . .")
+            this.createAppRootFolder().then((isCreated: boolean) => {
+              if (isCreated === true) {
+                this.generateSuggestedFileName().then((suggestedName: string) => {
+                  this.nameExportAlert(suggestedName).then((filename) => {              
+                    if(filename === false){
+                      //user clicked cancel. do nothing
+                    }
+                    if(filename !== false){
+                      this.exportAllPlans(filename)
+                    }
+                  })
+                })
+              }
             })
           }
         })
       }
-    })
+      else if(enabled === false){
+        this.presentExportAlert().then((check) => {
+          if(check === false){
+            //user clicked cancel. do nothing
+          }
+          if(check === true){
+            this.checkFolderExist('crisisApp').then((isThere: boolean) => {
+              if (isThere == true) {
+                this.generateSuggestedFileName().then((suggestedName: string) => {
+                  this.nameExportAlert(suggestedName).then((filename) => {              
+                    if(filename === false){
+                      //user clicked cancel. do nothing
+                    }
+                    if(filename !== false){
+                      this.exportAllPlans(filename)
+                    }
+                  })
+                })
+              }
+              else if (isThere == false) {
+                this.showToast("App folder not found. Creating one for you. . .")
+                this.createAppRootFolder().then((isCreated: boolean) => {
+                  if (isCreated === true) {
+                    this.generateSuggestedFileName().then((suggestedName: string) => {
+                      this.nameExportAlert(suggestedName).then((filename) => {              
+                        if(filename === false){
+                          //user clicked cancel. do nothing
+                        }
+                        if(filename !== false){
+                          this.exportAllPlans(filename)
+                        }
+                      })
+                    })
+                  }
+                })
+              }
+            })
+          }      
+        })
+      }
+    })        
   }
-
+  
   //check device storage for app folder
-  checkAppRootFolderExist() {
+  checkFolderExist(foldername: string) {
     return new Promise((res) => {
       let path = this.file.externalRootDirectory;
-      this.file.checkDir(path, 'crisisApp').then((isThere) => {
+      this.file.checkDir(path, foldername).then((isThere) => {
         if (isThere == true) {
           //console.log("App folder found!");
           res(isThere);
         }
       })
         .catch((err) => {
+          console.log("Caught something!")
           if (err.code == 1) {    //code for file not found
             let isThere = false;
-            //console.log("App folder not found!");
+            //console.log("Caught error, please ignore => " + JSON.stringify(err))
             res(isThere);
           }
         })
@@ -357,7 +481,7 @@ export class ViewPlansPage implements OnInit {
     return new Promise((res) => {
       let path = this.file.externalRootDirectory;
       this.file.createDir(path, 'crisisApp', true).then((dirEntry) => {
-        console.log("App folder created!");
+        //console.log("App folder created!");
         this.showToast("App folder created!");
         if (dirEntry.isDirectory === true) {
           isCreated = true
@@ -368,18 +492,17 @@ export class ViewPlansPage implements OnInit {
   }
 
   //retrieve all plans from db and put into file
-  exportAllPlans() {
+  exportAllPlans(filename) {
     var check = true;
     return new Promise((res) => {
       this.planService.getAllPlan().then((plans) => {
 
         if (plans.length <= 0) {    //if no plans in db
-          this.showToast("Nothing to export!")
           check = false
           res(check)
         }
 
-        let newPlansStr: string = "";
+        let newPlansStr: string = "";   //string to be written into file
         let that = this;
 
         let fileCheck = this.idJsonFile();
@@ -401,10 +524,10 @@ export class ViewPlansPage implements OnInit {
 
         //put into file part
         async function putIntoFile(newPlansStr, that) {
-          let filename = await that.nameJsonFile();
-          let data: string = newPlansStr;
+          //let filename = await that.nameJsonFile();
+          let data: string = await that.encryptData(newPlansStr);
           let path = that.file.externalRootDirectory + "crisisApp/";
-          await that.file.writeFile(path, filename, data, { replace: true });
+          await that.file.writeFile(path, filename + ".json", data, { replace: true });
           res(check)
         }
 
@@ -414,10 +537,12 @@ export class ViewPlansPage implements OnInit {
       if (check === true) {
         this.showToast("Export successful")
       }
+      if (check === false){
+        this.showToast("Nothing to export!")
+      }
     })
       .catch((err) => {
-        //do nothing
-        //console.log("Error caught => " + JSON.stringify(err))
+        console.log("Error caught => " + JSON.stringify(err))
       })
   }
 
@@ -428,13 +553,13 @@ export class ViewPlansPage implements OnInit {
     return fileCheck;
   }
 
-  //create and number filenames
+  //number filenames if duplicate
   nameJsonFile(): Promise<string> {
     return new Promise(async (res) => {
-      this.checkIfContainsFiles().then((isThere) => {
+      this.checkIfContainsFiles('crisisApp').then((isThere) => {
         if (isThere === true) {
           let filename: string = "allPlans";
-          this.listJsonFiles(function (callbackResult) {
+          this.listFiles(function (callbackResult) {
             if (callbackResult.length >= 1) {
               var files = callbackResult[0];
 
@@ -499,7 +624,7 @@ export class ViewPlansPage implements OnInit {
               }
 
             }
-          })
+          }, "crisisApp")
         }
         else if (isThere === false) {     //first file in the app folder
           console.log("This is the first file!")
@@ -512,6 +637,73 @@ export class ViewPlansPage implements OnInit {
           //catch error?
         }
       })
+    })
+  }
+
+  generateSuggestedFileName(){
+    return new Promise((res) => {
+      this.planService.getAllPlan().then((allPlans) => {
+        var planname = allPlans[0].planName
+        planname = planname.trim()
+        planname = planname.replace(/ +/g, "");
+
+        var today = new Date()
+        var dd = String(today.getDate()).padStart(2, '0')
+        var mm = String(today.getMonth() + 1).padStart(2, '0')
+        var yyyy = today.getFullYear()
+        var date = dd + mm + yyyy
+
+        var suggestedName = planname + date
+        res(suggestedName)
+      })
+    })
+  }
+
+  async nameExportAlert(suggestedName){
+    return new Promise(async(res) => {
+      var check = false
+      const alert = await this.alertController.create({
+        header: 'Name of export file',
+        inputs: [
+          {
+            name: "filename",
+            type: "text",
+            id: "tb_filename",
+            placeholder: "Enter file name",
+            value: suggestedName
+          }
+        ],
+        buttons: [
+          {
+            text: "Cancel",
+            role: "cancel",
+            cssClass: "secondary",
+            handler: () => {
+              res(check)
+            }
+          },
+          {
+            text: "Export",
+            handler: () => {
+
+            }
+          }
+        ],
+        cssClass: "alertCustomCss"
+      })
+
+      await alert.present()
+      var result = await alert.onDidDismiss()
+      res(result.data.values.filename)
+    })
+  }
+
+  encryptData(fileData: string){
+    return new Promise((res) => {
+      const encryptKey = "iLoveProgramming"
+      var encryptedString = CryptoJS.AES.encrypt(fileData, encryptKey)
+      encryptedString = encryptedString.toString()
+      res(encryptedString)
     })
   }
 
@@ -534,36 +726,218 @@ export class ViewPlansPage implements OnInit {
   }
 
   //on hold, show checkboxes
-  pressEvent(e, item){
-    this.checkboxHidden = true;
+  enableCheckbox(e){
+    this.checkboxHidden = true
+    var slideElement = <HTMLInputElement> document.getElementById("slideitem")
+    slideElement.disabled = !slideElement.disabled
   }
 
   //hide checkboxes
   disableCheckbox(){
     this.checkboxHidden = false;
+    var slideElement = <HTMLInputElement> document.getElementById("slideitem")
+    slideElement.disabled = !slideElement.disabled
     this.sortedDetails.forEach(element => {     //reset checkbox to false
       element.isChecked = false
     });
   }
 
   selectedPlansBtn(){   //html btn
-    this.selectedPlans().then((selectedPlans:any) => {
-      if(selectedPlans.length === this.sortedDetails.length){
-        this.exportAllPlans().then(() => {
-          this.checkboxHidden = false;
-          this.showToast("Export successful")
+    this.checkDontAskAgain().then((enabled) => {
+      if(enabled === true){
+        this.selectedPlans().then((selectedPlans:any) => {
+          if(selectedPlans.length === this.sortedDetails.length){
+            this.checkFolderExist('crisisApp').then((isThere: boolean) => {
+              if(isThere == true){
+                this.generateSuggestedFileName().then((suggestedName: string) => {
+                  this.nameExportAlert(suggestedName).then((filename) => {              
+                    if(filename === false){
+                      //user clicked cancel. do nothing
+                    }
+                    if(filename !== false){
+                      this.exportAllPlans(filename)
+                      this.checkboxHidden = false;
+                      this.showToast("Export successful")
+                    }
+                  })
+                })
+              }
+              if (isThere == false) {
+                this.showToast("App folder not found. Creating one for you. . .")
+                this.createAppRootFolder().then((isCreated: boolean) => {
+                  if (isCreated === true) {
+                    this.generateSuggestedFileName().then((suggestedName: string) => {
+                      this.nameExportAlert(suggestedName).then((filename) => {
+                        if(filename === false){
+                          //user clicked cancel. do nothing
+                        }
+                        if(filename !== false){
+                          this.exportAllPlans(filename)
+                          this.checkboxHidden = false;
+                          this.showToast("Export successful")
+                        }
+                      })
+                    })
+                  }
+                })
+              }
+            })
+          }
+          else if(selectedPlans.length <= 0){
+            this.showToast("Nothing was selected")
+          }
+          else{
+            this.checkFolderExist('crisisApp').then((isThere: boolean) => {
+              if(isThere == true){
+                var suggestedName = selectedPlans[0].planName.trim().replace(/ +/g, "")
+                var today = new Date()
+                var dd = String(today.getDate()).padStart(2, '0')
+                var mm = String(today.getMonth() + 1).padStart(2, '0')
+                var yyyy = today.getFullYear()
+                var date = dd + mm + yyyy
+                suggestedName = suggestedName + date
+                this.nameExportAlert(suggestedName).then((filename) => {
+                  if(filename === false){
+                    //user clicked cancel. do nothing
+                  }
+                  if(filename !== false){
+                    this.exportSelectedPlans(selectedPlans, filename).then(() => {
+                      this.checkboxHidden = false;
+                      this.showToast("Export successful")
+                    })
+                  }
+                })
+              }
+              if(isThere == false){
+                this.showToast("App folder not found. Creating one for you. . .")
+                this.createAppRootFolder().then((isCreated: boolean) => {
+                  if (isCreated === true) {
+                    var suggestedName = selectedPlans[0].planName.trim().replace(/ +/g, "")
+                    var today = new Date()
+                    var dd = String(today.getDate()).padStart(2, '0')
+                    var mm = String(today.getMonth() + 1).padStart(2, '0')
+                    var yyyy = today.getFullYear()
+                    var date = dd + mm + yyyy
+                    suggestedName = suggestedName + date
+                    this.nameExportAlert(suggestedName).then((filename) => {
+                      if(filename === false){
+                        //user clicked cancel. do nothing
+                      }
+                      if(filename !== false){
+                        this.exportSelectedPlans(selectedPlans, filename).then(() => {
+                          this.checkboxHidden = false;
+                          this.showToast("Export successful")
+                        })
+                      }
+                    })
+                  }
+                })
+              }
+            })
+          }
         })
       }
-      else if(selectedPlans.length <= 0){
-        this.showToast("Nothing was selected")
-      }
-      else{
-        this.exportSelectedPlans(selectedPlans).then(() => {
-          this.checkboxHidden = false;
-          this.showToast("Export successful")
+      else if(enabled === false){
+        this.presentExportAlert().then((check) => {
+          if(check === false){
+            //user clicked cancel. do nothing
+          }
+          if(check === true){
+            this.selectedPlans().then((selectedPlans:any) => {
+              if(selectedPlans.length === this.sortedDetails.length){
+                this.checkFolderExist('crisisApp').then((isThere: boolean) => {
+                  if(isThere == true){
+                    this.generateSuggestedFileName().then((suggestedName: string) => {
+                      this.nameExportAlert(suggestedName).then((filename) => {              
+                        if(filename === false){
+                          //user clicked cancel. do nothing
+                        }
+                        if(filename !== false){
+                          this.exportAllPlans(filename)
+                          this.checkboxHidden = false;
+                          this.showToast("Export successful")
+                        }
+                      })
+                    })
+                  }
+                  if (isThere == false) {
+                    this.showToast("App folder not found. Creating one for you. . .")
+                    this.createAppRootFolder().then((isCreated: boolean) => {
+                      if (isCreated === true) {
+                        this.generateSuggestedFileName().then((suggestedName: string) => {
+                          this.nameExportAlert(suggestedName).then((filename) => {              
+                            if(filename === false){
+                              //user clicked cancel. do nothing
+                            }
+                            if(filename !== false){
+                              this.exportAllPlans(filename)
+                              this.checkboxHidden = false;
+                              this.showToast("Export successful")
+                            }
+                          })
+                        })
+                      }
+                    })
+                  }
+                })  
+              }
+              else if(selectedPlans.length <= 0){
+                this.showToast("Nothing was selected")
+              }
+              else{
+                this.checkFolderExist('crisisApp').then((isThere: boolean) => {
+                  if(isThere == true){
+                    var suggestedName = selectedPlans[0].planName.trim().replace(/ +/g, "")
+                    var today = new Date()
+                    var dd = String(today.getDate()).padStart(2, '0')
+                    var mm = String(today.getMonth() + 1).padStart(2, '0')
+                    var yyyy = today.getFullYear()
+                    var date = dd + mm + yyyy
+                    suggestedName = suggestedName + date
+                    this.nameExportAlert(suggestedName).then((filename) => {
+                      if(filename === false){
+                        //user clicked cancel. do nothing
+                      }
+                      if(filename !== false){
+                        this.exportSelectedPlans(selectedPlans, filename).then(() => {
+                          this.checkboxHidden = false;
+                          this.showToast("Export successful")
+                        })
+                      }
+                    })
+                  }
+                  if(isThere == false){
+                    this.showToast("App folder not found. Creating one for you. . .")
+                    this.createAppRootFolder().then((isCreated: boolean) => {
+                      if (isCreated === true) {
+                        var suggestedName = selectedPlans[0].planName.trim().replace(/ +/g, "")
+                        var today = new Date()
+                        var dd = String(today.getDate()).padStart(2, '0')
+                        var mm = String(today.getMonth() + 1).padStart(2, '0')
+                        var yyyy = today.getFullYear()
+                        var date = dd + mm + yyyy
+                        suggestedName = suggestedName + date
+                        this.nameExportAlert(suggestedName).then((filename) => {
+                          if(filename === false){
+                            //user clicked cancel. do nothing
+                          }
+                          if(filename !== false){
+                            this.exportSelectedPlans(selectedPlans, filename).then(() => {
+                              this.checkboxHidden = false;
+                              this.showToast("Export successful")
+                            })
+                          }
+                        })
+                      }
+                    })
+                  }
+                })
+              }
+            })
+          }
         })
       }
-    })
+    })    
   }
 
   selectedPlans(){
@@ -584,7 +958,7 @@ export class ViewPlansPage implements OnInit {
     })    
   }
 
-  exportSelectedPlans(selectedPlans){
+  exportSelectedPlans(selectedPlans, filename){
     var check = true;
     return new Promise((res) => {
       let newPlansStr: string = "";
@@ -609,10 +983,10 @@ export class ViewPlansPage implements OnInit {
 
       //put into file part
       async function putIntoFile(newPlansStr, that) {
-        let filename = await that.nameJsonFile();
-        let data: string = newPlansStr;
-        let path = that.file.externalRootDirectory + "crisisApp/";
-        await that.file.writeFile(path, filename, data, { replace: true });
+        //let filename = await that.nameJsonFile()
+        let data: string = await that.encryptData(newPlansStr)
+        let path = that.file.externalRootDirectory + "crisisApp/"
+        await that.file.writeFile(path, filename+".json", data, { replace: true })
         res(check)
       }
 
@@ -620,13 +994,191 @@ export class ViewPlansPage implements OnInit {
     })
   }
 
+  async presentExportAlert(){
+    return new Promise(async(res) => {
+      var check = false
+      const alert = await this.alertController.create({
+        header: 'Export Confirmation',
+        message: 'Are you sure you want to export selected plans?',
+        inputs: [
+          {
+            name: "dontaskagain",
+            type: "checkbox",
+            label: "Don't Ask Again",
+            value: true,
+            checked: false,            
+          }
+        ],
+        buttons: [
+          {
+            text: "Cancel",
+            role: "cancel",
+            cssClass: "secondary", 
+            handler: () => {
+              res(check)
+            }         
+          },
+          {
+            text: "Ok",
+            handler: () => {
+              check = true
+              res(check)
+            }
+          }
+        ]
+      });
+  
+      await alert.present();
+      var result = await alert.onDidDismiss()
+      if (result.data != undefined) {
+        if (result.data.values[0] === true) {
+          this.enableDontAskAgain()
+        }
+      }
+    })
+  }
+
+  enableDontAskAgain(){
+    this.settingService.exportToggleDontAskAgain()
+  }
+
+  checkDontAskAgain(){
+    var enabled = false
+    return new Promise((res) => {
+      this.settingService.exportCheckToggle().then((toggle) => {
+        if(toggle === false){
+          res(enabled)
+        }
+        if(toggle === true){
+          enabled = true
+          res(enabled)
+        }
+      })
+    })    
+  }
+
   //TOASTER
   async showToast(msg) {      //TODO: append/stack toaster, make sure msg wont overlap each other
     const toast = await this.toastController.create({
-      message: msg,
-      duration: 3000
+      header: msg,
+      duration: 3000,
+      position: 'bottom',
+      buttons: [{
+        text: 'CLOSE',
+        role: 'cancel'
+      }]
     });
     toast.present();
   }
+
+  //OUTDATED, NOT USED
+  getImportFiles2() {
+    return new Promise((res) => {
+      this.checkFolderExist('crisisApp').then((check: boolean) => {
+        if (check === false) {
+          this.showToast("No import files available")
+        }
+        else if (check === true) {
+          this.checkIfContainsFiles('crisisApp').then((isThere) => {
+            if (isThere === true) {
+              this.listFiles(function (callbackResult) {
+                if (callbackResult.length >= 1) {
+                  res(callbackResult);
+                }
+              }, "crisisApp")
+            }
+            else if (isThere === false) {
+              this.showToast("No import files available")
+            }
+            else {
+              //catch error?
+              console.log("catch error?")
+            }
+          })
+        }
+      })
+    })
+  }
+
+  //OLD CODES, FOR REFERENCE
+  // //turn off alert for export
+  // enableDontAskAgain2() {
+  //   window.requestFileSystem(window.LocalFileSystem.PERSISTENT, 0, function(fs){
+  //     fs.root.getFile("exportDontAskAgain.txt", {create: false}, function(fileEntry){
+  //       writeFile(fileEntry)
+  //     })
+  //   })
+
+  //   function writeFile(fileEntry) {
+  //     fileEntry.createWriter(function (fileWriter) {
+  //       fileWriter.onwriteend = function () {
+  //         //console.log("Successful file write...");
+  //         readFile(fileEntry)
+  //       };
+  
+  //       fileWriter.onerror = function (e) {
+  //         console.log("Failed file write: " + e.toString());
+  //       };
+  //       var contents = "exportDontAskAgain=true"  
+  //       fileWriter.write(contents);
+  //     });
+  //   }
+
+  //   function readFile(fileEntry) {
+  //       fileEntry.file((theFile) => {
+  //         var contents = "";
+  //         var reader = new FileReader();
+  //         reader.readAsText(theFile);
+  
+  //         reader.onloadend = () => storeResults(reader.result);
+  //         function storeResults(results) {
+  //           contents = results
+  //         }
+  //       }, onErrorReadFile)
+  //   }
+
+  //   function onErrorReadFile(){
+  //     console.log("Error reading app setting file")
+  //   }
+  // }
+
+  // checkDontAskAgain2(){
+  //   var enabled = false
+  //   return new Promise((res) => {
+  //     window.requestFileSystem(window.LocalFileSystem.PERSISTENT, 0, function(fs){
+  //       fs.root.getFile("exportDontAskAgain.txt", {create: false}, function(fileEntry){
+  //         readFile(fileEntry).then((contents: string) => {
+  //           if(contents === "exportDontAskAgain=false"){
+  //             res(enabled)
+  //           }
+  //           if(contents === "exportDontAskAgain=true"){
+  //             enabled = true
+  //             res(enabled)
+  //           }
+  //         })
+  //       })
+  //     })
+  //   })
+    
+  //   async function readFile(fileEntry) {
+  //     return new Promise((res) => {
+  //       fileEntry.file((theFile) => {
+  //         var contents = "";
+  //         var reader = new FileReader();
+  //         reader.readAsText(theFile);
+  
+  //         reader.onloadend = () => storeResults(reader.result);
+  //         async function storeResults(results) {
+  //           contents = results
+  //           res(contents)
+  //         }
+  //       }, onErrorReadFile)
+  //     })      
+  //   }
+
+  //   function onErrorReadFile(){
+  //     console.log("Error reading app setting file")
+  //   }
+  // }
 
 }
