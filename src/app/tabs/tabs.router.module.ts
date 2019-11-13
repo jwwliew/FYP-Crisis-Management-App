@@ -45,6 +45,12 @@ const routes: Routes = [
             {
                 path: 'settings',
                 children: [
+
+                    {
+                        path: 'bluetoothmenu',
+                        loadChildren: '../settings/bluetoothmenu/bluetoothmenu.module#BluetoothmenuPageModule'
+                    },
+                    
                     {
                         path: '',
                         loadChildren: '../settings/view-settings/view-settings.module#ViewSettingsPageModule'
@@ -69,6 +75,10 @@ const routes: Routes = [
                     { 
                         path: 'about', 
                         loadChildren: '../settings/about/about.module#AboutPageModule' 
+                    },
+                    {
+                        path: 'setting',
+                        loadChildren: '../settings/setting/setting.module#SettingPageModule'
                     }
                 ]
             }
