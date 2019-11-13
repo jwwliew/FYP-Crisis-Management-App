@@ -105,14 +105,11 @@
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
       "cordova-plugin-x-toast": {},
-<<<<<<< HEAD
       "cordova-plugin-ble-peripheral": {},
-      "cordova-plugin-ble-central": {}
-=======
+      "cordova-plugin-ble-central": {},
       "cordova-plugin-filechooser": {},
       "cordova-plugin-filepath": {},
       "cordova-plugin-file": {}
->>>>>>> d3ec23fbe682640e6489ac949a65d798bde53da2
     },
     "platforms": [
       "android",
