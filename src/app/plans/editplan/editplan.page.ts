@@ -767,7 +767,7 @@ item: this.activatedRoute.snapshot.paramMap.get('item')
 
                 while (leftHeight > 0) {
 
-                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1350)//406.4x665.84 相差85 285    -50-20-20=web
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1280)//406.4x665.84 相差85 285    -50-20-20=web
 
                   leftHeight -= codheight-400;
                   position -= 841.89;
@@ -1426,6 +1426,7 @@ item: this.activatedRoute.snapshot.paramMap.get('item')
               }
               if (aaa1 == 0 && aaa2 == 0 && aaa3 == 1) {
 
+
                 while (leftHeight > 0) {
 
                   doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
@@ -1441,7 +1442,6 @@ item: this.activatedRoute.snapshot.paramMap.get('item')
               }
             }
 
-                while (leftHeight > 0) {
 
             if (zwyw == 0) {
               console.log("000000000000000000000000000000000000000000000");
@@ -1454,7 +1454,7 @@ item: this.activatedRoute.snapshot.paramMap.get('item')
 
                 while (leftHeight > 0) {
                   console.log("我进来了！！！");
-                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 650)//406.4x665.84 相差85 285    -50-20-20=web
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 700)//406.4x665.84 相差85 285    -50-20-20=web
 
                   leftHeight -= pageHeight;
                   position -= 841.89;
@@ -1465,11 +1465,9 @@ item: this.activatedRoute.snapshot.paramMap.get('item')
                 }
                 doc.save('pdfDocument.pdf');
               }
-              if (aaa1 == 3 && aaa2 == 3 && aaa3 == 0) {//★
 
               if (aaa1 == 3 && aaa2 == 3 && aaa3 == 2) {
 
-                while (leftHeight > 0) {
 
                 while (leftHeight > 0) {
 
@@ -2570,9 +2568,9 @@ item: this.activatedRoute.snapshot.paramMap.get('item')
             this.templateService.presentToastWithOptions("PDF file has been created!");
             this.fileOpener.open(success.nativeURL, "application/pdf").catch(() => this.templateService.presentToastWithOptions("Please install a PDF Viewer such as Acrobat!"));
           }).catch((error) => this.templateService.presentToastWithOptions("An error has occured!!!")); 
-        }}}
         }, 4000);
-                  }
+
+        }
         //for website
     
          
