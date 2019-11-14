@@ -348,9 +348,9 @@ export class ViewPlansPage implements OnInit {
             });
             callback(filteredResult);       //returns result to function call
           })
-            .catch(err => {
-              console.log("Error catch for Promise.all => " + JSON.stringify(err));
-            })
+          .catch(err => {
+            console.log("Error catch for Promise.all => " + JSON.stringify(err));
+          })
         }
       })()
     })
@@ -387,7 +387,9 @@ export class ViewPlansPage implements OnInit {
                   //user clicked cancel. do nothing
                 }
                 if(filename !== false){
-                  this.exportAllPlans(filename)
+                  this.numberJsonFile(filename).then((filename) => {
+                    this.exportAllPlans(filename)
+                  })
                 }
               })
             })
@@ -402,7 +404,9 @@ export class ViewPlansPage implements OnInit {
                       //user clicked cancel. do nothing
                     }
                     if(filename !== false){
-                      this.exportAllPlans(filename)
+                      this.numberJsonFile(filename).then((filename) => {
+                        this.exportAllPlans(filename)
+                      })
                     }
                   })
                 })
@@ -425,7 +429,9 @@ export class ViewPlansPage implements OnInit {
                       //user clicked cancel. do nothing
                     }
                     if(filename !== false){
-                      this.exportAllPlans(filename)
+                      this.numberJsonFile(filename).then((filename) => {
+                        this.exportAllPlans(filename)
+                      })
                     }
                   })
                 })
@@ -440,8 +446,9 @@ export class ViewPlansPage implements OnInit {
                           //user clicked cancel. do nothing
                         }
                         if(filename !== false){
-                          this.exportAllPlans(filename)
-                        }
+                          this.numberJsonFile(filename).then((filename) => {
+                            this.exportAllPlans(filename)
+                          })                        }
                       })
                     })
                   }
@@ -554,38 +561,44 @@ export class ViewPlansPage implements OnInit {
   }
 
   //number filenames if duplicate
-  nameJsonFile(): Promise<string> {
+  numberJsonFile(filename): Promise<string> {
     return new Promise(async (res) => {
       this.checkIfContainsFiles('crisisApp').then((isThere) => {
         if (isThere === true) {
-          let filename: string = "allPlans";
           this.listFiles(function (callbackResult) {
             if (callbackResult.length >= 1) {
-              var files = callbackResult[0];
+              var files = callbackResult[0];    //callback result is [[]], thus callbackResult[0]
 
               if (files.length <= 1) {    //if theres only 1 file in app folder
-                files.forEach(element => {    //callback result is [[]], thus callbackResult[0]
-                  if (element.name.includes(filename)) {    //check if its "allPlans" file
-                    let fileNo = parseInt(element.name.slice(-2))   //extract number from file
-                    let fileNoString: string = "";
-                    fileNo = fileNo += 1      //increment file number
-
-                    if (fileNo <= 9) {      //if file number is less than 10, add 0 in front
-                      fileNoString = fileNo.toString()
-                      fileNoString = "0" + fileNoString
-                    }
+                files.forEach(element => {
+                  var removeExt = element.name.split(".json")
+                  removeExt.pop()
+                  var newFileName = removeExt.join()
+                  var fileNameArr = newFileName.split("_")
+                  if (element.name.includes(fileNameArr[0])) {
+                    var fileNumber
+                    if (element.name.indexOf("_") == -1) {
+                      //first file is present
+                      fileNumber = "_02"
+                      filename = filename + fileNumber
+                      res(filename)
+                    }     //second file onwards
                     else {
-                      fileNoString = fileNo.toString();
+                      var fileNo = fileNameArr[fileNameArr.length - 1]
+                      fileNo = fileNo += 1      //increment file number
+
+                      if (fileNo <= 9) {      //if file number is less than 10, add 0 in front
+                        fileNumber = fileNo.toString()
+                        fileNumber = "_0" + fileNumber
+                      }
+                      else {
+                        fileNumber = "_" + fileNo.toString();
+                      }
+                      filename = filename + fileNumber      //add number to filename, end result should be allPlans<number>
+                      res(filename)
                     }
-                    filename = filename + fileNoString      //add number to filename, end result should be allPlans<number>
-                    console.log("filename => " + filename);
-                    res(filename)
                   }
                   else {
-                    console.log("This is the first file!")
-                    let filename: string = "allPlans";
-                    filename = filename + "01";
-                    console.log("filename => " + filename)
                     res(filename)
                   }
                 })
@@ -594,28 +607,33 @@ export class ViewPlansPage implements OnInit {
                 let numberArr = [];
                 (async function asyncloop() {
                   files.forEach((element, index, array) => {
-                    if (element.name.includes(filename)) {
-                      let fileNo = parseInt(element.name.slice(-2))
-                      numberArr.push(fileNo)
+                    var removeExt = element.name.split(".json")
+                    removeExt.pop()
+                    var newFileName = removeExt.join()
+                    var fileNameArr = newFileName.split("_")
+                    if (element.name.includes(fileNameArr[0])) {
+                      if(element.name.indexOf("_") != -1){
+                        var fileNo = parseInt(fileNameArr[fileNameArr.length - 1])
+                        numberArr.push(fileNo)
+                      }
                     }
                     if (index == array.length - 1) {        //checks if loop is finished, resolves promise if yes
-                      var promise = new Promise((res2) => {
+                      new Promise((res2) => {
                         res2(numberArr);
                       }).then((numberArr: number[]) => {
                         numberArr = numberArr.sort((a: number, b: number) => b - a);    //sort by desc order
                         let biggestNo: number = numberArr[0];     //get biggest number in arr
                         let fileNo = biggestNo += 1;
-                        let fileNoString: string = "";
+                        var fileNumber
 
                         if (fileNo <= 9) {
-                          fileNoString = fileNo.toString()
-                          fileNoString = "0" + fileNoString
+                          fileNumber = fileNo.toString()
+                          fileNumber = "_0" + fileNumber
                         }
                         else {
-                          fileNoString = fileNo.toString();
+                          fileNumber = "_" + fileNo.toString();
                         }
-                        filename = filename + fileNoString
-                        console.log("filename => " + filename);
+                        filename = filename + fileNumber
                         res(filename)
                       })
                     }
@@ -627,10 +645,6 @@ export class ViewPlansPage implements OnInit {
           }, "crisisApp")
         }
         else if (isThere === false) {     //first file in the app folder
-          console.log("This is the first file!")
-          let filename: string = "allPlans";
-          filename = filename + "01";
-          console.log("filename => " + filename)
           res(filename)
         }
         else {
@@ -684,8 +698,20 @@ export class ViewPlansPage implements OnInit {
           },
           {
             text: "Export",
-            handler: () => {
+            handler: (data) => {
+              var filename = data.filename
+              if (data.filename == null || data.filename.length <= 0) {
+                alert.subHeader = 'Please enter a name'
+                return false
 
+              }
+              else{
+                if(filename.indexOf("_") >= 0){
+                  alert.subHeader = "Please don't use _ in your file name"
+                  return false
+                }
+              }
+              return true
             }
           }
         ],
@@ -755,9 +781,11 @@ export class ViewPlansPage implements OnInit {
                       //user clicked cancel. do nothing
                     }
                     if(filename !== false){
-                      this.exportAllPlans(filename)
-                      this.checkboxHidden = false;
-                      this.showToast("Export successful")
+                      this.numberJsonFile(filename).then((filename) => {
+                        this.exportAllPlans(filename)
+                        this.checkboxHidden = false;
+                        this.showToast("Export successful")
+                      })                      
                     }
                   })
                 })
@@ -772,9 +800,11 @@ export class ViewPlansPage implements OnInit {
                           //user clicked cancel. do nothing
                         }
                         if(filename !== false){
-                          this.exportAllPlans(filename)
-                          this.checkboxHidden = false;
-                          this.showToast("Export successful")
+                          this.numberJsonFile(filename).then((filename) => {
+                            this.exportAllPlans(filename)
+                            this.checkboxHidden = false;
+                            this.showToast("Export successful")
+                          })
                         }
                       })
                     })
@@ -801,10 +831,12 @@ export class ViewPlansPage implements OnInit {
                     //user clicked cancel. do nothing
                   }
                   if(filename !== false){
-                    this.exportSelectedPlans(selectedPlans, filename).then(() => {
-                      this.checkboxHidden = false;
-                      this.showToast("Export successful")
-                    })
+                    this.numberJsonFile(filename).then((filename) => {
+                      this.exportSelectedPlans(selectedPlans, filename).then(() => {
+                        this.checkboxHidden = false;
+                        this.showToast("Export successful")
+                      })
+                    }) 
                   }
                 })
               }
@@ -824,10 +856,12 @@ export class ViewPlansPage implements OnInit {
                         //user clicked cancel. do nothing
                       }
                       if(filename !== false){
-                        this.exportSelectedPlans(selectedPlans, filename).then(() => {
-                          this.checkboxHidden = false;
-                          this.showToast("Export successful")
-                        })
+                        this.numberJsonFile(filename).then((filename) => {
+                          this.exportSelectedPlans(selectedPlans, filename).then(() => {
+                            this.checkboxHidden = false;
+                            this.showToast("Export successful")
+                          })
+                        }) 
                       }
                     })
                   }
@@ -853,9 +887,12 @@ export class ViewPlansPage implements OnInit {
                           //user clicked cancel. do nothing
                         }
                         if(filename !== false){
-                          this.exportAllPlans(filename)
-                          this.checkboxHidden = false;
-                          this.showToast("Export successful")
+                          this.numberJsonFile(filename).then((filename) => {
+                            this.exportAllPlans(filename)
+                            this.checkboxHidden = false;
+                            this.showToast("Export successful")
+                          })
+                          
                         }
                       })
                     })
@@ -870,9 +907,12 @@ export class ViewPlansPage implements OnInit {
                               //user clicked cancel. do nothing
                             }
                             if(filename !== false){
-                              this.exportAllPlans(filename)
-                              this.checkboxHidden = false;
-                              this.showToast("Export successful")
+                              this.numberJsonFile(filename).then((filename) => {
+                                this.exportAllPlans(filename)
+                                this.checkboxHidden = false;
+                                this.showToast("Export successful")
+                              })
+                              
                             }
                           })
                         })
@@ -899,10 +939,12 @@ export class ViewPlansPage implements OnInit {
                         //user clicked cancel. do nothing
                       }
                       if(filename !== false){
-                        this.exportSelectedPlans(selectedPlans, filename).then(() => {
-                          this.checkboxHidden = false;
-                          this.showToast("Export successful")
-                        })
+                        this.numberJsonFile(filename).then((filename) => {
+                          this.exportSelectedPlans(selectedPlans, filename).then(() => {
+                            this.checkboxHidden = false;
+                            this.showToast("Export successful")
+                          })
+                        })                        
                       }
                     })
                   }
@@ -922,10 +964,12 @@ export class ViewPlansPage implements OnInit {
                             //user clicked cancel. do nothing
                           }
                           if(filename !== false){
-                            this.exportSelectedPlans(selectedPlans, filename).then(() => {
-                              this.checkboxHidden = false;
-                              this.showToast("Export successful")
-                            })
+                            this.numberJsonFile(filename).then((filename) => {
+                              this.exportSelectedPlans(selectedPlans, filename).then(() => {
+                                this.checkboxHidden = false;
+                                this.showToast("Export successful")
+                              })
+                            }) 
                           }
                         })
                       }

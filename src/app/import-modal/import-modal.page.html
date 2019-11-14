@@ -24,6 +24,14 @@
 </ion-header>
 
 <ion-content>
+  <ion-refresher *ngIf="selectedFolder !== 'others'" slot="fixed" (ionRefresh)="refreshModal($event)" pullfactor={0.3} pullMin={50} pullMax={100} snapbackDuration="1000ms">
+      <ion-refresher-content pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+      </ion-refresher-content>
+  </ion-refresher>
+
   <ion-grid>
     <ion-row>
       <ion-col size="6" size-md>
@@ -40,22 +48,21 @@
   </ion-grid>
 
     <ion-list class="ionList" *ngIf="selectedFolder === 'appfolder'">
-      <ion-item-group *ngIf="!noFoldersAvailable">
+      <ion-item-group *ngIf="!noAFoldersAvailable">
         <ion-item *ngFor="let oneFile of appfolder">
-          <ion-label>{{oneFile.name}}</ion-label>
+          <ion-label text-wrap>{{oneFile.name}}</ion-label>
           <ion-button (click)="importBtn(oneFile, 'crisisApp')">Import</ion-button>
         </ion-item>
       </ion-item-group>
-
       <ion-item *ngIf="noAFoldersAvailable">
         <ion-label>No Import Files Avaialble</ion-label>
       </ion-item>
     </ion-list>
 
     <ion-list *ngIf="selectedFolder === 'downloads'">
-      <ion-item-group *ngIf="!noFoldersAvailable">
+      <ion-item-group *ngIf="!noDFoldersAvailable">
         <ion-item *ngFor="let oneFile of downloads">
-          <ion-label>{{oneFile.name}}</ion-label>
+          <ion-label text-wrap>{{oneFile.name}}</ion-label>
           <ion-button (click)="importBtn(oneFile, 'Download')">Import</ion-button>
         </ion-item>
       </ion-item-group>
@@ -65,9 +72,9 @@
     </ion-list>
 
     <ion-list *ngIf="selectedFolder === 'bluetooth'">
-      <ion-item-group *ngIf="!noFoldersAvailable">
+      <ion-item-group *ngIf="!noBFoldersAvailable">
         <ion-item *ngFor="let oneFile of bluetooth">
-          <ion-label>{{oneFile.name}}</ion-label>
+          <ion-label text-wrap>{{oneFile.name}}</ion-label>
           <ion-button (click)="importBtn(oneFile, 'Bluetooth')">Import</ion-button>
         </ion-item>
       </ion-item-group>

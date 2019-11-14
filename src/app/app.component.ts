@@ -124,8 +124,7 @@ export class AppComponent {
           this.storage.set("plan", this.globalPlanObj),
           this.storage.set("settingStorageKey1", this.globalSettingObj1),
           this.storage.set("glo",this.glo),
-          this.storage.set("appSetting", this.appSetting),
-          this.storage.set("newImportedPlans", this.newImportedPlans)
+          this.storage.set("appSetting", this.appSetting)
         //添加+++++++++
         );
       })    
@@ -141,8 +140,6 @@ export class AppComponent {
       }
     }
   ]
-
-  newImportedPlans = []
 
 //要想创建新的数据，需要双向添加 globalSettingObj1  glo 两个数组数据一样enName！！
 
