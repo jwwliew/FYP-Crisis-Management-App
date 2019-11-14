@@ -196,14 +196,14 @@
     <!-- Test my data yong rui    frontViewData是template.service.ts中frontViewData方法-->
 
     <ion-card *ngFor="let globalItem of frontViewData; let first = first;"> 
-      <!--定义标题颜色-->>
+      <!--定义标题颜色-->
       <ion-card-header [color]="globalItem.colorCard"> 
         <ion-card-title>
           {{globalItem.textCard}} <!--新建的三个标题名称！Get Help Now  |  Caution: Symptom Management |I'm feeling well  -->
         </ion-card-title>
   
         <ion-content>
-          <!--三个按钮的位置 添加action的按钮-->>
+          <!--三个按钮的位置 添加action的按钮-->
           <ion-fab vertical="top" horizontal="end" edge slot="fixed">
             <!-- <ion-fab-button size="small" (click)="addNewCriticalArray('Critical')" class="btnAdd" color="redCard"> -->
             <ion-fab-button size="small" class="btnAdd" (click)="globalItem.toggle=!globalItem.toggle"

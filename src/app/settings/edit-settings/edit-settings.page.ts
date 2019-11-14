@@ -154,7 +154,7 @@ export class EditSettingsPage implements OnInit {
         this.templateService.presentToastWithOptions("File size too large!")
       }
       else {
-        this.contentDetails.icon = base64Image;
+        this.contentDetails.icon = base64Image;  //将图像转换为base64
       }
     }, (err) => {
       // Handle error

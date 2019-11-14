@@ -237,19 +237,19 @@ outputObj(obj) { //打印方法
 	alert(description);
 }
   getimg(action,id,enName){  //定义一个调用数据服务
-    console.log(id);
-    console.log("蝙蝠侠");
-    console.log(enName);
+    // console.log(id);
+    // console.log("蝙蝠侠");
+    // console.log(enName);
     if(action=="Symptom"||action=="Action"){
       return this.getType("glo").then((items: Setting[]) => {
-        console.log("闪电侠");
-          console.log(items);
+        // console.log("闪电侠");
+        //   console.log(items);
           try{
           if(this.isChinese(enName)==true){
             let img = items.find(item => item.id2 == id).icon;
          
-            console.log("返回我自定义的img1");
-            console.log("img="+img);
+            // console.log("返回我自定义的img1");
+            // console.log("img="+img);
            return img
           }
           if(this.isChinese(enName)==false){
@@ -258,17 +258,17 @@ outputObj(obj) { //打印方法
           
            let img = items.find(item => item.id2 == id).icon;
          
-            console.log("返回我自定义的img2");
-            console.log("img="+img);
+            // console.log("返回我自定义的img2");
+            // console.log("img="+img);
            return img
           } }catch(e){
-            console.log("执行catch");
-            console.log("enName="+enName);
-            console.log("enName="+items);
+            // console.log("执行catch");
+            // console.log("enName="+enName);
+            // console.log("enName="+items);
             let img = items.find(item => item.enName == enName).icon;
          
-            console.log("返回我自定义的img1");
-            console.log("img="+img);
+            // console.log("返回我自定义的img1");
+            // console.log("img="+img);
            return img
           }
        
@@ -298,7 +298,7 @@ outputObj(obj) { //打印方法
       //   //  let img = this.ser1.image;
       //   let img2 = items1.find(item => item.id+100 === id).icon;
     
-        console.log("img==="+img);
+        // console.log("img==="+img);
       return img;
     })
   // })

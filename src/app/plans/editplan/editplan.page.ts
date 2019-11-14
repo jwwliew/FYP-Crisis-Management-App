@@ -19,15 +19,16 @@ declare var $: any;
   styleUrls: ['./editplan.page.scss'],
 })
 export class EditplanPage implements OnInit {
-
+ 
   submitted = false;
   isDisabled: boolean = true;
   details = {} as any;
   backUpPlanDetails = [];
   android: boolean;
   dataUrl;
-  constructor(private modal: ModalController, private PlanService: PlanService, private activatedRoute: ActivatedRoute, private templateService: TemplateService, private settingService: SymptomActionService,
-    private router: Router, private file: File, private loadingController: LoadingController, private fileOpener: FileOpener, public formBuilder: FormBuilder) {
+  texta;
+  constructor(private PlanService: PlanService, private activatedRoute: ActivatedRoute, private templateService: TemplateService, private settingService: SymptomActionService,
+private modal: ModalController,    private router: Router, private file: File, private loadingController: LoadingController, private fileOpener: FileOpener, public formBuilder: FormBuilder) {
   }
 
   something = this.formBuilder.group({
@@ -44,6 +45,7 @@ export class EditplanPage implements OnInit {
   }
 
   backViewPlan(id) {
+
     this.isDisabled ? this.templateService.resetArray()
       : (
         this.something.controls.detailname.setValue(this.backUpPlanDetails[0]),
@@ -52,8 +54,9 @@ export class EditplanPage implements OnInit {
         this.something.controls.detailcontact.setValue(this.backUpPlanDetails[3]),
         this.templateService.goToViewPageFromEdit(),
         this.router.navigateByUrl('/tabs/plans/editplan/' + id),
-        this.isDisabled = true
+        this.isDisabled = true //20191108
       )
+      
   }
 
   ionViewWillEnter() {
@@ -65,9 +68,9 @@ export class EditplanPage implements OnInit {
     this.PlanService.getEditDetails(id).then(everything => {
       [].concat(...everything.templates).forEach(eachArray => {
         // alert(id); 可以获取到
-        console.log("eachArray.symptom.id2=" + eachArray.symptom.symptomID);
+        // console.log("eachArray.symptom.id2=" + eachArray.symptom.symptomID);
         this.settingService.getimg("Symptom", eachArray.symptom.symptomID, eachArray.symptom.text).then(oneImg => {
-          console.log("oneimg=" + oneImg);
+          // console.log("oneimg=" + oneImg);
           eachArray.symptom.img = oneImg;
         });
         eachArray.combined.forEach(oneCombined => {
@@ -133,7 +136,7 @@ export class EditplanPage implements OnInit {
   }
 
   popOverController(x) {
-    let menuOptions = ["Edit", "Rename", "Export to PDF", "Transfer via Bluetooth"];
+    let menuOptions = ["Edit", "Rename", "Export to PDF", "duplicate", "Transfer via Bluetooth"];
     this.templateService.popOverController('popover', x, menuOptions).then(popover => {
       popover.present();
       popover.onDidDismiss().then((data) => {
@@ -147,8 +150,8 @@ export class EditplanPage implements OnInit {
       'Edit': () => this.callEdit(),
       'Rename': () => this.askForName(),
       'Export to PDF': () => this.exportToPDF(),
-      
-      'Transfer via Bluetooth': () => this.TransferBluetooth()
+      'duplicate': () => this.duplicate(),
+      'Transfer via Bluetooth':() =>this.TransferBluetooth()
     };
     call[type]();
   }
@@ -162,6 +165,23 @@ export class EditplanPage implements OnInit {
     });
     return await this.loading.present();
   }
+  duplicate() {  //duplicate 重做
+    // alert(this.details.id);
+    var shuju = this.details.id;
+    this.router.navigate(['/text3'], {
+      queryParams: {
+
+        shuju   //console.log(JSON.stringify(params))
+      },
+
+    });
+    // var dxksj=this.templateService.getdanxuankuangzhi();
+    // alert(dxksj);
+    // console.log(dxksj);
+  }
+
+
+
   async TransferBluetooth(){
     const BluetoothModal = await this.modal.create(
 
@@ -204,7 +224,7 @@ item: this.activatedRoute.snapshot.paramMap.get('item')
         document.querySelector("#Html2PDF > ion-card:nth-child(2)").innerHTML = html + '<div id="cod516"></div>';
 
       }
-    }, 300);
+    }, 500);
     setTimeout(() => {
       //赋值后找到的长度，因有计算，所以单独延时加载
 
@@ -214,7 +234,7 @@ item: this.activatedRoute.snapshot.paramMap.get('item')
         document.querySelector("#Html2PDF > ion-card:nth-child(3)").innerHTML = html + '<div id="cod517"></div>';
 
       }
-    }, 300);
+    }, 500);
     setTimeout(() => {
       //赋值后找到的长度，因有计算，所以单独延时加载
 
@@ -224,26 +244,26 @@ item: this.activatedRoute.snapshot.paramMap.get('item')
         document.querySelector("#Html2PDF > ion-card:nth-child(4)").innerHTML = html + '<div id="cod518"></div>';
 
       }
-    }, 300);
-    setTimeout(() => {
+    }, 500);
+  
       // alert("3:"+aaa1);
       // this.presentLoading('Creating PDF file...');
       const directory = this.file.externalRootDirectory;
-      console.log("directory的值=" + directory); //directory=null
+      // console.log("directory的值=" + directory); //directory=null
       // ****获取id = html2PDF dom对象
       const div = document.getElementById('Html2PDF');
-      console.log("my")
-      console.log("div的值=" + div); //div的值=[object HTMLDivElement]
+      // console.log("my")
+      // console.log("div的值=" + div); //div的值=[object HTMLDivElement]
       let width = div.clientWidth * 3;
-      console.log("width的值=" + width); //width的值=1374
+      // console.log("width的值=" + width); //width的值=1374
       // ****一页pdf显示html页面生成的canvas高度;
       var pageHeight = div.scrollWidth / 592.28 * 841.89;
-      console.log("pageHeight的值=" + pageHeight); //pageHeight的值=651.0191463496994
+      // console.log("pageHeight的值=" + pageHeight); //pageHeight的值=651.0191463496994
       // ****未生成pdf的html页面高度
       var leftHeight = div.scrollHeight;
-      console.log("leftHeight的值=" + leftHeight);//leftHeight的值=1522 整个数据的宽度、包括不可见的
+      // console.log("leftHeight的值=" + leftHeight);//leftHeight的值=1522 整个数据的宽度、包括不可见的
       let height = div.clientHeight * 3;
-      console.log("height的值=" + height); //height的值=4242
+      // console.log("height的值=" + height); //height的值=4242
       let millimeters = { width, height };
 
       var position = 0;
@@ -253,7 +273,7 @@ item: this.activatedRoute.snapshot.paramMap.get('item')
       let imgWidth = 595.28;
       let imgHeight = 592.28 / div.scrollWidth * div.scrollHeight
       // imgHeight-=200;压缩或者扩张
-      console.log("imgHeight的值=" + imgHeight); //imgHeight的值=1968.231790393013
+      // console.log("imgHeight的值=" + imgHeight); //imgHeight的值=1968.231790393013
       let scale = 2; //https://github.com/tsayen/dom-to-image/issues/69
       domtoimage.toPng(div, {
         height: div.offsetHeight * 2, width: div.offsetWidth * 1.95, style:
@@ -263,15 +283,39 @@ item: this.activatedRoute.snapshot.paramMap.get('item')
         // const doc = new jsPDF('p', 'mm', 'a4', true);
         //创建 jsppdf
         const doc = new jsPDF('', 'pt', 'a4')
-        console.log(dataUrl);
-        console.log(imgWidth + '    ' + imgHeight)
-        console.log(leftHeight + '    ' + pageHeight)
+        // console.log(dataUrl);
+        // console.log(imgWidth + '    ' + imgHeight)
+        // console.log(leftHeight + '    ' + pageHeight)
+        console.log("leftHeight"+leftHeight);
+        console.log("pageHeight"+pageHeight);
         // 判断 是否要分页
+        setTimeout(() => {
+       
         if (leftHeight < pageHeight) {
           //doc.deletePage(1); //https://stackoverflow.com/questions/29578721/image-in-pdf-cut-off-how-to-make-a-canvas-fit-entirely-in-a-pdf-page/42295522#42295522
           //doc.addPage(millimeters.width * 2, millimeters.height * 1.95);
           doc.addImage(dataUrl, 'PNG', 0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST');
           // doc.addImage(dataUrl, 'PNG', 0, 0, imgWidth, imgHeight);
+          console.log("doc="+doc);
+          let pdfOutput = doc.output();
+          console.log(pdfOutput);
+          // using ArrayBuffer will allow you to put image inside PDF
+          // 使用ArrayBuffer将允许您将图像放入PDF
+          let buffer = new ArrayBuffer(pdfOutput.length);
+          let array = new Uint8Array(buffer);
+          for (var i = 0; i < pdfOutput.length; i++) {
+            array[i] = pdfOutput.charCodeAt(i);
+          }
+          console.log(buffer);
+          // Name of pdf
+          const fileName = "CrisisPlan.pdf";
+          //Writing File to Device  将文件写入设备
+          this.file.writeFile(directory, fileName, buffer, { replace: true }).then(success => { //https://ourcodeworld.com/articles/read/38/how-to-capture-an-image-from-a-dom-element-with-javascript
+            console.log("文件已写入");
+            this.loading.dismiss();
+            this.templateService.presentToastWithOptions("PDF file has been created!");
+            this.fileOpener.open(success.nativeURL, "application/pdf").catch(() => this.templateService.presentToastWithOptions("Please install a PDF Viewer such as Acrobat!"));
+          }).catch((error) => this.templateService.presentToastWithOptions("An error has occured!!!"));
 
         } else {
           var cod = document.getElementById("cod516");
@@ -288,1130 +332,2258 @@ item: this.activatedRoute.snapshot.paramMap.get('item')
             var codheight3 = cod3.offsetTop / div.scrollWidth * div.scrollHeight;
           } catch (e) { }
           // alert(aaa1 + '-' + aaa2 + '-' + aaa3);
-         
-          if (aaa1 == 3 && aaa2 == 3 && aaa3 == 3) { //1:2 2:0 3:2
+          // console.log("text=");
+          var templates2, zwyw;
+          // console.log(planid);
+          this.PlanService.getEditDetails(planid).then(everything => {
+            //  templates=[].concat(...everything.templates)[0]
+            templates2 = everything
+            // console.log(templates2);
+            // console.log(aaa1 + "|" + aaa2 + "|" + aaa3);
+            // console.log(templates2.templates[0][0].symptom.text);
+            if (aaa1 > 0) {
+              this.texta = templates2.templates[0][0].symptom.text;
+            }
+
+            if (aaa2 > 0) {
+              this.texta = templates2.templates[1][0].symptom.text;
+            }
+            if (aaa3 > 0) {
+              this.texta = templates2.templates[2][0].symptom.text;
+            }
+            console.log(this.texta);
+            zwyw = this.templateService.pdzwyw(this.texta);
+            console.log(zwyw);
+            if (zwyw == 1) {
+              // console.log("中文");
+            }
+            if (zwyw == 0) {
+              // console.log("英文");
+            }
+
+          })
+          setTimeout(() => {
+            console.log(zwyw);
 
+            if (zwyw == 1) {
+              console.log("11111111111111111111111111111111111111111111111111111111111111");
+              console.log(leftHeight);
+              console.log(pageHeight);
+              console.log("dataUrl="+dataUrl);
+              if (aaa1 == 3 && aaa2 == 3 && aaa3 == 3) { //1:2 2:0 3:2
 
-            while (leftHeight > 0) {
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 760)//406.4x665.84 相差85 285    -50-20-20=web
+                while (leftHeight > 0) {
+                  console.log("dataUrl="+dataUrl);
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 690)//406.4x665.84 相差85 285    -50-20-20=web
 
-              leftHeight -= pageHeight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+              if (aaa1 == 3 && aaa2 == 3 && aaa3 == 2) {
 
-          if (aaa1 == 3 && aaa2 == 3 && aaa3 == 2) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 620)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 620)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 3 && aaa2 == 3 && aaa3 == 1) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 3 && aaa2 == 3 && aaa3 == 1) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 720)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 720)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 3 && aaa2 == 3 && aaa3 == 0) {//★
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 3 && aaa2 == 3 && aaa3 == 0) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1070)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 830)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+              if (aaa1 == 3 && aaa2 == 2 && aaa3 == 3) {//★
 
-          if (aaa1 == 3 && aaa2 == 2 && aaa3 == 3) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 730)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 860)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 3 && aaa2 == 2 && aaa3 == 2) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 3 && aaa2 == 2 && aaa3 == 2) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 740)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 830)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 3 && aaa2 == 2 && aaa3 == 1) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 3 && aaa2 == 2 && aaa3 == 1) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 800)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 830)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 3 && aaa2 == 2 && aaa3 == 0) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 3 && aaa2 == 2 && aaa3 == 0) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1000)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight+810)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 3 && aaa2 == 1 && aaa3 == 3) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 3 && aaa2 == 1 && aaa3 == 3) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 720)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight+810)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 3 && aaa2 == 1 && aaa3 == 2) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 3 && aaa2 == 1 && aaa3 == 2) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 810)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight+810)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 3 && aaa2 == 1 && aaa3 == 1) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 3 && aaa2 == 1 && aaa3 == 1) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 970)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight+810)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 3 && aaa2 == 1 && aaa3 == 0) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 3 && aaa2 == 1 && aaa3 == 0) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 920)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight+770)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+              if (aaa1 == 3 && aaa2 == 0 && aaa3 == 3) {
 
-          if (aaa1 == 3 && aaa2 == 0 && aaa3 == 3) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1040)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight+500)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight3-800;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 3 && aaa2 == 0 && aaa3 == 2) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 3 && aaa2 == 0 && aaa3 == 2) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 500)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight+500)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 3 && aaa2 == 0 && aaa3 == 1) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 3 && aaa2 == 0 && aaa3 == 1) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 500)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight+500)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 3 && aaa2 == 0 && aaa3 == 0) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 3 && aaa2 == 0 && aaa3 == 0) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 500)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight+500)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 2 && aaa2 == 3 && aaa3 == 3) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 2 && aaa2 == 3 && aaa3 == 3) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1140)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight+620)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight-500;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+              if (aaa1 == 2 && aaa2 == 3 && aaa3 == 2) {
 
-          if (aaa1 == 2 && aaa2 == 3 && aaa3 == 2) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1220)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight+620)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight-500;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 2 && aaa2 == 3 && aaa3 == 1) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 2 && aaa2 == 3 && aaa3 == 1) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1100)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight+600)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight-300;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+              if (aaa1 == 2 && aaa2 == 3 && aaa3 == 0) {
 
-          if (aaa1 == 2 && aaa2 == 3 && aaa3 == 0) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 670)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight+670)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 2 && aaa2 == 2 && aaa3 == 3) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 2 && aaa2 == 2 && aaa3 == 3) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1020)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 1020)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 2 && aaa2 == 2 && aaa3 == 2) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 2 && aaa2 == 2 && aaa3 == 2) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1100)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 950)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight - 300;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 2 && aaa2 == 2 && aaa3 == 1) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 2 && aaa2 == 2 && aaa3 == 1) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 875)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 875)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight - 100;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+              if (aaa1 == 2 && aaa2 == 2 && aaa3 == 0) {
 
-          if (aaa1 == 2 && aaa2 == 2 && aaa3 == 0) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+              if (aaa1 == 2 && aaa2 == 1 && aaa3 == 3) {
 
-          if (aaa1 == 2 && aaa2 == 1 && aaa3 == 3) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1280)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 780)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight-400;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+              if (aaa1 == 2 && aaa2 == 1 && aaa3 == 2) {
 
-          if (aaa1 == 2 && aaa2 == 1 && aaa3 == 2) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1250)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 890)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight-400;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
 
 
+              if (aaa1 == 2 && aaa2 == 1 && aaa3 == 1) {
 
-          if (aaa1 == 2 && aaa2 == 1 && aaa3 == 1) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 2 && aaa2 == 1 && aaa3 == 0) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 2 && aaa2 == 1 && aaa3 == 0) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 865)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 865)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+              if (aaa1 == 2 && aaa2 == 0 && aaa3 == 3) {
 
-          if (aaa1 == 2 && aaa2 == 0 && aaa3 == 3) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1250)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight-400;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 2 && aaa2 == 0 && aaa3 == 2) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 2 && aaa2 == 0 && aaa3 == 2) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 2 && aaa2 == 0 && aaa3 == 2) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 2 && aaa2 == 0 && aaa3 == 2) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+              if (aaa1 == 2 && aaa2 == 0 && aaa3 == 1) {
 
-          if (aaa1 == 2 && aaa2 == 0 && aaa3 == 1) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+              if (aaa1 == 2 && aaa2 == 0 && aaa3 == 0) {
 
-          if (aaa1 == 2 && aaa2 == 0 && aaa3 == 0) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 1 && aaa2 == 3 && aaa3 == 3) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 1 && aaa2 == 3 && aaa3 == 3) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight2;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight2;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+              if (aaa1 == 1 && aaa2 == 3 && aaa3 == 2) {
 
-          if (aaa1 == 1 && aaa2 == 3 && aaa3 == 2) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight2;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight2;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 1 && aaa2 == 3 && aaa3 == 1) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 1 && aaa2 == 3 && aaa3 == 1) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 790)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 790)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight2;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight2;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 1 && aaa2 == 3 && aaa3 == 0) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 1 && aaa2 == 3 && aaa3 == 0) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 880)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 880)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight2;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight2;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 1 && aaa2 == 2 && aaa3 == 3) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 1 && aaa2 == 2 && aaa3 == 3) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1250)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight3-800;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 1 && aaa2 == 2 && aaa3 == 2) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 1 && aaa2 == 2 && aaa3 == 2) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 860)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 860)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 1 && aaa2 == 2 && aaa3 == 1) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 1 && aaa2 == 2 && aaa3 == 1) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight2;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight2;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 1 && aaa2 == 2 && aaa3 == 0) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 1 && aaa2 == 2 && aaa3 == 0) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 1 && aaa2 == 1 && aaa3 == 3) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 1 && aaa2 == 1 && aaa3 == 3) {
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1250)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight3-800;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              } if (aaa1 == 1 && aaa2 == 1 && aaa3 == 2) {
 
 
-            while (leftHeight > 0) {
+                while (leftHeight > 0) {
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 860)//406.4x665.84 相差85 285    -50-20-20=web
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
 
-              leftHeight -= codheight3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                  leftHeight -= codheight3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 1 && aaa2 == 1 && aaa3 == 1) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          } if (aaa1 == 1 && aaa2 == 1 && aaa3 == 2) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 1 && aaa2 == 1 && aaa3 == 0) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          } 
-          if (aaa1 == 1 && aaa2 == 1 && aaa3 == 1) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= pageHeight+500;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 1 && aaa2 == 1 && aaa3 == 0) {
+              if (aaa1 == 1 && aaa2 == 0 && aaa3 == 3) {
 
 
-            while (leftHeight > 0) {
+                while (leftHeight > 0) {
 
-              doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1150)//406.4x665.84 相差85 285    -50-20-20=web
 
-              leftHeight -= pageHeight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                  leftHeight -= codheight3-500;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 1 && aaa2 == 0 && aaa3 == 2) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 900)//406.4x665.84 相差85 285    -50-20-20=web
 
-          if (aaa1 == 1 && aaa2 == 0 && aaa3 == 3) {
+                  leftHeight -= codheight3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+              if (aaa1 == 1 && aaa2 == 0 && aaa3 == 1) {
+
 
-            while (leftHeight > 0) {
+                while (leftHeight > 0) {
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 800)//406.4x665.84 相差85 285    -50-20-20=web
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+                  leftHeight -= pageHeight+800;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 1 && aaa2 == 0 && aaa3 == 0) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 1 && aaa2 == 0 && aaa3 == 2) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth,codheight + 860)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+
+
+              if (aaa1 == 0 && aaa2 == 3 && aaa3 == 3) {
 
-          if (aaa1 == 1 && aaa2 == 0 && aaa3 == 1) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight3 + 1250)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
-              leftHeight -= pageHeight;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                  leftHeight -= codheight3-800;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 1 && aaa2 == 0 && aaa3 == 0) {
+
+
 
+              if (aaa1 == 0 && aaa2 == 3 && aaa3 == 2) {
 
-            while (leftHeight > 0) {
 
-              doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+                while (leftHeight > 0) {
 
-              leftHeight -= pageHeight*3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight3 + 500)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
 
 
+              if (aaa1 == 0 && aaa2 == 3 && aaa3 == 1) {
 
-          if (aaa1 == 0 && aaa2 == 3&& aaa3 == 3) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight3 + 1050)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight3+60)//406.4x665.84 相差85 285    -50-20-20=web
+                  leftHeight -= codheight3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= codheight3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
 
 
+              if (aaa1 == 0 && aaa2 == 3 && aaa3 == 0) {
 
 
-          if (aaa1 == 0 && aaa2 == 3 && aaa3 == 2) {
+                while (leftHeight > 0) {
 
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
 
-            while (leftHeight > 0) {
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight3+500)//406.4x665.84 相差85 285    -50-20-20=web
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+              if (aaa1 == 0 && aaa2 == 2 && aaa3 == 3) {
+
+
+                while (leftHeight > 0) {
 
-              leftHeight -= codheight3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight3 + 1100);
+
+                  leftHeight -= codheight3-800;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+              if (aaa1 == 0 && aaa2 == 2 && aaa3 == 2) {
+
 
+                while (leftHeight > 0) {
 
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight3 + 1000);
 
-          if (aaa1 == 0 && aaa2 == 3 && aaa3 == 1) {
+                  leftHeight -= codheight3-400;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+
+              if (aaa1 == 0 && aaa2 == 2 && aaa3 == 1) {
+
 
-            while (leftHeight > 0) {
+                while (leftHeight > 0) {
 
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight3+500)//406.4x665.84 相差85 285    -50-20-20=web
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
 
-              leftHeight -= codheight3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
 
 
+              if (aaa1 == 0 && aaa2 == 2 && aaa3 == 0) {
 
-          if (aaa1 == 0 && aaa2 == 3 && aaa3 == 0) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
 
-              doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight*3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+
+              if (aaa1 == 0 && aaa2 == 1 && aaa3 == 3) {
 
-          if (aaa1 == 0 && aaa2 == 2 && aaa3 == 3) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
 
-              doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight*3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+
 
-          if (aaa1 == 0 && aaa2 == 2 && aaa3 == 2) {
+              if (aaa1 == 0 && aaa2 == 1 && aaa3 == 2) {
 
 
-            while (leftHeight > 0) {
+                while (leftHeight > 0) {
 
-              doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
 
-              leftHeight -= pageHeight*3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
 
+              if (aaa1 == 0 && aaa2 == 1 && aaa3 == 1) {
 
-          if (aaa1 == 0 && aaa2 == 2 && aaa3 == 1) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
 
-              doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight*3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+              if (aaa1 == 0 && aaa2 == 1 && aaa3 == 0) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+              if (aaa1 == 0 && aaa2 == 0 && aaa3 == 3) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
+                }
+                doc.save('pdfDocument.pdf');
+              }
 
+              if (aaa1 == 0 && aaa2 == 0 && aaa3 == 2) {
 
-          if (aaa1 == 0 && aaa2 ==2 && aaa3 == 0) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
 
-              doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight*3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 0 && aaa2 == 0 && aaa3 == 1) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
 
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
             }
-            doc.save('pdfDocument.pdf');
-          }
 
 
-          if (aaa1 == 0 && aaa2 == 1 && aaa3 == 3) {
+            if (zwyw == 0) {
+              console.log("000000000000000000000000000000000000000000000");
+              console.log(aaa1+"|"+aaa2+"|"+aaa3+"|");
+              console.log(pageHeight);
+              console.log(leftHeight);
+              console.log(dataUrl);
+              if (aaa1 == 3 && aaa2 == 3 && aaa3 == 3) { //1:2 2:0 3:2
 
 
-            while (leftHeight > 0) {
+                while (leftHeight > 0) {
+                  console.log("我进来了！！！");
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 700)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight*3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+              if (aaa1 == 3 && aaa2 == 3 && aaa3 == 2) {
+
 
+                while (leftHeight > 0) {
 
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 620)//406.4x665.84 相差85 285    -50-20-20=web
 
-          if (aaa1 == 0 && aaa2 == 1 && aaa3 == 2) {
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 3 && aaa2 == 3 && aaa3 == 1) {
+
 
-            while (leftHeight > 0) {
+                while (leftHeight > 0) {
 
-              doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 720)//406.4x665.84 相差85 285    -50-20-20=web
 
-              leftHeight -= pageHeight*3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 3 && aaa2 == 3 && aaa3 == 0) {//★
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1240)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
 
+                }
+                doc.save('pdfDocument.pdf');
+              }
 
-          if (aaa1 == 0 && aaa2 == 1 && aaa3 == 1) {
+              if (aaa1 == 3 && aaa2 == 2 && aaa3 == 3) {//★
 
 
-            while (leftHeight > 0) {
+                while (leftHeight > 0) {
 
-              doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 750)//406.4x665.84 相差85 285    -50-20-20=web
 
-              leftHeight -= pageHeight*3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 3 && aaa2 == 2 && aaa3 == 2) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 830)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 3 && aaa2 == 2 && aaa3 == 1) {
 
-          if (aaa1 == 0 && aaa2 == 1&& aaa3 == 0) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 830)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight*3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 3 && aaa2 == 2 && aaa3 == 0) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 810)//406.4x665.84 相差85 285    -50-20-20=web
 
-          if (aaa1 == 0 && aaa2 == 0 && aaa3 == 3) {
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 3 && aaa2 == 1 && aaa3 == 3) {
+
 
-            while (leftHeight > 0) {
+                while (leftHeight > 0) {
 
-              doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 810)//406.4x665.84 相差85 285    -50-20-20=web
 
-              leftHeight -= pageHeight*3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 3 && aaa2 == 1 && aaa3 == 2) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
 
-          if (aaa1 == 0 && aaa2 == 0 && aaa3 == 2) {
+                while (leftHeight > 0) {
 
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 810)//406.4x665.84 相差85 285    -50-20-20=web
 
-            while (leftHeight > 0) {
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 3 && aaa2 == 1 && aaa3 == 1) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 810)//406.4x665.84 相差85 285    -50-20-20=web
 
-              leftHeight -= pageHeight*3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
               }
+              if (aaa1 == 3 && aaa2 == 1 && aaa3 == 0) {
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
-          if (aaa1 == 0 && aaa2 == 0 && aaa3 == 1) {
 
+                while (leftHeight > 0) {
 
-            while (leftHeight > 0) {
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 770)//406.4x665.84 相差85 285    -50-20-20=web
 
-              doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
 
-              leftHeight -= pageHeight*3;
-              position -= 841.89;
-              if (leftHeight > 0) {
-                doc.addPage();
+                }
+                doc.save('pdfDocument.pdf');
               }
 
-            }
-            doc.save('pdfDocument.pdf');
-          }
+              if (aaa1 == 3 && aaa2 == 0 && aaa3 == 3) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 500)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 3 && aaa2 == 0 && aaa3 == 2) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 500)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 3 && aaa2 == 0 && aaa3 == 1) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 500)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 3 && aaa2 == 0 && aaa3 == 0) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 500)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 2 && aaa2 == 3 && aaa3 == 3) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 620)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+              if (aaa1 == 2 && aaa2 == 3 && aaa3 == 2) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 620)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 2 && aaa2 == 3 && aaa3 == 1) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 600)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+              if (aaa1 == 2 && aaa2 == 3 && aaa3 == 0) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 670)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 2 && aaa2 == 2 && aaa3 == 3) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1020)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 2 && aaa2 == 2 && aaa3 == 2) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1200)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight - 300;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 2 && aaa2 == 2 && aaa3 == 1) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 875)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight - 100;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+              if (aaa1 == 2 && aaa2 == 2 && aaa3 == 0) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+              if (aaa1 == 2 && aaa2 == 1 && aaa3 == 3) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 780)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+              if (aaa1 == 2 && aaa2 == 1 && aaa3 == 2) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 890)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+
+
+              if (aaa1 == 2 && aaa2 == 1 && aaa3 == 1) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 2 && aaa2 == 1 && aaa3 == 0) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 865)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+              if (aaa1 == 2 && aaa2 == 0 && aaa3 == 3) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 2 && aaa2 == 0 && aaa3 == 2) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 2 && aaa2 == 0 && aaa3 == 2) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+              if (aaa1 == 2 && aaa2 == 0 && aaa3 == 1) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+              if (aaa1 == 2 && aaa2 == 0 && aaa3 == 0) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 1 && aaa2 == 3 && aaa3 == 3) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight2;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+              if (aaa1 == 1 && aaa2 == 3 && aaa3 == 2) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight2;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 1 && aaa2 == 3 && aaa3 == 1) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 790)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight2;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 1 && aaa2 == 3 && aaa3 == 0) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 880)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight2;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 1 && aaa2 == 2 && aaa3 == 3) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 1 && aaa2 == 2 && aaa3 == 2) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 860)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 1 && aaa2 == 2 && aaa3 == 1) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight2;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 1 && aaa2 == 2 && aaa3 == 0) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 1 && aaa2 == 1 && aaa3 == 3) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 860)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              } if (aaa1 == 1 && aaa2 == 1 && aaa3 == 2) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 1 && aaa2 == 1 && aaa3 == 1) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 835)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 1 && aaa2 == 1 && aaa3 == 0) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+              if (aaa1 == 1 && aaa2 == 0 && aaa3 == 3) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 800)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 1 && aaa2 == 0 && aaa3 == 2) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 860)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+              if (aaa1 == 1 && aaa2 == 0 && aaa3 == 1) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+                  leftHeight -= pageHeight;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 1 && aaa2 == 0 && aaa3 == 0) {
 
 
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+
+
+              if (aaa1 == 0 && aaa2 == 3 && aaa3 == 3) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight3 + 60)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+
+
+
+              if (aaa1 == 0 && aaa2 == 3 && aaa3 == 2) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight3 + 500)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+
+
+              if (aaa1 == 0 && aaa2 == 3 && aaa3 == 1) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight3 + 500)//406.4x665.84 相差85 285    -50-20-20=web
+
+                  leftHeight -= codheight3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+
+
+              if (aaa1 == 0 && aaa2 == 3 && aaa3 == 0) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+              if (aaa1 == 0 && aaa2 == 2 && aaa3 == 3) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+              if (aaa1 == 0 && aaa2 == 2 && aaa3 == 2) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+
+              if (aaa1 == 0 && aaa2 == 2 && aaa3 == 1) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+
+
+              if (aaa1 == 0 && aaa2 == 2 && aaa3 == 0) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+
+              if (aaa1 == 0 && aaa2 == 1 && aaa3 == 3) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+
+
+              if (aaa1 == 0 && aaa2 == 1 && aaa3 == 2) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+
+              if (aaa1 == 0 && aaa2 == 1 && aaa3 == 1) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+              if (aaa1 == 0 && aaa2 == 1 && aaa3 == 0) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+              if (aaa1 == 0 && aaa2 == 0 && aaa3 == 3) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+
+              if (aaa1 == 0 && aaa2 == 0 && aaa3 == 2) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+              if (aaa1 == 0 && aaa2 == 0 && aaa3 == 1) {
+
+
+                while (leftHeight > 0) {
+
+                  doc.addImage(dataUrl, 'PNG', 0, position, doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+
+                  leftHeight -= pageHeight * 3;
+                  position -= 841.89;
+                  if (leftHeight > 0) {
+                    doc.addPage();
+                  }
+
+                }
+                doc.save('pdfDocument.pdf');
+              }
+            }
 
-          if (aaa1 >=4|| aaa2 >=4 || aaa3 >=4) {
+        
+            if (aaa1 >= 4 || aaa2 >= 4 || aaa3 >= 4) {
 
-            while(leftHeight > 0) {
+              while (leftHeight > 0) {
 
 
-                          //  doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
-                          doc.addImage(dataUrl, 'PNG', 0, position,imgWidth,imgHeight)
-                          position -= 841.89;
-                          // if(position<=-800&&position>=-1600){
-                          //   imgHeight+=;
-                          // }
-                           leftHeight -= pageHeight;
-                          //  position -= 841.89;
-                           console.log(leftHeight+'    '+pageHeight)
-                           //避免添加空白页
-                           if(leftHeight > 0) {
-                            doc.addPage();
-                            // doc.print();
+                //  doc.addImage(dataUrl, 'PNG', 0, position,doc.internal.pageSize.width, doc.internal.pageSize.height, undefined, 'FAST')
+                doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, imgHeight)
+                position -= 841.89;
+                // if(position<=-800&&position>=-1600){
+                //   imgHeight+=;
+                // }
+                leftHeight -= pageHeight;
+                //  position -= 841.89;
+                console.log(leftHeight + '    ' + pageHeight)
+                //避免添加空白页
+                if (leftHeight > 0) {
+                  doc.addPage();
                   // doc.print();
+                  // doc.print();
+                }
+
               }
-
+              doc.save('pdfDocument.pdf');
             }
-            doc.save('pdfDocument.pdf');
+         
+
+          console.log("doc="+doc);
+          let pdfOutput = doc.output();
+          console.log(pdfOutput);
+          // using ArrayBuffer will allow you to put image inside PDF
+          // 使用ArrayBuffer将允许您将图像放入PDF
+          let buffer = new ArrayBuffer(pdfOutput.length);
+          let array = new Uint8Array(buffer);
+          for (var i = 0; i < pdfOutput.length; i++) {
+            array[i] = pdfOutput.charCodeAt(i);
           }
-
+          console.log(buffer);
+          // Name of pdf
+          const fileName = "CrisisPlan.pdf";
+          //Writing File to Device  将文件写入设备
+          this.file.writeFile(directory, fileName, buffer, { replace: true }).then(success => { //https://ourcodeworld.com/articles/read/38/how-to-capture-an-image-from-a-dom-element-with-javascript
+            console.log("文件已写入");
+            this.loading.dismiss();
+            this.templateService.presentToastWithOptions("PDF file has been created!");
+            this.fileOpener.open(success.nativeURL, "application/pdf").catch(() => this.templateService.presentToastWithOptions("Please install a PDF Viewer such as Acrobat!"));
+          }).catch((error) => this.templateService.presentToastWithOptions("An error has occured!!!")); 
+        }, 4000);
 
         }
-
         //for website
+    
+         
+      }, 3000);
+  
+      }
 
-        let pdfOutput = doc.output();
-        // using ArrayBuffer will allow you to put image inside PDF
-        // 使用ArrayBuffer将允许您将图像放入PDF
-        let buffer = new ArrayBuffer(pdfOutput.length);
-        let array = new Uint8Array(buffer);
-        for (var i = 0; i < pdfOutput.length; i++) {
-          array[i] = pdfOutput.charCodeAt(i);
-        }
-        console.log(buffer);
-        // Name of pdf
-        const fileName = "CrisisPlan.pdf";
-        //Writing File to Device  将文件写入设备
-        this.file.writeFile(directory, fileName, buffer, { replace: true }).then(success => { //https://ourcodeworld.com/articles/read/38/how-to-capture-an-image-from-a-dom-element-with-javascript
-          console.log("文件已写入");
-          this.loading.dismiss();
-          this.templateService.presentToastWithOptions("PDF file has been created!");
-          this.fileOpener.open(success.nativeURL, "application/pdf").catch(() => this.templateService.presentToastWithOptions("Please install a PDF Viewer such as Acrobat!"));
-        }).catch((error) => this.templateService.presentToastWithOptions("An error has occured!!!"));
-      })
-    }, 1000);
-
+            
+          
+        
+  
+      )}
+      
     // // this.presentLoading('Creating PDF file...');
     // const directory = this.file.externalRootDirectory;
     // console.log("directory的值="+directory); //directory=null
@@ -1499,38 +2671,39 @@ item: this.activatedRoute.snapshot.paramMap.get('item')
     //    this.fileOpener.open(success.nativeURL, "application/pdf").catch(() => this.templateService.presentToastWithOptions("Please install a PDF Viewer such as Acrobat!"));
     //   }).catch((error) => this.templateService.presentToastWithOptions("An error has occured!!!"));
     // })
-  }
+
 
 
 
   callEdit() {
     this.backUpPlanDetails = [this.details.name, this.details.nric, this.details.cname, this.details.ccontact];
-    console.log("id callEdit =" + this.details.id);
-    console.log("this.details=" + this.details);
+    // console.log("id callEdit =" + this.details.id);
+    // console.log("this.details=" + this.details);
     setTimeout(() => {
       this.templateService.setcgid(this.details);
     }, 300);
 
-    console.log("1");
+    // console.log("1");
     this.isDisabled = false;
     // alert(this.details.id);
     var shuu;
     this.PlanService.getEditDetails(this.details.id).then(everything => {
       [].concat(...everything.templates).forEach(eachArray => {
-        shuu=eachArray.symptom.text;
-        
+        shuu = eachArray.symptom.text;
+
       }
-        )})
-        setTimeout(() => {
-          // alert(shuu);
-         var cf = this.templateService.pdzwyw(shuu); //判断是否为中文
-        //  alert(cf);
-        this.defaultLanguage=cf;
-        this.templateService.callEdit(this.defaultLanguage);
-        }, 300);
-       
-    
-    console.log("3");
+      )
+    })
+    setTimeout(() => {
+      // alert(shuu);
+      var cf = this.templateService.pdzwyw(shuu); //判断是否为中文
+      //  alert(cf);
+      this.defaultLanguage = cf;
+      this.templateService.callEdit(this.defaultLanguage);
+    }, 300);
+
+
+    // console.log("3");
   }
 
   savePage(id, formValue) {
@@ -1560,6 +2733,8 @@ item: this.activatedRoute.snapshot.paramMap.get('item')
       this.something.controls.detailname.setValue(this.details.name); //set again trim() value in case there is white space
       this.something.controls.detailtcs.setValue(this.details.cname);
       this.isDisabled = true;
+      // this.details=null; //1911110948
+      // this.details.planName=null;   //1911110948
     })
   }
 
