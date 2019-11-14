@@ -24,6 +24,10 @@
 </ion-header>
 
 <ion-content>
+  <ion-refresher slot="fixed" pullfactor={0.5} pullMin={100} pullMax={200}>
+    
+  </ion-refresher>
+
   <ion-grid>
     <ion-row>
       <ion-col size="6" size-md>
@@ -40,7 +44,7 @@
   </ion-grid>
 
     <ion-list class="ionList" *ngIf="selectedFolder === 'appfolder'">
-      <ion-item-group *ngIf="!noFoldersAvailable">
+      <ion-item-group *ngIf="!noAFoldersAvailable">
         <ion-item *ngFor="let oneFile of appfolder">
           <ion-label text-wrap>{{oneFile.name}}</ion-label>
           <ion-button (click)="importBtn(oneFile, 'crisisApp')">Import</ion-button>
@@ -52,7 +56,7 @@
     </ion-list>
 
     <ion-list *ngIf="selectedFolder === 'downloads'">
-      <ion-item-group *ngIf="!noFoldersAvailable">
+      <ion-item-group *ngIf="!noDFoldersAvailable">
         <ion-item *ngFor="let oneFile of downloads">
           <ion-label text-wrap>{{oneFile.name}}</ion-label>
           <ion-button (click)="importBtn(oneFile, 'Download')">Import</ion-button>
@@ -64,7 +68,7 @@
     </ion-list>
 
     <ion-list *ngIf="selectedFolder === 'bluetooth'">
-      <ion-item-group *ngIf="!noFoldersAvailable">
+      <ion-item-group *ngIf="!noBFoldersAvailable">
         <ion-item *ngFor="let oneFile of bluetooth">
           <ion-label text-wrap>{{oneFile.name}}</ion-label>
           <ion-button (click)="importBtn(oneFile, 'Bluetooth')">Import</ion-button>

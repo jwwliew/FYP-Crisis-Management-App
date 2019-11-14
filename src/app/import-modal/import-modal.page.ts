@@ -46,28 +46,31 @@ export class ImportModalPage implements OnInit {
   ngOnInit() {
     this.theFiles = this.navParams.get('fileArr')
     if (this.theFiles.length === 3) {
-      if (this.theFiles[0] == null) {
+      if (this.theFiles[0] == null || this.theFiles[0][0].length == 0) {
         this.noDFoldersAvailable = true
       }
-      if (this.theFiles[0] != null) {
+      else if (this.theFiles[0] != null) {
         //downloads not empty
         this.downloads = this.theFiles[0][0]
+        this.noDFoldersAvailable = false
       }
 
-      if (this.theFiles[1] == null) {
+      if (this.theFiles[1] == null || this.theFiles[1][0].length == 0) {
         this.noBFoldersAvailable = true
       }
-      if (this.theFiles[1] != null) {
+      else if (this.theFiles[1] != null) {
         //bluetooth not empty
         this.bluetooth = this.theFiles[1][0]
+        this.noBFoldersAvailable = false
       }
 
-      if (this.theFiles[2] == null) {
+      if (this.theFiles[2] == null || this.theFiles[2][0].length == 0) {
         this.noAFoldersAvailable = true
       }
-      if (this.theFiles[2] != null) {
+      else if (this.theFiles[2] != null) {
         //appfolder not empty
         this.appfolder = this.theFiles[2][0]
+        this.noAFoldersAvailable = false
       }
     }
   }
@@ -443,6 +446,7 @@ export class ImportModalPage implements OnInit {
         componentProps: {
           conflictedPlans: conflictedPlans
         },
+        cssClass: "conflictPopover"
       });
       popover.present()
 

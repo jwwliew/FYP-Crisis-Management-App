@@ -151,7 +151,7 @@ else {
   let data = JSON.parse(messagecheck);
 
   
-  if (data.length > 1 ){
+  if (data.length >= 1 ){
 
   for (let i = 0; i < data.length; i++) {
    
