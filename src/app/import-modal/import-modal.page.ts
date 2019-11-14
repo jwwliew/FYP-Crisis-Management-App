@@ -45,7 +45,6 @@ export class ImportModalPage implements OnInit {
 
   ngOnInit() {
     this.theFiles = this.navParams.get('fileArr')
-    console.log("theFiles => " + JSON.stringify(this.theFiles))
     if (this.theFiles.length === 3) {
       if (this.theFiles[0] == null || this.theFiles[0][0].length == 0) {
         this.noDFoldersAvailable = true
@@ -532,6 +531,11 @@ export class ImportModalPage implements OnInit {
             this.showToast("Import successful")
           })
         })
+      })
+      .catch((err) => {
+        console.log("Caught error, probably cause you aren't using the default file chooser and the path didnt get resolved properly")
+        console.log("Error => " + JSON.stringify(err))
+        this.showToast("Invalid file");
       })
     })
   }
