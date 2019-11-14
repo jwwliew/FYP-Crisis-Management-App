@@ -24,8 +24,12 @@
 </ion-header>
 
 <ion-content>
-  <ion-refresher slot="fixed" pullfactor={0.5} pullMin={100} pullMax={200}>
-    
+  <ion-refresher *ngIf="selectedFolder !== 'others'" slot="fixed" (ionRefresh)="refreshModal($event)" pullfactor={0.3} pullMin={50} pullMax={100} snapbackDuration="1000ms">
+      <ion-refresher-content pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+      </ion-refresher-content>
   </ion-refresher>
 
   <ion-grid>

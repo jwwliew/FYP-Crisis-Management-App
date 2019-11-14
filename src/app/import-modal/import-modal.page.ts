@@ -45,6 +45,7 @@ export class ImportModalPage implements OnInit {
 
   ngOnInit() {
     this.theFiles = this.navParams.get('fileArr')
+    console.log("theFiles => " + JSON.stringify(this.theFiles))
     if (this.theFiles.length === 3) {
       if (this.theFiles[0] == null || this.theFiles[0][0].length == 0) {
         this.noDFoldersAvailable = true
@@ -612,6 +613,212 @@ export class ImportModalPage implements OnInit {
           res(enabled)
         }
       })
+    })
+  }
+
+  refreshModal(event){
+    this.getImportFiles().then((filearr) => {
+      this.theFiles = filearr
+      if (this.theFiles.length === 3) {
+        if (this.theFiles[0] == null || this.theFiles[0][0].length == 0) {
+          this.noDFoldersAvailable = true
+        }
+        else if (this.theFiles[0] != null) {
+          //downloads not empty
+          this.downloads = this.theFiles[0][0]
+          this.noDFoldersAvailable = false
+        }
+  
+        if (this.theFiles[1] == null || this.theFiles[1][0].length == 0) {
+          this.noBFoldersAvailable = true
+        }
+        else if (this.theFiles[1] != null) {
+          //bluetooth not empty
+          this.bluetooth = this.theFiles[1][0]
+          this.noBFoldersAvailable = false
+        }
+  
+        if (this.theFiles[2] == null || this.theFiles[2][0].length == 0) {
+          this.noAFoldersAvailable = true
+        }
+        else if (this.theFiles[2] != null) {
+          //appfolder not empty
+          this.appfolder = this.theFiles[2][0]
+          this.noAFoldersAvailable = false
+        }
+      }
+    })
+    setTimeout(() => {
+      //finish refresh
+      event.target.complete()
+    }, 1000);
+  }
+
+  getImportFiles() {
+    return new Promise((Mres) => {
+      var promise1 = new Promise((res1) => {
+        this.checkFolderExist('Download').then((check: boolean) => {
+          if (check === false) {
+            res1()
+          }
+          else if (check === true) {
+            this.checkIfContainsFiles('Download').then(async (isThere: boolean) => {
+              if (isThere === true) {
+                this.listFiles(function (callbackResult){
+                  if(callbackResult.length >= 1){
+                    res1(callbackResult)
+                  }
+                }, "Download")
+              }
+              else if (isThere === false) {
+                res1()
+              }
+              else {
+                //catch error
+              }
+            })
+          }
+        })
+      })
+
+      var promise2 = new Promise((res2) => {
+        this.checkFolderExist('Bluetooth').then((check: boolean) => {
+          if (check === false) {
+            res2()
+          }
+          else if(check === true) {
+            this.checkIfContainsFiles('Bluetooth').then(async(isThere: boolean) => {
+              if (isThere === true) {
+                this.listFiles(function (callbackResult){
+                  if(callbackResult.length >= 1){
+                    res2(callbackResult)
+                  }
+                }, "Bluetooth")
+              }
+              else if (isThere === false) {
+                res2()
+              }
+              else {
+                //catch error
+              }
+            })
+          }
+        })        
+      })
+      var promise3 = new Promise((res3) => {
+        this.checkFolderExist('crisisApp').then((check: boolean) => {
+          if (check === false) {
+            res3()
+            //this.showToast("No import files available")
+          }
+          else if (check === true) {
+            this.checkIfContainsFiles('crisisApp').then(async(isThere: boolean) => {
+              if (isThere === true) {
+                this.listFiles(function (callbackResult) {
+                  if (callbackResult.length >= 1) {
+                    res3(callbackResult);
+                  }
+                }, "crisisApp")
+              }
+              else if (isThere === false) {
+                res3()
+                //this.showToast("No import files available")
+              }
+              else {                
+                //catch error?
+              }
+            })
+          }
+        })
+      })
+
+      Promise.all([promise1, promise2, promise3]).then((filesArr) => {
+        Mres(filesArr)
+      })
+    })
+  }
+
+  //check device storage for app folder
+  checkFolderExist(foldername: string) {
+    return new Promise((res) => {
+      let path = this.file.externalRootDirectory;
+      this.file.checkDir(path, foldername).then((isThere) => {
+        if (isThere == true) {
+          //console.log("App folder found!");
+          res(isThere);
+        }
+      })
+        .catch((err) => {
+          console.log("Caught something!")
+          if (err.code == 1) {    //code for file not found
+            let isThere = false;
+            //console.log("Caught error, please ignore => " + JSON.stringify(err))
+            res(isThere);
+          }
+        })
+    })
+  }
+
+  checkIfContainsFiles(foldername: string) {
+    return new Promise((res) => {
+      var isThere = false;
+      let path = this.file.externalRootDirectory
+      this.file.listDir(path, foldername).then((files) => {
+        if (files.length <= 0) {
+          res(isThere)
+        }
+        else {
+          isThere = true;
+          res(isThere)
+        }
+      })
+    })
+  }
+
+  //list files in external storage ONLY. pass in folder name
+  async listFiles(callback, foldername: string) {       //callback function, returns a fileArr of files
+    let path = this.file.externalRootDirectory;
+    let fileArr = [];
+
+    function checkFile(theFile) {    //check if it is a folder, if false, dont push into fileArr
+      return new Promise((res) => {
+        if (theFile.isFile === true) {
+          var filenamesplit = theFile.name.split('.')
+          var extension = filenamesplit[filenamesplit.length -1]
+          if(extension === "json"){
+            fileArr.push(theFile)
+            res()
+          }
+          res()
+        }
+        else {
+          //do nothing
+          res()
+        }
+      })
+    }
+
+    this.file.listDir(path, foldername).then(async (files) => {
+      (async function asyncloop() {     //loop through files in folder
+        for (let a = 0; a < files.length; a++) {
+          await checkFile(files[a])     //function checkFile pushes json files into fileArr, returns fileArr
+          var filelength = files.length - 1;
+          if (a == filelength) {        //checks if loop is finished, resolves promise if yes
+            var promise1 = new Promise((res) => {
+              res(fileArr);
+            })
+          }
+          Promise.all([promise1]).then(function (result) {      //wait for promise to be resolved
+            var filteredResult = result.filter(function (el) {    //take out nulls from array
+              return el != null;
+            });
+            callback(filteredResult);       //returns result to function call
+          })
+          .catch(err => {
+            console.log("Error catch for Promise.all => " + JSON.stringify(err));
+          })
+        }
+      })()
     })
   }
 
