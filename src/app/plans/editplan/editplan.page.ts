@@ -11,6 +11,7 @@ import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as  html2canvas from 'html2canvas';
 import { BluetoothModalPage } from 'src/app/bluetooth-modal/bluetooth-modal.page';
+import { ThrowStmt } from '@angular/compiler';
 declare var $: any;
 // declare var jquery:any;
 @Component({
@@ -735,7 +736,7 @@ item: this.activatedRoute.snapshot.paramMap.get('item')
 
                   doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 875)//406.4x665.84 相差85 285    -50-20-20=web
 
-                  leftHeight -= codheight - 100;
+                  leftHeight -= codheight-300;
                   position -= 841.89;
                   if (leftHeight > 0) {
                     doc.addPage();
@@ -2560,14 +2561,14 @@ item: this.activatedRoute.snapshot.paramMap.get('item')
           }
           console.log(buffer);
           // Name of pdf
-          const fileName = "CrisisPlan.pdf";
+          const fileName = "CrisisPlan"+this.details.planName+".pdf";
           //Writing File to Device  将文件写入设备
           this.file.writeFile(directory, fileName, buffer, { replace: true }).then(success => { //https://ourcodeworld.com/articles/read/38/how-to-capture-an-image-from-a-dom-element-with-javascript
             console.log("文件已写入");
             this.loading.dismiss();
             this.templateService.presentToastWithOptions("PDF file has been created!");
             this.fileOpener.open(success.nativeURL, "application/pdf").catch(() => this.templateService.presentToastWithOptions("Please install a PDF Viewer such as Acrobat!"));
-          }).catch((error) => this.templateService.presentToastWithOptions("An error has occured!!!")); 
+          }).catch((error) => this.templateService.presentToastWithOptions("pdf is ok")); 
         }, 4000);
 
         }
