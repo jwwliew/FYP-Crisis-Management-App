@@ -702,7 +702,7 @@ item: this.activatedRoute.snapshot.paramMap.get('item')
 
                 while (leftHeight > 0) {
 
-                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1020)//406.4x665.84 相差85 285    -50-20-20=web
+                  doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, codheight + 1100)//406.4x665.84 相差85 285    -50-20-20=web
 
                   leftHeight -= pageHeight;
                   position -= 841.89;
