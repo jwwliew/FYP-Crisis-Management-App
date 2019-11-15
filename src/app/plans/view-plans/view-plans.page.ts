@@ -569,78 +569,105 @@ export class ViewPlansPage implements OnInit {
             if (callbackResult.length >= 1) {
               var files = callbackResult[0];    //callback result is [[]], thus callbackResult[0]
 
-              if (files.length <= 1) {    //if theres only 1 file in app folder
-                files.forEach(element => {
-                  var removeExt = element.name.split(".json")
-                  removeExt.pop()
-                  var newFileName = removeExt.join()
-                  var fileNameArr = newFileName.split("_")
-                  if (element.name.includes(fileNameArr[0])) {
-                    var fileNumber
-                    if (element.name.indexOf("_") == -1) {
-                      //first file is present
-                      fileNumber = "_02"
-                      filename = filename + fileNumber
-                      res(filename)
-                    }     //second file onwards
-                    else {
-                      var fileNo = fileNameArr[fileNameArr.length - 1]
-                      fileNo = fileNo += 1      //increment file number
+              if (files.length <= 1) {    //if theres only 1 file in folder
+                var element = files[0].name
+                var removeExt = element.split(".json")
+                removeExt.pop()   //remove file extension
+                var fileNameNoExt = removeExt.join()
+                var fileNameArr = fileNameNoExt.split("_")
+                var checkFileName = fileNameArr[0]
+                var fileNumber
 
-                      if (fileNo <= 9) {      //if file number is less than 10, add 0 in front
+                if (checkFileName.includes(filename)) {   //if there is duplicate filename
+                  if (fileNameNoExt.indexOf("_") == -1) {
+                    //first file is present
+                    fileNumber = "_02"
+                    filename = filename + fileNumber
+                    res(filename)
+                  } 
+                  else {      //second file onwards
+                    var fileNo = parseInt(fileNameArr[fileNameArr.length - 1])
+                    fileNo = fileNo += 1      //increment file number
+
+                    if (fileNo <= 9) {      //if file number is less than 10, add 0 in front
+                      fileNumber = fileNo.toString()
+                      fileNumber = "_0" + fileNumber
+                    }
+                    else {
+                      fileNumber = "_" + fileNo.toString();
+                    }
+                    filename = filename + fileNumber      //add number to filename, end result should be allPlans<number>
+                    res(filename)
+                  }
+                }
+                else {    //when there isnt duplicate file name
+                  res(filename)
+                }
+              }
+              else {     //if theres more than one file in folder
+                var numberArr = [];
+                new Promise((res2) => {
+                  for(var g=0; files.length; g++){
+                    var element = files[g].name
+                    var removeExt = element.split(".json")
+                    removeExt.pop()     //remove ext
+                    var fileNameNoExt = removeExt.join()
+                    var fileNameArr = fileNameNoExt.split("_")
+                    var checkFileName = fileNameArr[0]
+                    var fileNumber
+
+                    if(checkFileName.includes(filename)){
+                      if(fileNameNoExt.indexOf("_") == -1){
+                        numberArr.push(fileNameNoExt)
+                      }
+                      else if(fileNameNoExt.indexOf("_") != -1){
+                        numberArr.push(parseInt(fileNameArr[fileNameArr.length -1]))
+                      }
+                    }
+                    if(g == files.length-1){
+                      res2(numberArr)
+                    }
+                  }
+                }).then((numberArr: any[]) => {
+                  if(numberArr.length <= 0){    //if no files have duplicate names
+                    res(filename)
+                  }
+                  else{     //if some files have duplicate names
+                    var arrNumbers = numberArr.filter(function(e) {
+                      return (parseInt(e) == e);
+                    })
+                    var nameWithout_ = numberArr.filter(function(e) {
+                      return !(parseInt(e) == e);
+                    })
+                    console.log("namewithout_ => " + JSON.stringify(nameWithout_))
+                    console.log("arrnumbers => " + JSON.stringify(arrNumbers))
+                    
+                    if(nameWithout_.length > 0 && arrNumbers.length <= 0){
+                      filename = nameWithout_ + "_02"
+                      res(filename)
+                    }
+                    else if (arrNumbers.length > 0) {
+                      var findBigNumberArr = arrNumbers.sort((a: number, b: number) => b - a);    //sort by desc order
+                      var biggestNo: number = findBigNumberArr[0];     //get biggest number in arr
+                      var fileNo = biggestNo += 1;
+                      console.log("TEST1")
+
+                      if (fileNo <= 9) {
+                        console.log("TEST2")
                         fileNumber = fileNo.toString()
                         fileNumber = "_0" + fileNumber
                       }
                       else {
+                        console.log("TEST3")
                         fileNumber = "_" + fileNo.toString();
                       }
-                      filename = filename + fileNumber      //add number to filename, end result should be allPlans<number>
+                      console.log("TEST4")
+                      filename = filename + fileNumber
                       res(filename)
                     }
                   }
-                  else {
-                    res(filename)
-                  }
                 })
               }
-              else {     //if theres more than one file in app folder
-                let numberArr = [];
-                (async function asyncloop() {
-                  files.forEach((element, index, array) => {
-                    var removeExt = element.name.split(".json")
-                    removeExt.pop()
-                    var newFileName = removeExt.join()
-                    var fileNameArr = newFileName.split("_")
-                    if (element.name.includes(fileNameArr[0])) {
-                      if(element.name.indexOf("_") != -1){
-                        var fileNo = parseInt(fileNameArr[fileNameArr.length - 1])
-                        numberArr.push(fileNo)
-                      }
-                    }
-                    if (index == array.length - 1) {        //checks if loop is finished, resolves promise if yes
-                      new Promise((res2) => {
-                        res2(numberArr);
-                      }).then((numberArr: number[]) => {
-                        numberArr = numberArr.sort((a: number, b: number) => b - a);    //sort by desc order
-                        let biggestNo: number = numberArr[0];     //get biggest number in arr
-                        let fileNo = biggestNo += 1;
-                        var fileNumber
-
-                        if (fileNo <= 9) {
-                          fileNumber = fileNo.toString()
-                          fileNumber = "_0" + fileNumber
-                        }
-                        else {
-                          fileNumber = "_" + fileNo.toString();
-                        }
-                        filename = filename + fileNumber
-                        res(filename)
-                      })
-                    }
-                  });
-                })();
-              }
-
             }
           }, "crisisApp")
         }
